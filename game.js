@@ -56,7 +56,7 @@ function speak(text) {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.21a`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.21b`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -329,7 +329,8 @@ function renderCommandCards(cards) {
     logic: '逻辑',
     social: '社交',
     time: '时间',
-    guess: '询问'
+    guess: '询问',
+    password: '密码'
   };
 
   for (const cat in groups) {
@@ -352,7 +353,8 @@ function renderCommandCards(cards) {
         buy_milk: '🥛', buy_icecream: '🍦', buy_bread: '🍞',
         social_engineer: '🕴️', hourglass: '⏳',
         send_noise: '📢', press_button: '🔘',
-        ask_hint: '❓', break_mirror: '🔨'
+        ask_hint: '❓', break_mirror: '🔨',
+        keypad: '🔢'
       };
       div.innerHTML = `<span class="icon">${iconMap[card.icon] || '●'}</span> ${card.label}`;
       div.onclick = () => onCardClick(card);
@@ -497,7 +499,8 @@ function renderQueue() {
         buy_milk: '🥛', buy_icecream: '🍦', buy_bread: '🍞',
         social_engineer: '🕴️', hourglass: '⏳',
         send_noise: '📢', press_button: '🔘',
-        ask_hint: '❓', break_mirror: '🔨'
+        ask_hint: '❓', break_mirror: '🔨',
+        keypad: '🔢'
       };
       const iconStr = iconMap[item.icon] ? iconMap[item.icon] + ' ' : '';
       div.innerHTML = `
@@ -698,6 +701,8 @@ async function executeCommands(commands, scene) {
       await scene.askHintAction();
     } else if (cmd.action === 'break_mirror') {
       await scene.breakMirrorAction();
+    } else if (cmd.action === 'enter_password') {
+      await scene.enterPasswordAction();
     } else if (cmd.action === 'repeat') {
       // 容器指令:展开执行 N 次
       const times = cmd.times || 1;
@@ -773,6 +778,98 @@ async function runQueue() {
     await scene.showBubble(G.player, hint);
   }
   G.isRunning = false;
+}
+
+// ========== 密码盘 UI(D1 用)==========
+function showPasswordKeypad(digitCount = 4) {
+  return new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position:fixed; inset:0; background:rgba(0,0,0,0.55);
+      display:flex; align-items:center; justify-content:center;
+      z-index:250;
+    `;
+    const box = document.createElement('div');
+    box.style.cssText = `
+      background: linear-gradient(180deg, #FFFACD, #FFE4B5);
+      border: 6px solid #D4AC0D; border-radius: 24px;
+      padding: 20px 22px; max-width: 340px;
+      box-shadow: 0 8px 0 rgba(0,0,0,0.2); text-align:center;
+    `;
+    let input = '';
+    const renderDisplay = () => {
+      const slots = [];
+      for (let i = 0; i < digitCount; i++) {
+        slots.push(input[i] != null
+          ? `<span style="color:#6B4423;font-weight:bold;">${input[i]}</span>`
+          : '○');
+      }
+      return slots.join(' ');
+    };
+
+    box.innerHTML = `
+      <div style="font-size:20px; font-weight:bold; color:#6B4423; margin-bottom:8px;">
+        🔢 输入密码
+      </div>
+      <div id="kp-display" style="font-size:36px; font-family:monospace; color:#999; background:#FFF; border:3px solid #D4AC0D; border-radius:12px; padding:10px; margin-bottom:14px; letter-spacing:10px;">
+        ${renderDisplay()}
+      </div>
+      <div id="kp-btns" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px;"></div>
+      <div style="display:flex; gap:8px; justify-content:center;">
+        <button id="kp-clear" style="padding:10px 14px; border:3px solid #6B4423; border-radius:12px; background:#FFE4B5; font-weight:bold; cursor:pointer;">清空</button>
+        <button id="kp-cancel" style="padding:10px 14px; border:3px solid #6B4423; border-radius:12px; background:#FFF; font-weight:bold; cursor:pointer;">取消</button>
+        <button id="kp-ok" style="padding:10px 18px; border:3px solid #339933; border-radius:12px; background:#66CC66; color:#FFF; font-weight:bold; cursor:pointer;">确定 ▶</button>
+      </div>
+    `;
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+
+    const btns = document.getElementById('kp-btns');
+    // 按钮顺序:1 2 3 / 4 5 6 / 7 8 9 / ← 0 OK(ok用下方)
+    const keys = [1,2,3,4,5,6,7,8,9,'←',0,null];
+    keys.forEach(k => {
+      const b = document.createElement('button');
+      if (k === null) {
+        b.style.visibility = 'hidden';
+      } else {
+        b.textContent = k;
+        b.style.cssText = `
+          padding:14px 0; font-size:22px; font-weight:bold;
+          border:3px solid #6B4423; border-radius:12px;
+          background:#FFF; color:#6B4423; cursor:pointer;
+        `;
+        b.onclick = () => {
+          if (k === '←') {
+            input = input.slice(0, -1);
+          } else if (input.length < digitCount) {
+            input += String(k);
+          }
+          document.getElementById('kp-display').innerHTML = renderDisplay();
+        };
+      }
+      btns.appendChild(b);
+    });
+
+    document.getElementById('kp-clear').onclick = () => {
+      input = '';
+      document.getElementById('kp-display').innerHTML = renderDisplay();
+    };
+    document.getElementById('kp-cancel').onclick = () => {
+      overlay.remove();
+      resolve(null);
+    };
+    document.getElementById('kp-ok').onclick = () => {
+      if (input.length !== digitCount) {
+        // 振动提示位数不够
+        const d = document.getElementById('kp-display');
+        d.style.color = '#E74C3C';
+        setTimeout(() => d.style.color = '', 500);
+        return;
+      }
+      overlay.remove();
+      resolve(input);
+    };
+  });
 }
 
 // ========== 通关弹窗 ==========
@@ -934,6 +1031,7 @@ class MainScene extends Phaser.Scene {
         aside_pos: e.aside_pos || null,       // guard 被 bypass 后让去的格子
         noise_threshold: e.noise_threshold || 3, // DoS 需要噪音数
         block_message: e.block_message || null,  // 撞到时的定制消息
+        hint_text: e.hint_text || null,   // 用 ask_hint 时会念出这句(D1 用)
         bypassed: false
       };
     });
@@ -1073,6 +1171,20 @@ class MainScene extends Phaser.Scene {
         pressed: false,
         effect: e.effect || null,          // 'open_gate' | 'give_money'
         target_id: e.target_id || null
+      };
+    });
+
+    // 处理 safe_box(D1 弱口令关:输对 4 位密码才解锁)
+    entityList.filter(e => e.type === 'safe_box').forEach(e => {
+      const { sprite, redraw } = this.createSafeBox(e);
+      G.entities[e.id] = {
+        type: 'safe_box',
+        gridX: e.pos[0], gridY: e.pos[1],
+        sprite, redraw,
+        correct_password: e.correct_password || '0000',
+        unlocked: !!e.unlocked,
+        attempts: 0,
+        unlock_reward: e.unlock_reward || null   // 解锁后的成就事件(如"打开后弹对话")
       };
     });
 
@@ -2110,6 +2222,17 @@ class MainScene extends Phaser.Scene {
           resolve(false); return;
         }
       }
+      // safe_box(D1 用):未解锁时不可通过
+      if (G.entities) {
+        const safe = Object.values(G.entities).find(en =>
+          en.type === 'safe_box' && !en.unlocked &&
+          en.gridX === nx && en.gridY === ny
+        );
+        if (safe) {
+          G.lastBlockMessage = '保险箱锁着,先输密码~';
+          resolve(false); return;
+        }
+      }
 
       const targetX = G.mapOriginX + nx * G.tileSize + G.tileSize / 2;
       const targetY = G.mapOriginY + ny * G.tileSize + G.tileSize / 2;
@@ -2769,6 +2892,57 @@ class MainScene extends Phaser.Scene {
     return container;
   }
 
+  // D1:保险箱(弱口令关,未解锁时阻挡,解锁后变 "OPEN")
+  createSafeBox(e) {
+    const gx = e.pos[0], gy = e.pos[1];
+    const px = G.mapOriginX + gx * G.tileSize;
+    const py = G.mapOriginY + gy * G.tileSize;
+    const container = this.add.container(px, py);
+    container.setDepth(3);
+
+    const g = this.add.graphics();
+    let label = null;
+
+    const redraw = (isUnlocked) => {
+      g.clear();
+      if (label) { label.destroy(); label = null; }
+      g.lineStyle(3, 0x2C3E50, 1);
+      // 外壳:银灰
+      g.fillStyle(isUnlocked ? 0x2ECC71 : 0x7F8C8D, 1);
+      g.fillRoundedRect(2, 2, G.tileSize - 4, G.tileSize - 4, 4);
+      g.strokeRoundedRect(2, 2, G.tileSize - 4, G.tileSize - 4, 4);
+      // 密码转盘
+      g.fillStyle(0x34495E, 1);
+      g.fillCircle(G.tileSize / 2, G.tileSize / 2 - 3, 8);
+      g.strokeCircle(G.tileSize / 2, G.tileSize / 2 - 3, 8);
+      // 转盘指针
+      g.lineStyle(2, 0xFFFFFF, 1);
+      g.beginPath();
+      g.moveTo(G.tileSize / 2, G.tileSize / 2 - 3);
+      g.lineTo(G.tileSize / 2 + 5, G.tileSize / 2 - 7);
+      g.strokePath();
+      // 把手
+      g.lineStyle(3, 0xFFD700, 1);
+      g.beginPath();
+      g.arc(G.tileSize / 2, G.tileSize - 10, 4, 0, Math.PI, false);
+      g.strokePath();
+      // 状态标签
+      label = this.add.text(
+        G.tileSize / 2, -4,
+        isUnlocked ? '✓ 开' : '🔒 锁',
+        { fontSize: '10px',
+          color: '#FFFFFF',
+          backgroundColor: isUnlocked ? '#27AE60' : '#E74C3C',
+          padding: { x: 4, y: 1 }
+        }
+      ).setOrigin(0.5, 1);
+      container.add(label);
+    };
+    redraw(!!e.unlocked);
+    container.add(g);
+    return { sprite: container, redraw };
+  }
+
   // C3:镜子(装饰)
   createMirror(e) {
     const gx = e.pos[0], gy = e.pos[1];
@@ -2926,15 +3100,55 @@ class MainScene extends Phaser.Scene {
     G.buttonPressed = true;
   }
 
-  // C8:询问 NPC,播当前 hint_text(先最近)
+  // C8/D1:询问 —— 先找 info_stone,再找带 hint_text 的 NPC
   async askHintAction() {
     const px = G.player.gridX, py = G.player.gridY;
     const stone = Object.values(G.entities || {}).find(en =>
       en.type === 'info_stone' &&
       Math.abs(en.gridX - px) + Math.abs(en.gridY - py) <= 1
     );
-    const text = stone?.hint_text || '附近没人回答~';
-    await this.showBubble(G.player, text);
+    if (stone?.hint_text) {
+      await this.showBubble(G.player, stone.hint_text);
+      return;
+    }
+    // D1:NPC 也可能带 hint_text
+    const npc = Object.values(G.entities || {}).find(en =>
+      en.hint_text && en.type !== 'info_stone' &&
+      Math.abs(en.gridX - px) + Math.abs(en.gridY - py) <= 1
+    );
+    if (npc?.hint_text) {
+      await this.showBubble(npc.sprite, npc.hint_text);
+      return;
+    }
+    await this.showBubble(G.player, '附近没人回答~');
+  }
+
+  // D1:在 4 位数密码盘里输入密码,与附近保险箱对比
+  async enterPasswordAction() {
+    const px = G.player.gridX, py = G.player.gridY;
+    const safe = Object.values(G.entities || {}).find(en =>
+      en.type === 'safe_box' && !en.unlocked &&
+      Math.abs(en.gridX - px) + Math.abs(en.gridY - py) <= 1
+    );
+    if (!safe) {
+      await this.showBubble(G.player, '附近没有保险箱~');
+      return;
+    }
+    const tries = (safe.correct_password || '').length;
+    const input = await showPasswordKeypad(tries || 4);
+    if (input == null) {
+      // 取消
+      return;
+    }
+    safe.attempts += 1;
+    if (input === safe.correct_password) {
+      safe.unlocked = true;
+      if (safe.redraw) safe.redraw(true);
+      await this.showBubble(safe.sprite, '咔!开了!');
+    } else {
+      await this.showBubble(G.player,
+        `密码不对~再想想(第${safe.attempts}次)`);
+    }
   }
 
   // C3:打碎镜子(清掉一个 mirror 阻挡)

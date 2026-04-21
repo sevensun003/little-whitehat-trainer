@@ -1,0 +1,85 @@
+{
+  "id": "D1",
+  "title": "奶奶的生日密码",
+  "act": 4,
+  "chapter": "实战篇",
+  "location": "樱桃镇温达奶奶家",
+  "concept_intro": "弱口令",
+  "security_concept": {
+    "name": "弱口令",
+    "analogy": "密码用生日或名字,坏人一猜就中。",
+    "defense": "密码要长、要难猜、不要到处用一样的。"
+  },
+  "available_commands": ["direction", "guess", "password"],
+  "intro_dialog": [
+    { "speaker": "温达",   "text": "孙女啊!保险箱打不开!" },
+    { "speaker": "温达",   "text": "里面是孙子的照片。" },
+    { "speaker": "小天",   "text": "问邻居们线索。" },
+    { "speaker": "小天",   "text": "凑出 4 位密码输进去!" }
+  ],
+  "map": {
+    "size": [10, 7],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 6, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 7 },
+      { "x": 9, "y": 0, "w": 1, "h": 7 },
+      { "x": 5, "y": 1, "w": 1, "h": 1 },
+      { "x": 5, "y": 2, "w": 1, "h": 1 },
+      { "x": 5, "y": 4, "w": 1, "h": 1 },
+      { "x": 5, "y": 5, "w": 1, "h": 1 }
+    ],
+    "objects": [
+      { "type": "bed",       "pos": [1, 1], "size": [1, 1] },
+      { "type": "desk",      "pos": [4, 1], "size": [1, 1] },
+      { "type": "plant",     "pos": [1, 5], "size": [1, 1] },
+      { "type": "bookshelf", "pos": [7, 1], "size": [1, 1] },
+      { "type": "lamp",      "pos": [8, 1], "size": [1, 1] },
+      { "type": "rug",       "pos": [7, 5], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player",  "type": "wanwan", "start_pos": [1, 3], "facing": "right", "tier": 2 },
+    { "id": "wenda",   "type": "wenda",  "pos": [4, 2], "facing": "left",  "tier": 2,
+      "hint_text": "密码是孙子小明的生日~" },
+    { "id": "n1",      "type": "shuimu", "pos": [2, 1], "facing": "down", "tier": 2,
+      "hint_text": "小明 2019 年生的呀!" },
+    { "id": "n2",      "type": "durple", "pos": [2, 5], "facing": "up",   "tier": 2,
+      "hint_text": "月份是 5 月,记住啦。" },
+    { "id": "n3",      "type": "lime",   "pos": [4, 5], "facing": "up",   "tier": 2,
+      "hint_text": "日子和门牌号一样,20!" },
+    { "id": "safe",    "type": "safe_box", "pos": [5, 3], "correct_password": "0520" },
+    { "id": "goal",    "type": "goal_zone", "pos": [8, 3], "goal": true, "label": "保险箱后的家" }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上",    "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下",    "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左",    "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右",    "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "ask",        "category": "guess",     "label": "问一问",  "icon": "ask_hint",    "action": "ask_hint" },
+    { "id": "enter_pwd",  "category": "password",  "label": "输密码",  "icon": "keypad",      "action": "enter_password" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 10,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "走到每个邻居旁,点「问一问」。" },
+    { "level": 2, "text": "年+月+日,凑 4 位数字。" },
+    { "level": 3, "text": "5 月 20 日 → 输入 0520 → 过去。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "温达",  "text": "照片找到啦!谢谢婉婉!" },
+    { "speaker": "小天",  "text": "这叫「弱口令」。" },
+    { "speaker": "小天",  "text": "生日门牌,大家都知道。" },
+    { "speaker": "小天",  "text": "密码要长、要难猜。" },
+    { "speaker": "小天",  "text": "短密码几秒破。" },
+    { "speaker": "小天",  "text": "长又难猜就超安全。" },
+    { "speaker": "温达",  "text": "我换个更难的密码!" }
+  ],
+  "rewards": {
+    "unlock_next": "D2",
+    "badge": "first_real_case",
+    "first_time_dialog_card": "weak_password_explained"
+  }
+}
