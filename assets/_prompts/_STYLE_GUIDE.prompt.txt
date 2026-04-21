@@ -1,0 +1,165 @@
+============================================================
+白帽小队训练营 - 全局角色风格锚点
+GLOBAL STYLE GUIDE for all non-protagonist characters
+Version: 1.0  |  Last updated: 2026-04-20
+============================================================
+
+[使用说明]
+- 所有角色提示词文件(除婉婉、小天、布莱克外)必须在开头引用此锚点
+- 喂给 Banana / 其他生图模型时,把本文件内容 + 单角色文件内容拼接
+- 首次生成一个满意的角色后,将其图像保存为参考,后续生成时一并附上
+
+============================================================
+ART STYLE
+============================================================
+
+Art style: hand-drawn cartoon, "Rainbow Friends" / "Incredibox" 
+inspired, childlike doodle feel but polished and cute.
+
+Line work: thick uneven black outline (~4px equivalent at 512x512),
+slightly wobbly/organic, NOT perfect geometric lines.
+
+Fill: FLAT solid colors ONLY.
+- NO gradients
+- NO shadows  
+- NO textures
+- NO lighting effects
+- NO reflections
+
+Around each character: add 3-5 colored "energy wobble lines" 
+in the same hue family as the character's main color 
+(short curves, dashes, small circles, zigzags) floating nearby — 
+like soft manga action lines.
+
+============================================================
+BODY STRUCTURE (STRICT)
+============================================================
+
+- BIG round head (head takes ~60% of total character height)
+- Small trapezoid body (narrower at top, wider at bottom, 
+  like a small pedestal or flower pot)
+- Head diameter ≈ body height × 1.2
+- Head is a perfect CIRCLE
+- Body is a TRAPEZOID CYLINDER, top:bottom width ratio ≈ 4:5
+
+STRICTLY FORBIDDEN:
+- NO arms
+- NO legs  
+- NO hands
+- NO feet
+- NO neck
+- Head attached DIRECTLY to body top
+
+============================================================
+FACE (the SOUL of this style)
+============================================================
+
+Eyes:
+- HUGE oval eyes, taking up ~1/3 of head area
+- White sclera clearly visible (important!)
+- TOP EYELID DROOPS halfway down (the signature "sleepy/chill" look)
+- Two big round BLACK pupils
+- Small WHITE highlight dot inside each pupil
+
+Expression rule:
+- Default is ALWAYS "chill / half-asleep / dreamy / sleepy"
+- NO exaggerated smile
+- NO anger
+- NO fear
+- A subtle mood difference via:
+  * Mouth shape (tiny curve / flat line / small oval / omitted)
+  * Eyebrow presence (omit = innocent, present = focused)
+  * Eye tilt (slightly up = urgent, slightly down = sad)
+  * Blush marks (small pink lines under eyes = cheerful)
+
+Mouth:
+- Tiny, simple, single stroke preferred
+- Options: small "ω" curve / flat dash / small oval / omitted entirely
+- NEVER wide open, NEVER showing many teeth
+
+============================================================
+COLOR RULES
+============================================================
+
+Main color (body + head): 1 bold saturated color
+Allowed palette (pick ONE as main):
+- Red       #E74C3C
+- Blue      #3498DB  
+- Dark Blue #2C3E80
+- Green     #2ECC71
+- Lime      #A4E04A
+- Yellow    #F1C40F
+- Orange    #E67E22
+- Purple    #9B59B6
+- Pink      #FF6B9D
+- Hot Pink  #FF1493
+- Grey      #95A5A6
+- Brown     #8B5A3C
+- White     #FFFFFF
+- Dark      #2C3E50
+
+Head and body: same color (default) OR head slightly different shade
+
+Head-top decoration: 1 additional color allowed
+
+Eyes: black pupils + white sclera + white highlight = always used
+
+TOTAL COLOR COUNT: 3-4 colors maximum per character.
+
+============================================================
+HEAD-TOP DECORATION (主要区分维度)
+============================================================
+
+This is the PRIMARY way to distinguish characters.
+Each character has one signature decoration:
+
+Options seen in design reference:
+- Rabbit ears (tall, upright)
+- Flowers + vine hair
+- Spike horns (pointy, facing up)
+- Bear ears (small, round)
+- Cat ears (triangular)
+- Spiky hair (tall flame-like)
+- Devil horns (short, curved)
+- Bald/smooth (no decoration)
+- Antennae (with balls on tips)
+- Over-ear headphones
+- Screen/digital face
+- Tall pointy spikes (ragged)
+- Water faucet on head
+- Bucket hat (upside down)
+- Fedora hat
+
+============================================================
+OUTPUT SPECS
+============================================================
+
+- Canvas: 512x512 pixels (for detail) or 64x64 for in-game sprite
+- Background: TRANSPARENT (no background elements)
+- Pose: front-facing, character centered
+- Include wobble lines around character
+- Age-appropriate: designed for children ages 6-9
+- Mood: friendly, chill, never scary
+
+============================================================
+EXCEPTIONS TO THIS STYLE
+============================================================
+
+1. 布莱克 (Blake, the villain):
+   - Follows body structure BUT
+   - Eyes are SHARP and alert (NOT sleepy)
+   - Eye color: RED pupils instead of black
+   - Overall color: dark navy/black
+   - See blake.prompt.txt
+
+2. 婉婉 (Wanwan, the player):
+   - Is a human girl, NOT a robot
+   - See wanwan.prompt.txt (different rules entirely)
+
+[NOTE] 小天 (Xiao Tian, the AI helper) FOLLOWS this global style.
+   - Light blue robot with bear ears on head
+   - Same chill/sleepy eyes as other characters  
+   - Distinguished by: pale blue color + round bear ears + slightly kinder expression
+   - See xiaotian.prompt.txt
+
+============================================================

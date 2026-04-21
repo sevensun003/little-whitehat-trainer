@@ -1,0 +1,70 @@
+============================================================
+太阳先生 (Taiyang Xiansheng) - 天空中的太阳
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+[PARTIAL EXCEPTION] This is a SUN character, appears in the SKY.
+Not standing on the ground. Not a standard robot.
+
+Character: 太阳先生 (Mr. Sun)
+Role: Cameo in Act 2 opening, encourages Wanwan from the sky
+Personality: warm, encouraging, distant but present
+Reference: NOT in design sheet — design following universe aesthetic
+
+============================================================
+APPEARANCE — SPECIAL FORM
+============================================================
+
+Base shape: A STYLIZED SUN
+- Main body: bright yellow #F1C40F circle (simpler than standard head)
+- SUN RAYS radiating outward in all directions
+  - 8-12 triangular rays
+  - Ray color: orange #E67E22 (for contrast with yellow body)
+  - Rays alternate between longer and shorter for visual interest
+
+Face (ON the yellow circle):
+- Large oval eyes with sleepy top eyelid (universe)
+- Warm smile curve (larger than most characters)
+- Blush marks — orange colored, under eyes
+
+No body/trapezoid — just the sun shape.
+
+Floating position: shown high in the frame (in sky/background)
+
+============================================================
+COLORS (total: 3)
+============================================================
+
+- Yellow  #F1C40F (main body)
+- Orange  #E67E22 (rays)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Yellow and orange wobbles. Include:
+- Small sparkle dots ✦
+- Tiny heart shapes ♥
+- "Warmth" curves
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_encouraging.png - default, kind smile
+v2_concerned.png   - mouth flat, looking down at scene
+v3_waving.png      - rays slightly animated as if greeting
+
+============================================================
+USAGE NOTE
+============================================================
+
+Only appears in:
+- Act 2 opening transition (C3 → C4)
+- Optional: "you did it!" celebration in 大 victories
+
+Size in game: LARGE (3x normal character size), placed in 
+top portion of screen as celestial element.
+
+============================================================

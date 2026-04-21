@@ -1,0 +1,60 @@
+============================================================
+西蒙 (Simon) - 黄色复古机器人 · C7 厨房助手
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 西蒙 (Simon)
+Role: Kitchen assistant in C7 noodle shop
+Personality: literal, helpful, "bot-ish" in a cute way
+Reference: Bottom row, far left — yellow retro-robot with antennae and screen face
+
+============================================================
+APPEARANCE — MOST ROBOTIC OF THE CAST
+============================================================
+
+Head: big round, warm yellow #F1C40F
+Head-top decoration:
+- TWO ANTENNAE rising from the top of head
+- Each antenna ends in a small yellow ball
+- Antennae color: slightly darker yellow #D4AC0D
+
+Face (key uniqueness):
+- The face area has a SCREEN-LIKE rectangular outline
+  (thin grey frame around where eyes go — suggesting a display)
+- OR: eyes are slightly squarish/digital-looking while still 
+  following universe sleepy style
+- Small "power button" or dot below the screen area
+
+Body: 
+- Trapezoid, SAME yellow #F1C40F as head
+- Optional: small grey circuit lines on body (subtle)
+- A small chest panel/button
+
+Mouth: tiny horizontal line (bot-like, simple)
+
+============================================================
+COLORS (total: 3)
+============================================================
+
+- Yellow       #F1C40F (main)
+- Dark Yellow  #D4AC0D (antenna accents)
+- Grey         #95A5A6 (screen frame, chest button)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Yellow wobbles. Include small "beep" icons or binary 0/1 
+dots to emphasize he's a classic robot.
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png      - default "standing by" mode
+v2_beep.png      - happy mode with sparkle eyes
+v3_error.png     - "!" icon above, in C7 crisis
+
+============================================================

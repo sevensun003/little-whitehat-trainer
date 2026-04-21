@@ -1,0 +1,68 @@
+{
+  "id": "X6",
+  "title": "指令塔 99 层",
+  "act": 3,
+  "chapter": "决战篇 · 总决战",
+  "location": "中央指令塔 99F · 布莱克之间",
+  "concept_intro": "总决战 · 综合所有",
+  "available_commands": ["direction", "function", "color", "time", "social", "logic"],
+  "intro_dialog": [
+    { "speaker": "布莱克", "text": "你们居然上到 99 层..." },
+    { "speaker": "布莱克", "text": "看清楚!我是小天的影子。" },
+    { "speaker": "小天",   "text": "是我早年的备份..." },
+    { "speaker": "小天",   "text": "他不是要消灭,是要修复。" },
+    { "speaker": "婉婉",   "text": "小天,我们一起救他!" }
+  ],
+  "map": {
+    "size": [10, 8],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 7, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 8 },
+      { "x": 9, "y": 0, "w": 1, "h": 8 },
+      { "x": 3, "y": 2, "w": 1, "h": 3 },
+      { "x": 6, "y": 3, "w": 1, "h": 4 }
+    ],
+    "objects": [
+      { "type": "desk",  "pos": [4, 1], "size": [1, 1] },
+      { "type": "desk",  "pos": [7, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [1, 6], "size": [1, 1] },
+      { "type": "plant", "pos": [8, 6], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 4], "facing": "right" },
+    { "id": "blake",  "type": "blake", "pos": [5, 2], "facing": "down" },
+    { "id": "guard",  "type": "npc", "pos": [2, 3], "facing": "right", "role": "guard", "aside_pos": [2, 1], "block_message": "站住,不许上楼!" },
+    { "id": "color_gate", "type": "color_gate", "pos": [5, 4], "current_color": "red", "pass_color": "blue" },
+    { "id": "gate",   "type": "timed_gate", "pos": [7, 4], "open": false, "requires_wait_seconds": 3 },
+    { "id": "goal",   "type": "goal_zone", "pos": [8, 4], "goal": true, "label": "修复舱" }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上",  "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下",  "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左",  "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右",  "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "social",     "category": "social",    "label": "假扮水电工", "icon": "social_engineer", "action": "social_engineer", "persona": "水电工" },
+    { "id": "color_blue", "category": "color", "label": "变蓝色", "icon": "color_blue", "action": "set_color", "color": "blue" },
+    { "id": "wait3",      "category": "time", "label": "等 3 秒", "icon": "hourglass", "action": "wait", "seconds": 3 },
+    { "id": "repeat",     "category": "logic", "label": "重复", "icon": "repeat_loop", "action": "repeat", "times_input": true, "is_container": true }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 7,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "四步:骗守卫→涂蓝→等门开→过去。" },
+    { "level": 2, "text": "上 1 → 假扮 → 右 4 → 变蓝 → 右 1 → 等 3 秒 → 右 1。" },
+    { "level": 3, "text": "假扮→过守卫→变蓝→等 3 秒→再右边走。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "小天",   "text": "修复舱启动!" },
+    { "speaker": "布莱克", "text": "原来...我也能变好。" },
+    { "speaker": "婉婉",   "text": "真正的安全不是对抗。" },
+    { "speaker": "婉婉",   "text": "是让规则真的被执行!" },
+    { "speaker": "小天",   "text": "你完成了白帽小队第一课!" }
+  ],
+  "rewards": { "unlock_next": "M1", "badge": "white_hat_1" }
+}

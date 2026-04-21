@@ -1,0 +1,61 @@
+{
+  "id": "X5",
+  "title": "指令塔 50 层",
+  "act": 3,
+  "chapter": "决战篇",
+  "location": "中央指令塔 50F",
+  "concept_intro": "塔防 · 凭证+越权+颜色",
+  "available_commands": ["direction", "color", "credential"],
+  "intro_dialog": [
+    { "speaker": "奥伦",     "text": "50 楼是迷宫!" },
+    { "speaker": "藤蔓妹妹", "text": "红色走廊有危险。" },
+    { "speaker": "平基",     "text": "门上要一个红色东西。" },
+    { "speaker": "小天",     "text": "记住:先涂色,再拿苹果。" }
+  ],
+  "map": {
+    "size": [10, 8],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 7, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 8 },
+      { "x": 9, "y": 0, "w": 1, "h": 8 },
+      { "x": 4, "y": 1, "w": 1, "h": 1 },
+      { "x": 4, "y": 2, "w": 1, "h": 1 },
+      { "x": 4, "y": 4, "w": 1, "h": 1 },
+      { "x": 4, "y": 5, "w": 1, "h": 1 }
+    ],
+    "objects": [
+      { "type": "bookshelf", "pos": [2, 1], "size": [1, 1] },
+      { "type": "bookshelf", "pos": [2, 6], "size": [1, 1] },
+      { "type": "plant",     "pos": [7, 6], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 3], "facing": "right" },
+    { "id": "color_gate", "type": "color_gate", "pos": [4, 3], "current_color": "red", "pass_color": "blue" },
+    { "id": "apple", "type": "credential", "pos": [6, 1], "sprite": "red_apple", "credential_type": "red_key" },
+    { "id": "door",  "type": "credential_door", "pos": [8, 6], "requires_credential": "red_key", "goal": true }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上",  "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下",  "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左",  "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右",  "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "color_blue", "category": "color", "label": "变蓝色", "icon": "color_blue", "action": "set_color", "color": "blue" },
+    { "id": "take_cred",  "category": "credential","label": "拿起",  "icon": "credential_take", "action": "take_credential" }
+  ],
+  "success_condition": { "type": "reach_credential_door", "goal_id": "door" },
+  "optimal_steps": 7,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "先涂蓝,再绕去拿苹果。" },
+    { "level": 2, "text": "右 2 → 变蓝 → 右 3 → 上 2 → 拿起 → 下 5 → 右 2。" },
+    { "level": 3, "text": "变蓝,过闸,上去拿苹果,下去走门。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "小天", "text": "三招一起!厉害!" },
+    { "speaker": "小天", "text": "塔顶就在眼前。" }
+  ],
+  "rewards": { "unlock_next": "X6" }
+}

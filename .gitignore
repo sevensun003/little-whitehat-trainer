@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 日志
+*.log
+
+# Node(未来如果加构建工具)
+node_modules/
+npm-debug.log
+
+# 临时文件
+*.tmp
+*.bak
+*~
+
+# 玩家本地进度(开发机不该提交)
+progress-backup*.json
+*wanwan-progress*.json
+
+# Claude Code 本机权限白名单(含绝对路径,不宜入库)
+.claude/settings.local.json

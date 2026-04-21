@@ -1,0 +1,63 @@
+{
+  "id": "X1",
+  "title": "森林迷路小队",
+  "act": 2,
+  "chapter": "追踪篇 · 综合",
+  "location": "迷雾森林中心",
+  "concept_intro": "综合 · 注入+中间人",
+  "available_commands": ["direction", "function", "credential"],
+  "intro_dialog": [
+    { "speaker": "藤蔓妹妹", "text": "队员在森林迷路了。" },
+    { "speaker": "平基",     "text": "布莱克在中间偷听。" },
+    { "speaker": "小天",     "text": "打碎镜子,再拿苹果。" },
+    { "speaker": "小天",     "text": "走到门口就能救他们!" }
+  ],
+  "map": {
+    "size": [10, 8],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 7, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 8 },
+      { "x": 9, "y": 0, "w": 1, "h": 8 },
+      { "x": 4, "y": 2, "w": 1, "h": 1 },
+      { "x": 4, "y": 3, "w": 1, "h": 1 },
+      { "x": 4, "y": 5, "w": 1, "h": 1 },
+      { "x": 4, "y": 6, "w": 1, "h": 1 }
+    ],
+    "objects": [
+      { "type": "tree", "pos": [1, 1], "size": [1, 1] },
+      { "type": "tree", "pos": [8, 1], "size": [1, 1] },
+      { "type": "tree", "pos": [1, 6], "size": [1, 1] },
+      { "type": "tree", "pos": [8, 6], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 4], "facing": "right" },
+    { "id": "mirror", "type": "mirror", "pos": [4, 4] },
+    { "id": "apple",  "type": "credential", "pos": [6, 1], "sprite": "red_apple", "credential_type": "red_key" },
+    { "id": "door",   "type": "credential_door", "pos": [8, 4], "requires_credential": "red_key", "goal": true }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上",  "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下",  "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左",  "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右",  "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "break_mirror","category":"function","label":"打碎镜子","icon":"break_mirror","action":"break_mirror" },
+    { "id": "take_cred",  "category": "credential","label": "拿起",  "icon": "credential_take", "action": "take_credential" }
+  ],
+  "success_condition": { "type": "reach_credential_door", "goal_id": "door" },
+  "optimal_steps": 5,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "先打碎镜子,再拿苹果。" },
+    { "level": 2, "text": "右 3 → 打碎镜子 → 右 2 → 上 3 → 拿起。" },
+    { "level": 3, "text": "打碎 → 右 2 → 上 3 → 拿起 → 下 3 → 右 2。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "藤蔓妹妹", "text": "我们合并用了好几招!" },
+    { "speaker": "小天",     "text": "综合起来更厉害。" },
+    { "speaker": "小天",     "text": "真实世界也要多招联合。" }
+  ],
+  "rewards": { "unlock_next": "X2" }
+}

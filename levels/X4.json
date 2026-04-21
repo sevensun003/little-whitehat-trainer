@@ -1,0 +1,61 @@
+{
+  "id": "X4",
+  "title": "指令塔一层·大堂",
+  "act": 3,
+  "chapter": "决战篇",
+  "location": "中央指令塔 1F",
+  "concept_intro": "塔防 · 注入修复",
+  "available_commands": [],
+  "intro_dialog": [
+    { "speaker": "平基", "text": "我们冲进塔里了!" },
+    { "speaker": "小天", "text": "这里一片混乱..." },
+    { "speaker": "小天", "text": "队列里多了坏指令。" },
+    { "speaker": "小天", "text": "快把它们删掉!" }
+  ],
+  "preset_queue": [
+    { "id": "q1", "action": "move", "dir": "right", "steps": 3, "label": "向右 3 步", "icon": "arrow_right" },
+    { "id": "q2", "action": "move", "dir": "down",  "steps": 5, "label": "向下 5 步(坏)", "icon": "arrow_down", "malicious": true },
+    { "id": "q3", "action": "move", "dir": "up",    "steps": 1, "label": "向上 1 步", "icon": "arrow_up" },
+    { "id": "q4", "action": "move", "dir": "right", "steps": 3, "label": "向右 3 步", "icon": "arrow_right" },
+    { "id": "q5", "action": "move", "dir": "left",  "steps": 9, "label": "向左 9 步(坏)", "icon": "arrow_left", "malicious": true }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "desk",  "pos": [5, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [1, 3], "size": [1, 1] },
+      { "type": "plant", "pos": [8, 3], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right" },
+    { "id": "elevator", "type": "goal_zone", "pos": [8, 2], "goal": true, "label": "电梯" }
+  ],
+  "available_command_cards": [],
+  "success_condition": {
+    "type": "execute_safe_queue",
+    "must_keep_actions": ["move"],
+    "must_remove_actions": ["move"],
+    "reach_goal_id": "elevator"
+  },
+  "optimal_steps": 3,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "队列里有两条坏指令。" },
+    { "level": 2, "text": "向下 5 步、向左 9 步是坏的。" },
+    { "level": 3, "text": "删掉「向下 5 步」和「向左 9 步」。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "小天", "text": "大堂安全了!" },
+    { "speaker": "小天", "text": "电梯把我们送到 50 楼。" }
+  ],
+  "rewards": { "unlock_next": "X5" },
+  "manual_tip": "🛡️ 塔大堂被注入了坏指令<br><br>看<strong>右边队列</strong><br>找出坏指令<br>点 <strong>×</strong> 删掉<br><br>再按 ▶ 执行"
+}

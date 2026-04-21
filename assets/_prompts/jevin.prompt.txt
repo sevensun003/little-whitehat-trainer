@@ -1,0 +1,54 @@
+============================================================
+杰文 (Jevin) - 深蓝光头 · C4 森林守门员
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 杰文 (Jevin)
+Role: Forest entrance guard in C4, gets social-engineered by villain
+Personality: friendly but gullible, not the brightest
+Reference: Top row, far right in design sheet (deep blue, bald/smooth head)
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, deep navy blue #2C3E80
+Head-top decoration:
+- NONE — completely bald/smooth top (this IS his signature)
+- A small light-blue curved highlight on top suggesting shine
+
+Eyes:
+- Large ovals with the signature sleepy half-lidded top
+- Eyes slightly closer together (gives a "simple-minded friendly" look)
+- Black pupils, white highlight
+- Very subtle upward curve at outer corners (good-natured)
+
+Mouth: small flat line (relaxed, trustful)
+
+Body: trapezoid, SAME deep blue #2C3E80 as head
+
+============================================================
+COLORS (total: 3)
+============================================================
+
+- Deep Blue  #2C3E80 (main)
+- Light Blue #AEDDFF (head-top shine highlight, wobbles)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Navy and light-blue wobbles. Include one small "💤" mark 
+suggesting he's too relaxed (ties into getting tricked).
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png      - friendly relaxed default
+v2_tricked.png   - slight confused brow, "???" wobbles
+v3_realize.png   - small gasp — eyes open bigger, wobbles become !
+
+============================================================

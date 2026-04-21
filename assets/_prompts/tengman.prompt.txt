@@ -1,0 +1,74 @@
+============================================================
+藤蔓妹妹 (Tengman) - 绿色花草园丁伙伴
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 藤蔓妹妹 (Tengman)
+Role: Gardener robot, joins wanwan's party in C2 and stays throughout
+Personality: impulsive, warm-hearted, loves flowers and living things
+Reference position in design sheet: position 2 (top row, second from left)
+
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, green #2ECC71
+Head-top decoration: FLOWING VINE-LIKE HAIR
+- Long wavy green vines/leaves cascading down both sides of head
+- Small pink/yellow flowers scattered in the "hair" (3-4 tiny blooms)
+- One prominent green leaf spike sticking up from the very top
+- Hair color slightly darker green #27AE60 than head
+- Flowers: pink #FF6B9D and yellow #F1C40F
+
+Eyes:
+- Large oval eyes with SLEEPY half-lidded top eyelid
+- Eyes tilted SLIGHTLY UPWARD at outer corners (she's eager)
+- Black pupils with white highlight
+- Small green blush marks under eyes (botanical tint)
+
+Mouth: small curved smile (kind, content)
+
+Body:
+- Trapezoid, SAME green #2ECC71 as head
+- No patterns or pockets
+- Clean simple silhouette
+
+============================================================
+COLORS (total: 4)
+============================================================
+
+- Green           #2ECC71 (main)
+- Dark Green      #27AE60 (vine hair)
+- Pink            #FF6B9D (flower accents)
+- Yellow          #F1C40F (flower accents)
++ Black & White for outlines, eyes
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Green and light-green wobble marks around her —
+include small floating leaves or petals as additional energy lines.
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png       - default sleepy chill
+v2_worried.png    - eyebrows slanted inward (when red key is lost)
+v3_happy.png      - eyes curved ^ ^, petals floating more
+v4_thinking.png   - eyes glance sideways
+v5_angry.png      - cheeks puffed (when facing villains)
+
+============================================================
+OUTPUT
+============================================================
+
+- 512x512 portrait + 64x64 sprite
+- Transparent background
+- Front-facing, centered
+- Wobble lines active
+
+============================================================

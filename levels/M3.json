@@ -1,0 +1,16 @@
+{
+  "id": "M3",
+  "title": "模考三 · 实战",
+  "act": 3,
+  "chapter": "决战篇 · 模考",
+  "location": "指令塔 100 层考核室",
+  "concept_intro": "模考 · 综合实战",
+  "contest_mode": true,
+  "time_limit_seconds": 3600,
+  "stages": ["X1", "X2", "X3"],
+  "intro_dialog": [
+    { "speaker": "小天", "text": "终极模考:三道综合题。" },
+    { "speaker": "小天", "text": "每道题多招联合。" },
+    { "speaker": "小天", "text": "通过就拿毕业证!" }
+  ]
+}

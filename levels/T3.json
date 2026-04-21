@@ -1,0 +1,296 @@
+{
+  "id": "T3",
+  "title": "彩色信号灯",
+  "act": 1,
+  "chapter": "学徒篇",
+  "location": "樱桃镇十字路口",
+  "concept_intro": "颜色指令",
+  "available_commands": [
+    "direction",
+    "color"
+  ],
+  "intro_dialog": [
+    {
+      "speaker": "瑞迪",
+      "text": "婉婉!信号灯坏啦!"
+    },
+    {
+      "speaker": "莱姆",
+      "text": "红黄绿顺序全乱了。"
+    },
+    {
+      "speaker": "瑞迪",
+      "text": "能帮我们修好它吗?"
+    },
+    {
+      "speaker": "旁白",
+      "text": "走到信号灯旁边,用颜色指令修复。"
+    },
+    {
+      "speaker": "旁白",
+      "text": "正确顺序是:红 → 黄 → 绿。"
+    }
+  ],
+  "map": {
+    "size": [
+      10,
+      8
+    ],
+    "tileset": "street",
+    "floor_tiles": "road",
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 10,
+        "h": 1
+      },
+      {
+        "x": 0,
+        "y": 7,
+        "w": 10,
+        "h": 1
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 8
+      },
+      {
+        "x": 9,
+        "y": 0,
+        "w": 1,
+        "h": 8
+      }
+    ],
+    "objects": [
+      {
+        "type": "crosswalk",
+        "pos": [
+          4,
+          3
+        ],
+        "size": [
+          2,
+          2
+        ]
+      },
+      {
+        "type": "tree",
+        "pos": [
+          2,
+          1
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "tree",
+        "pos": [
+          7,
+          1
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "tree",
+        "pos": [
+          2,
+          6
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "tree",
+        "pos": [
+          7,
+          6
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "plant",
+        "pos": [
+          1,
+          4
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "plant",
+        "pos": [
+          8,
+          4
+        ],
+        "size": [
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "player",
+      "type": "wanwan",
+      "start_pos": [
+        1,
+        3
+      ],
+      "facing": "right"
+    },
+    {
+      "id": "raddy",
+      "type": "raddy",
+      "pos": [
+        1,
+        5
+      ],
+      "facing": "right"
+    },
+    {
+      "id": "lime",
+      "type": "lime",
+      "pos": [
+        8,
+        5
+      ],
+      "facing": "left"
+    },
+    {
+      "id": "traffic_light",
+      "type": "traffic_light",
+      "pos": [
+        5,
+        5
+      ],
+      "required_sequence": [
+        "red",
+        "yellow",
+        "green"
+      ],
+      "current_sequence": [],
+      "goal": true
+    }
+  ],
+  "available_command_cards": [
+    {
+      "id": "move_up",
+      "category": "direction",
+      "label": "向上",
+      "icon": "arrow_up",
+      "action": "move",
+      "dir": "up",
+      "steps_input": true
+    },
+    {
+      "id": "move_down",
+      "category": "direction",
+      "label": "向下",
+      "icon": "arrow_down",
+      "action": "move",
+      "dir": "down",
+      "steps_input": true
+    },
+    {
+      "id": "move_left",
+      "category": "direction",
+      "label": "向左",
+      "icon": "arrow_left",
+      "action": "move",
+      "dir": "left",
+      "steps_input": true
+    },
+    {
+      "id": "move_right",
+      "category": "direction",
+      "label": "向右",
+      "icon": "arrow_right",
+      "action": "move",
+      "dir": "right",
+      "steps_input": true
+    },
+    {
+      "id": "color_red",
+      "category": "color",
+      "label": "变红",
+      "icon": "color_red",
+      "action": "set_color",
+      "color": "red"
+    },
+    {
+      "id": "color_yellow",
+      "category": "color",
+      "label": "变黄",
+      "icon": "color_yellow",
+      "action": "set_color",
+      "color": "yellow"
+    },
+    {
+      "id": "color_green",
+      "category": "color",
+      "label": "变绿",
+      "icon": "color_green",
+      "action": "set_color",
+      "color": "green"
+    }
+  ],
+  "success_condition": {
+    "type": "color_sequence_matches",
+    "entity_id": "traffic_light"
+  },
+  "optimal_steps": 5,
+  "max_hint_level": 3,
+  "hints": [
+    {
+      "level": 1,
+      "text": "先走到信号灯旁边。"
+    },
+    {
+      "level": 2,
+      "text": "走到旁边后,依次变红、变黄、变绿。"
+    },
+    {
+      "level": 3,
+      "text": "向右4步 → 向下1步 → 变红 → 变黄 → 变绿。"
+    }
+  ],
+  "on_clear_dialog": [
+    {
+      "speaker": "瑞迪",
+      "text": "太棒了!车又能走啦!"
+    },
+    {
+      "speaker": "莱姆",
+      "text": "婉婉姐姐好厉害!"
+    },
+    {
+      "speaker": "小天",
+      "text": "颜色指令能控制很多东西哦。"
+    },
+    {
+      "speaker": "小天",
+      "text": "以后你还会用到它。"
+    }
+  ],
+  "rewards": {
+    "unlock_next": "T4",
+    "unlock_character": null,
+    "first_time_dialog_card": "color_card_explained"
+  }
+}

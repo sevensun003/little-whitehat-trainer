@@ -1,0 +1,66 @@
+============================================================
+天空 (Sky) - 浅蓝熊耳 · 樱桃镇药店店员
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 天空 (Sky)
+Role: Pharmacy clerk in Cherry Town, cameo appearances in T-phase
+      (provides occasional warm encouragement when wanwan passes by)
+Personality: serene, soft-spoken, quietly supportive
+Reference: Top row, far right in design sheet
+           (light blue with small bear ears)
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, soft sky-blue #AEDDFF
+Head-top decoration:
+- TWO SMALL ROUND BEAR EARS on top of the head
+- Ear outer: same sky-blue as head
+- Ear inner: slightly darker blue #87CEEB (small inner circle)
+- Ears are low-profile — softer vibe than cat ears
+
+Eyes:
+- Large ovals with SLEEPY half-lidded top (universe)
+- Eyes slightly tilted DOWN at outer corners (calm, peaceful)
+- Black pupils with white highlight
+
+Mouth: small flat line with very gentle upward curve 
+       (serene, barely-smiling)
+
+Body: trapezoid, SAME sky-blue #AEDDFF as head
+
+============================================================
+COLORS (total: 3)
+============================================================
+
+- Sky Blue   #AEDDFF (main)
+- Medium Blue #87CEEB (ear inner, wobble lines)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Very soft, gentle sky-blue wobbles. Include 1-2 small 
+cloud-puff shapes and tiny sparkle dots. 
+Minimum line count — reflects her calm energy.
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png      - serene default
+v2_smile.png     - small warm smile curve
+v3_wave.png      - small nod/greeting pose (no hands — just head tilt)
+
+============================================================
+USAGE
+============================================================
+
+Minor NPC — appears briefly in T-phase as a background friendly face.
+Optional: standing outside pharmacy in Cherry Town overview map.
+
+============================================================

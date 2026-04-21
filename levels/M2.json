@@ -1,0 +1,16 @@
+{
+  "id": "M2",
+  "title": "模考二 · 概念",
+  "act": 3,
+  "chapter": "决战篇 · 模考",
+  "location": "指令塔 100 层考核室",
+  "concept_intro": "模考 · 九类概念",
+  "contest_mode": true,
+  "time_limit_seconds": 3600,
+  "stages": ["C1", "C2", "C4"],
+  "intro_dialog": [
+    { "speaker": "小天", "text": "这一轮考概念题。" },
+    { "speaker": "小天", "text": "注入、凭证、社工各一题。" },
+    { "speaker": "小天", "text": "记得每题的攻方思维!" }
+  ]
+}

@@ -1,0 +1,56 @@
+============================================================
+德普勒 (Durple) - 紫色尖刺,婉婉的弟弟
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 德普勒 (Durple)
+Role: Wanwan's little brother, appears in T2
+Personality: cheeky, energetic, mischievous but sweet
+Reference: Position 3 in the design sheet (top row, 2 spiky purple horns visible)
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, vibrant purple #9B59B6
+Head-top decoration: 
+- TWO TALL SHARP PURPLE HORNS rising vertically from top
+- Plus TWO SMALLER horns angled outward on the sides
+- Total 4 spike-horns, giving a "little imp" vibe
+- All horns slightly darker purple #7D3C98 for contrast
+
+Eyes:
+- Large ovals with sleepy half-lidded top (universe standard)
+- Looks slightly mischievous — one eye subtly tilted
+- Black pupils, white highlight
+
+Mouth: small smirk-like curve (slightly off-center,
+  giving playful naughty feel — still subtle)
+
+Body: trapezoid, SAME purple #9B59B6 as head
+
+============================================================
+COLORS (total: 3)
+============================================================
+
+- Purple       #9B59B6 (main)
+- Dark Purple  #7D3C98 (horn accents, wobble lines)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Purple jagged wobbles (more angular than other characters) —
+reflects his mischievous energy. Include small purple ⚡ shapes.
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png       - default mischievous chill
+v2_happy.png      - got his breakfast, big eye curves
+v3_pout.png       - disappointed cheeks-puff
+
+============================================================

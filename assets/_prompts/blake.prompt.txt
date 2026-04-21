@@ -1,0 +1,102 @@
+============================================================
+布莱克 (Blake) - 神秘反派(例外:锐利眼神 + 红瞳)
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+[EXCEPTION] Violates the "chill sleepy eyes" rule. Sharp alert eyes instead.
+
+Character: 布莱克 (Blake)
+Role: Mysterious villain, revealed later as Xiao Tian's shadow backup AI
+Personality: calculating, cold, but not evil in essence — 
+  actually a "broken half" seeking completion
+
+Design intent: Distinct from all other characters. 
+Must feel slightly threatening but not terrifying (this is for ages 6-9).
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, dark navy black #1A1A2E (very dark, almost black)
+Head-top decoration: 
+- NO separate decoration — instead, the head top has
+  sharp jagged black spikes radiating upward (like a crown of thorns)
+- 5-7 spikes, irregular, uneven (chaotic feel)
+- Spikes same color as head (they grow out of it)
+
+Eyes — THIS IS THE KEY EXCEPTION:
+- Large oval eyes, same size/shape as other characters
+- BUT: top eyelid is LIFTED UP (NOT drooping)
+- Pupils are RED #E74C3C (not black) — the one defining color
+- Pupils slightly narrowed (more elongated/slit than circular)
+- Small sharp white highlight, off-center (like a glint)
+- Thin red brow-marks above the eyes (tilted down towards center — 
+  "angry/focused" look, but subtle)
+
+Mouth:
+- Thin horizontal slit, just a dark line
+- NO smile, NO frown — expressionless
+- Can be slightly curved DOWN in sinister variant
+
+Body:
+- Trapezoid, SAME dark navy #1A1A2E as head
+- NO patterns
+- Edges slightly "tattered" or uneven (unstable form)
+
+Overall silhouette: should be recognizable as same species as other 
+characters but visually "corrupted".
+
+============================================================
+COLORS (total: 3)
+============================================================
+
+- Dark Navy/Black  #1A1A2E (main body + head)
+- Red              #E74C3C (eyes, brow marks — the ONLY accent color)
++ Black & White for outline, eye highlights
+
+Note: Despite being dark, the character should NOT be pure 0x000000 black.
+Use dark navy so outlines are still visible.
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Dark red and dark purple wobble lines — 
+SHARPER, more JAGGED, not the soft wobbles of other characters:
+- Zigzag marks instead of curves
+- Small X shapes
+- Jagged lightning-like lines
+- Fewer lines total (3-4), giving an "unstable/flickering" feel
+
+============================================================
+PHASE-DEPENDENT VARIANTS
+============================================================
+
+v1_silhouette.png  - Used in Act 1-2, show as near-pure black silhouette
+                     only the red eyes visible, rest indistinct
+v2_revealed.png    - Used in Act 3, full details visible
+v3_redeemed.png    - Final scene: same shape, but red eyes softening to 
+                     calm blue #AEDDFF (echoing Xiao Tian's aura — 
+                     visually showing they're the same being)
+
+============================================================
+EMOTIONAL TONE CHECK
+============================================================
+
+Before finalizing the image, ensure:
+- [ ] A 7-year-old would recognize this as "the bad guy" without 
+      being SCARED (no teeth, no scary mouth, no dripping effects)
+- [ ] The character looks "cool-threatening", not "horror-movie scary"
+- [ ] Red is used sparingly — a little goes a long way
+- [ ] Still recognizable as belonging to the same "universe" as others
+
+============================================================
+OUTPUT
+============================================================
+
+- 512x512 portrait + 64x64 sprite
+- Transparent background
+- Front-facing (v2, v3) or 3/4 shadowy (v1)
+- Wobble lines active
+
+============================================================

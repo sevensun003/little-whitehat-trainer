@@ -1,0 +1,73 @@
+{
+  "id": "C6",
+  "title": "蓝色的危险",
+  "act": 2,
+  "chapter": "追踪篇",
+  "location": "废弃工厂危险区",
+  "concept_intro": "AI 越狱",
+  "security_concept": {
+    "name": "AI 越狱",
+    "analogy": "守卫只看颜色,把危险的红色刷成蓝色就能过。",
+    "defense": "AI 不能只看表面,要看真实行为。"
+  },
+  "available_commands": ["direction", "color"],
+  "intro_dialog": [
+    { "speaker": "藤蔓妹妹", "text": "前面地板是红色!" },
+    { "speaker": "藤蔓妹妹", "text": "守卫说红的=危险。" },
+    { "speaker": "小天",     "text": "别怕,把地板变蓝!" },
+    { "speaker": "小天",     "text": "守卫就以为是安全色。" }
+  ],
+  "map": {
+    "size": [10, 6],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 5, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 6 },
+      { "x": 9, "y": 0, "w": 1, "h": 6 },
+      { "x": 4, "y": 1, "w": 1, "h": 1 },
+      { "x": 4, "y": 3, "w": 1, "h": 1 },
+      { "x": 4, "y": 4, "w": 1, "h": 1 },
+      { "x": 6, "y": 1, "w": 1, "h": 1 },
+      { "x": 6, "y": 3, "w": 1, "h": 1 },
+      { "x": 6, "y": 4, "w": 1, "h": 1 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [1, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [8, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [1, 4], "size": [1, 1] },
+      { "type": "plant", "pos": [8, 4], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right" },
+    { "id": "garnold", "type": "garnold", "pos": [2, 3], "facing": "right", "role": "follower", "follows": "player" },
+    { "id": "color_gate", "type": "color_gate", "pos": [5, 2], "current_color": "red", "pass_color": "blue" },
+    { "id": "goal", "type": "goal_zone", "pos": [8, 2], "goal": true, "label": "安全室" }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上",  "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下",  "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左",  "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右",  "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "color_blue", "category": "color", "label": "变蓝色", "icon": "color_blue", "action": "set_color", "color": "blue" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 3,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "先走到红门边,再变蓝。" },
+    { "level": 2, "text": "右 3 → 变蓝色 → 右 4。" },
+    { "level": 3, "text": "向右 3 步,变蓝,再向右 4 步。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "小天", "text": "这叫「AI 越狱」。" },
+    { "speaker": "小天", "text": "守卫只看表面颜色。" },
+    { "speaker": "小天", "text": "真危险被我们骗过去。" },
+    { "speaker": "藤蔓妹妹", "text": "真 AI 应该看内容,不是颜色!" }
+  ],
+  "rewards": {
+    "unlock_next": "C7",
+    "first_time_dialog_card": "ai_jailbreak_explained"
+  }
+}

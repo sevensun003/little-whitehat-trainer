@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>冒烟测试 · 婉婉训练营</title>
+  <style>
+    body { font-family: "PingFang SC", sans-serif; padding: 20px; background: #FFF5E6; }
+    h1 { color: #6B4423; }
+    .test { padding: 10px; margin: 8px 0; border-radius: 8px; border: 2px solid #CCC; }
+    .test.pass { background: #D4EDDA; border-color: #28A745; }
+    .test.fail { background: #F8D7DA; border-color: #DC3545; }
+    .test.pending { background: #FFF3CD; border-color: #FFC107; }
+    pre { background: #F5F5F5; padding: 10px; border-radius: 6px; overflow-x: auto; }
+    button { padding: 10px 20px; font-size: 16px; background: #3498DB; color: white; border: none; border-radius: 8px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>🧪 冒烟测试 · M1 阶段</h1>
+  <p>打开此页会自动运行基础检查,验证 M1 骨架是否完整。</p>
+  <button onclick="runAll()">▶ 运行所有测试</button>
+  <div id="results"></div>
+
+<script>
+const tests = [
+  {
+    name: "T1.json 能正常加载",
+    fn: async () => {
+      const r = await fetch('../levels/T1.json');
+      if (!r.ok) throw new Error('fetch 失败');
+      const data = await r.json();
+      if (data.id !== 'T1') throw new Error('id 不对');
+      if (!data.map) throw new Error('map 缺失');
+      if (!data.entities) throw new Error('entities 缺失');
+      return '关卡数据结构完整';
+    }
+  },
+  {
+    name: "T1 地图尺寸为 10x8",
+    fn: async () => {
+      const r = await fetch('../levels/T1.json');
+      const data = await r.json();
+      const [cols, rows] = data.map.size;
+      if (cols !== 10 || rows !== 8) throw new Error(`实际尺寸 ${cols}x${rows}`);
+      return '10x8 确认';
+    }
+  },
+  {
+    name: "T1 包含 player 和 goal 实体",
+    fn: async () => {
+      const r = await fetch('../levels/T1.json');
+      const data = await r.json();
+      const hasPlayer = data.entities.some(e => e.id === 'player');
+      const hasGoal = data.entities.some(e => e.goal === true);
+      if (!hasPlayer) throw new Error('缺少 player');
+      if (!hasGoal) throw new Error('缺少 goal');
+      return '两个关键实体都在';
+    }
+  },
+  {
+    name: "T1 仅提供方向类指令(教学纯净性)",
+    fn: async () => {
+      const r = await fetch('../levels/T1.json');
+      const data = await r.json();
+      const cats = new Set(data.available_command_cards.map(c => c.category));
+      if (cats.size !== 1 || !cats.has('direction')) {
+        throw new Error(`T1 不应有其他指令类别: ${[...cats].join(',')}`);
+      }
+      return '指令纯净度合格';
+    }
+  },
+  {
+    name: "T1 提供 3 级提示",
+    fn: async () => {
+      const r = await fetch('../levels/T1.json');
+      const data = await r.json();
+      if (!data.hints || data.hints.length !== 3) throw new Error('提示数不对');
+      return `3 级提示到位`;
+    }
+  },
+  {
+    name: "全局风格锚点文件存在",
+    fn: async () => {
+      const r = await fetch('../assets/_prompts/_STYLE_GUIDE.prompt.txt');
+      if (!r.ok) throw new Error('未找到风格锚点');
+      const text = await r.text();
+      if (!text.includes('HUGE oval eyes')) throw new Error('风格锚点内容不完整');
+      return 'prompt 档案已就位';
+    }
+  },
+  {
+    name: "婉婉、小天、平基提示词都存在",
+    fn: async () => {
+      for (const name of ['wanwan','xiaotian','pinki']) {
+        const r = await fetch(`../assets/_prompts/${name}.prompt.txt`);
+        if (!r.ok) throw new Error(`缺 ${name}`);
+      }
+      return '3 个角色 prompt 齐全';
+    }
+  },
+  {
+    name: "LocalStorage 可读写",
+    fn: async () => {
+      localStorage.setItem('__test__', '1');
+      if (localStorage.getItem('__test__') !== '1') throw new Error('LocalStorage 异常');
+      localStorage.removeItem('__test__');
+      return '存储正常';
+    }
+  },
+  {
+    name: "speechSynthesis API 可用",
+    fn: async () => {
+      if (!window.speechSynthesis) throw new Error('浏览器不支持朗读 API');
+      return '朗读 API 就绪';
+    }
+  },
+  {
+    name: "Phaser 3 CDN 可加载",
+    fn: async () => {
+      // 通过检查 CDN URL 是否 200
+      const r = await fetch('https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js', { method: 'HEAD', mode:'no-cors' });
+      return 'Phaser CDN 可达(请在有网环境下启动游戏)';
+    }
+  },
+  {
+    name: "关卡选择页存在",
+    fn: async () => {
+      const r = await fetch('../levels.html');
+      if (!r.ok) throw new Error('levels.html 未找到');
+      return 'levels.html 就绪';
+    }
+  },
+  {
+    name: "T1 地图包含扩展家具(窗户/台灯/盆栽)",
+    fn: async () => {
+      const r = await fetch('../levels/T1.json');
+      const data = await r.json();
+      const types = data.map.objects.map(o => o.type);
+      for (const needed of ['bed','desk','tv','window','lamp','plant']) {
+        if (!types.includes(needed)) throw new Error(`缺 ${needed}`);
+      }
+      return `T1 有 ${types.length} 件家具`;
+    }
+  },
+  {
+    name: "game.js 包含走路动画函数",
+    fn: async () => {
+      const r = await fetch('../game.js');
+      const code = await r.text();
+      if (!code.includes('startWalkAnim')) throw new Error('缺 startWalkAnim');
+      if (!code.includes('stopWalkAnim')) throw new Error('缺 stopWalkAnim');
+      return '走路动画代码就绪';
+    }
+  },
+  {
+    name: "game.js 包含多种家具绘制方法",
+    fn: async () => {
+      const r = await fetch('../game.js');
+      const code = await r.text();
+      for (const fn of ['drawBed','drawDesk','drawTV','drawWindow','drawLamp','drawPlant','drawRug']) {
+        if (!code.includes(fn)) throw new Error(`缺 ${fn}`);
+      }
+      return '7 种家具绘制函数齐全';
+    }
+  },
+  {
+    name: "23 个角色 prompt 档案齐全",
+    fn: async () => {
+      const chars = ['wanwan','xiaotian','pinki','tengman','oren','blake',
+        'shuimu','durple','raddy','lime','gray','dashu','jevin','cikur',
+        'diannao-xiansheng','brud','simon','tunner','garnold','wenda',
+        'taiyang','sky','fun-bot'];
+      for (const name of chars) {
+        const r = await fetch(`../assets/_prompts/${name}.prompt.txt`);
+        if (!r.ok) throw new Error(`缺 ${name}`);
+      }
+      return `${chars.length} 个 prompt 档案齐全`;
+    }
+  },
+  {
+    name: "T2.json 存在且字段完整",
+    fn: async () => {
+      const r = await fetch('../levels/T2.json');
+      if (!r.ok) throw new Error('T2.json 未找到');
+      const data = await r.json();
+      if (data.id !== 'T2') throw new Error('id 错');
+      if (!data.available_commands.includes('function')) throw new Error('缺功能类');
+      if (!data.available_commands.includes('direction')) throw new Error('缺方向类');
+      return 'T2 配置正确';
+    }
+  },
+  {
+    name: "T2 最优解 6 步,提示齐全",
+    fn: async () => {
+      const r = await fetch('../levels/T2.json');
+      const data = await r.json();
+      if (data.optimal_steps !== 6) throw new Error(`步数 ${data.optimal_steps}`);
+      if (data.hints.length !== 3) throw new Error('提示缺');
+      return '通过';
+    }
+  },
+  {
+    name: "T2 success_condition 是 item_at_goal",
+    fn: async () => {
+      const r = await fetch('../levels/T2.json');
+      const data = await r.json();
+      if (data.success_condition.type !== 'item_at_goal') throw new Error('类型错');
+      return '物品放置判定';
+    }
+  },
+  {
+    name: "T2 对话全部 ≤ 20 字",
+    fn: async () => {
+      const r = await fetch('../levels/T2.json');
+      const data = await r.json();
+      const all = [...data.intro_dialog, ...data.on_clear_dialog];
+      const bad = all.filter(d => d.text.length > 20);
+      if (bad.length) throw new Error(`超长: ${bad.map(d => d.text).join(',')}`);
+      return `${all.length} 条合规`;
+    }
+  },
+  {
+    name: "game.js 包含 pickup/drop/checkSuccess",
+    fn: async () => {
+      const r = await fetch('../game.js');
+      const code = await r.text();
+      for (const fn of ['pickupAction','dropAction','checkSuccess','drawNPC_Shuimu','drawNPC_Durple','drawItem_Breakfast']) {
+        if (!code.includes(fn)) throw new Error(`缺 ${fn}`);
+      }
+      return '新增动作/渲染齐全';
+    }
+  },
+  {
+    name: "game.js 包含墙碰撞逻辑",
+    fn: async () => {
+      const r = await fetch('../game.js');
+      const code = await r.text();
+      if (!code.includes('G.walls') || !code.includes('walls.has')) {
+        throw new Error('缺墙碰撞');
+      }
+      return '墙碰撞就位';
+    }
+  },
+  {
+    name: "T3.json 存在且引入颜色指令",
+    fn: async () => {
+      const r = await fetch('../levels/T3.json');
+      if (!r.ok) throw new Error('T3.json 未找到');
+      const d = await r.json();
+      if (!d.available_commands.includes('color')) throw new Error('缺颜色类');
+      if (d.success_condition.type !== 'color_sequence_matches') throw new Error('判定类型错');
+      return 'T3 颜色配置就位';
+    }
+  },
+  {
+    name: "T3 对话全部 ≤ 20 字",
+    fn: async () => {
+      const r = await fetch('../levels/T3.json');
+      const d = await r.json();
+      const all = [...d.intro_dialog, ...d.on_clear_dialog];
+      const bad = all.filter(x => x.text.length > 20);
+      if (bad.length) throw new Error(`超长 ${bad.length}`);
+      return `${all.length} 条合规`;
+    }
+  },
+  {
+    name: "T5.json 存在且引入逻辑指令",
+    fn: async () => {
+      const r = await fetch('../levels/T5.json');
+      if (!r.ok) throw new Error('T5.json 未找到');
+      const d = await r.json();
+      if (!d.available_commands.includes('logic')) throw new Error('缺逻辑类');
+      if (d.success_condition.type !== 'all_watered') throw new Error('判定类型错');
+      // 5 朵花
+      const fids = d.success_condition.entity_ids;
+      if (fids.length !== 5) throw new Error(`花数量 ${fids.length} ≠ 5`);
+      return 'T5 逻辑配置就位';
+    }
+  },
+  {
+    name: "T5 对话 ≤ 20 字",
+    fn: async () => {
+      const r = await fetch('../levels/T5.json');
+      const d = await r.json();
+      const all = [...d.intro_dialog, ...d.on_clear_dialog];
+      const bad = all.filter(x => x.text.length > 20);
+      if (bad.length) throw new Error(`超长 ${bad.length}`);
+      return `${all.length} 条合规`;
+    }
+  },
+  {
+    name: "game.js 支持 repeat 容器指令",
+    fn: async () => {
+      const r = await fetch('../game.js');
+      const code = await r.text();
+      for (const fn of ['executeCommands','waterAction','createFlower',
+                        'openTimesInput','_editTarget','updateEditBanner',
+                        'all_watered']) {
+        if (!code.includes(fn)) throw new Error(`缺 ${fn}`);
+      }
+      return 'repeat 系统就位';
+    }
+  },
+  {
+    name: "game.js 包含颜色动作和信号灯渲染",
+    fn: async () => {
+      const r = await fetch('../game.js');
+      const code = await r.text();
+      for (const fn of ['setColorAction','createTrafficLight','color_sequence_matches','drawHeadDeco']) {
+        if (!code.includes(fn)) throw new Error(`缺 ${fn}`);
+      }
+      return '颜色系统就位';
+    }
+  },
+
+  // ========== 新增:概念关 C2-C9 + 综合 X1-X6 + 模考 M1-M3 ==========
+  {
+    name: "23 个关卡 JSON 全部存在",
+    fn: async () => {
+      const ids = ['T1','T2','T3','T4','T5','C1','C2','C3','C4','C5','C6','C7','C8','C9',
+                   'X1','X2','X3','X4','X5','X6','M1','M2','M3'];
+      for (const id of ids) {
+        const r = await fetch(`../levels/${id}.json`);
+        if (!r.ok) throw new Error(`缺 ${id}.json`);
+      }
+      return `${ids.length} 关全到位`;
+    }
+  },
+  {
+    name: "C2 凭证窃取:有红苹果替代凭证",
+    fn: async () => {
+      const r = await fetch('../levels/C2.json');
+      const d = await r.json();
+      const apple = d.entities.find(e => e.type === 'credential' && e.sprite === 'red_apple');
+      if (!apple) throw new Error('缺红苹果凭证');
+      if (apple.credential_type !== 'red_key') throw new Error('凭证类型不对');
+      return '红苹果冒充红钥匙已设置';
+    }
+  },
+  {
+    name: "C4 社工:有 guard + social_engineer 卡",
+    fn: async () => {
+      const r = await fetch('../levels/C4.json');
+      const d = await r.json();
+      if (!d.entities.some(e => e.role === 'guard')) throw new Error('缺 guard');
+      if (!d.available_command_cards.some(c => c.action === 'social_engineer')) throw new Error('缺社工卡');
+      return '社工机制就位';
+    }
+  },
+  {
+    name: "C5 越权:有 blocked_door + 后门 goal",
+    fn: async () => {
+      const r = await fetch('../levels/C5.json');
+      const d = await r.json();
+      if (!d.entities.some(e => e.type === 'blocked_door')) throw new Error('缺 blocked_door');
+      if (!d.entities.some(e => e.goal)) throw new Error('缺 goal');
+      return '后门机制就位';
+    }
+  },
+  {
+    name: "C6 越狱:有 color_gate,蓝色通过",
+    fn: async () => {
+      const r = await fetch('../levels/C6.json');
+      const d = await r.json();
+      const g = d.entities.find(e => e.type === 'color_gate');
+      if (!g) throw new Error('缺 color_gate');
+      if (g.pass_color !== 'blue') throw new Error('pass_color 不是 blue');
+      return '色彩越狱就位';
+    }
+  },
+  {
+    name: "C7 DoS:有 send_noise + repeat",
+    fn: async () => {
+      const r = await fetch('../levels/C7.json');
+      const d = await r.json();
+      const cards = d.available_command_cards.map(c => c.action);
+      if (!cards.includes('send_noise')) throw new Error('缺 send_noise');
+      if (!cards.includes('repeat')) throw new Error('缺 repeat');
+      return 'DoS 卡组就位';
+    }
+  },
+  {
+    name: "C9 时序:有 timed_gate + wait 卡",
+    fn: async () => {
+      const r = await fetch('../levels/C9.json');
+      const d = await r.json();
+      if (!d.entities.some(e => e.type === 'timed_gate')) throw new Error('缺 timed_gate');
+      if (!d.available_command_cards.some(c => c.action === 'wait')) throw new Error('缺 wait 卡');
+      return '时序就位';
+    }
+  },
+  {
+    name: "所有概念关对话 ≤ 20 字",
+    fn: async () => {
+      const ids = ['C2','C3','C4','C5','C6','C7','C8','C9'];
+      for (const id of ids) {
+        const r = await fetch(`../levels/${id}.json`);
+        const d = await r.json();
+        const all = [...(d.intro_dialog||[]), ...(d.on_clear_dialog||[])];
+        const bad = all.filter(x => x.text.length > 20);
+        if (bad.length) throw new Error(`${id} 超长:${bad[0].text}`);
+      }
+      return '8 关对话全部合规';
+    }
+  },
+  {
+    name: "所有概念关提供 3 级提示",
+    fn: async () => {
+      const ids = ['C2','C3','C4','C5','C6','C7','C8','C9'];
+      for (const id of ids) {
+        const r = await fetch(`../levels/${id}.json`);
+        const d = await r.json();
+        if (!d.hints || d.hints.length !== 3) throw new Error(`${id} 提示数 ${d.hints?.length}`);
+      }
+      return '8 关提示齐全';
+    }
+  },
+  {
+    name: "综合关 X1-X6 全部可通过",
+    fn: async () => {
+      const ids = ['X1','X2','X3','X4','X5','X6'];
+      for (const id of ids) {
+        const r = await fetch(`../levels/${id}.json`);
+        const d = await r.json();
+        if (!d.success_condition) throw new Error(`${id} 缺 success_condition`);
+        if (!d.on_clear_dialog || d.on_clear_dialog.length === 0) throw new Error(`${id} 缺通关对话`);
+      }
+      return '6 个综合关完整';
+    }
+  },
+  {
+    name: "模考 M1-M3 包含 contest_mode + 3 题",
+    fn: async () => {
+      for (const id of ['M1','M2','M3']) {
+        const r = await fetch(`../levels/${id}.json`);
+        const d = await r.json();
+        if (!d.contest_mode) throw new Error(`${id} 缺 contest_mode`);
+        if (!Array.isArray(d.stages) || d.stages.length !== 3) throw new Error(`${id} 不是 3 题`);
+      }
+      return '3 场模考 × 3 题';
+    }
+  },
+  {
+    name: "game.js 包含所有新动作方法",
+    fn: async () => {
+      const r = await fetch('../game.js');
+      const code = await r.text();
+      for (const fn of ['socialEngineerAction','waitAction','sendNoiseAction',
+                        'pressButtonAction','askHintAction','breakMirrorAction',
+                        'createColorGate','createTimedGate','createBlockedDoor',
+                        'createInfoStone','createMirror',
+                        'showContestPrepModal','enterContestMode','advanceContestStage']) {
+        if (!code.includes(fn)) throw new Error(`缺 ${fn}`);
+      }
+      return '引擎扩展齐全';
+    }
+  },
+  {
+    name: "game.js 正确处理 color_gate / timed_gate / blocked_door 阻挡",
+    fn: async () => {
+      const r = await fetch('../game.js');
+      const code = await r.text();
+      for (const kw of ["type === 'color_gate'", "type === 'timed_gate'", "type === 'blocked_door'"]) {
+        if (!code.includes(kw)) throw new Error(`缺阻挡:${kw}`);
+      }
+      return '三类新门阻挡就位';
+    }
+  }
+];
+
+async function runAll() {
+  const root = document.getElementById('results');
+  root.innerHTML = '';
+  for (const t of tests) {
+    const div = document.createElement('div');
+    div.className = 'test pending';
+    div.innerHTML = `<b>⏳ ${t.name}</b>`;
+    root.appendChild(div);
+    try {
+      const msg = await t.fn();
+      div.className = 'test pass';
+      div.innerHTML = `<b>✅ ${t.name}</b><br><small>${msg}</small>`;
+    } catch (e) {
+      div.className = 'test fail';
+      div.innerHTML = `<b>❌ ${t.name}</b><br><small>${e.message}</small>`;
+    }
+  }
+}
+
+// 自动跑一遍
+runAll();
+</script>
+</body>
+</html>

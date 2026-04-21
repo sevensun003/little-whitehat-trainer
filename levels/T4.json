@@ -1,0 +1,295 @@
+{
+  "id": "T4",
+  "title": "图书馆借书证",
+  "act": 1,
+  "chapter": "学徒篇",
+  "location": "樱桃镇图书馆",
+  "concept_intro": "凭证指令",
+  "available_commands": [
+    "direction",
+    "credential"
+  ],
+  "intro_dialog": [
+    {
+      "speaker": "格雷",
+      "text": "借书要刷借书证哦。"
+    },
+    {
+      "speaker": "格雷",
+      "text": "桌上有一张,拿上再进来。"
+    },
+    {
+      "speaker": "小天",
+      "text": "凭证就是身份的证明。"
+    },
+    {
+      "speaker": "旁白",
+      "text": "用「取证件」拿起借书证,再走到门口。"
+    }
+  ],
+  "map": {
+    "size": [
+      10,
+      8
+    ],
+    "tileset": "library",
+    "floor_tiles": "wood",
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 10,
+        "h": 1
+      },
+      {
+        "x": 0,
+        "y": 7,
+        "w": 10,
+        "h": 1
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 8
+      },
+      {
+        "x": 9,
+        "y": 0,
+        "w": 1,
+        "h": 8
+      },
+      {
+        "x": 5,
+        "y": 1,
+        "w": 1,
+        "h": 3
+      },
+      {
+        "x": 5,
+        "y": 5,
+        "w": 1,
+        "h": 2
+      }
+    ],
+    "objects": [
+      {
+        "type": "bookshelf",
+        "pos": [
+          1,
+          1
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "bookshelf",
+        "pos": [
+          2,
+          1
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "bookshelf",
+        "pos": [
+          3,
+          1
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "table",
+        "pos": [
+          2,
+          3
+        ],
+        "size": [
+          2,
+          1
+        ]
+      },
+      {
+        "type": "bookshelf",
+        "pos": [
+          7,
+          1
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "bookshelf",
+        "pos": [
+          8,
+          1
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "plant",
+        "pos": [
+          1,
+          6
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "rug",
+        "pos": [
+          7,
+          3
+        ],
+        "size": [
+          2,
+          2
+        ],
+        "decorative": true
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "player",
+      "type": "wanwan",
+      "start_pos": [
+        1,
+        3
+      ],
+      "facing": "right"
+    },
+    {
+      "id": "gray",
+      "type": "gray",
+      "pos": [
+        3,
+        6
+      ],
+      "facing": "up"
+    },
+    {
+      "id": "library_card",
+      "type": "credential",
+      "pos": [
+        2,
+        3
+      ],
+      "sprite": "card",
+      "credential_type": "library_card"
+    },
+    {
+      "id": "entry_door",
+      "type": "credential_door",
+      "pos": [
+        5,
+        4
+      ],
+      "requires_credential": "library_card",
+      "goal": true
+    }
+  ],
+  "available_command_cards": [
+    {
+      "id": "move_up",
+      "category": "direction",
+      "label": "向上",
+      "icon": "arrow_up",
+      "action": "move",
+      "dir": "up",
+      "steps_input": true
+    },
+    {
+      "id": "move_down",
+      "category": "direction",
+      "label": "向下",
+      "icon": "arrow_down",
+      "action": "move",
+      "dir": "down",
+      "steps_input": true
+    },
+    {
+      "id": "move_left",
+      "category": "direction",
+      "label": "向左",
+      "icon": "arrow_left",
+      "action": "move",
+      "dir": "left",
+      "steps_input": true
+    },
+    {
+      "id": "move_right",
+      "category": "direction",
+      "label": "向右",
+      "icon": "arrow_right",
+      "action": "move",
+      "dir": "right",
+      "steps_input": true
+    },
+    {
+      "id": "take_cred",
+      "category": "credential",
+      "label": "取证件",
+      "icon": "credential_take",
+      "action": "take_credential"
+    }
+  ],
+  "success_condition": {
+    "type": "reach_credential_door",
+    "goal_id": "entry_door"
+  },
+  "optimal_steps": 4,
+  "max_hint_level": 3,
+  "hints": [
+    {
+      "level": 1,
+      "text": "先到桌子旁,用「取证件」拿卡。"
+    },
+    {
+      "level": 2,
+      "text": "拿卡后走到中间的门,会自动开。"
+    },
+    {
+      "level": 3,
+      "text": "向右1步 → 取证件 → 向下1步 → 向右3步。"
+    }
+  ],
+  "on_clear_dialog": [
+    {
+      "speaker": "格雷",
+      "text": "欢迎光临!"
+    },
+    {
+      "speaker": "小天",
+      "text": "记住,凭证很重要。"
+    },
+    {
+      "speaker": "小天",
+      "text": "不过坏人也会偷凭证。"
+    },
+    {
+      "speaker": "小天",
+      "text": "以后你就会遇到啦。"
+    }
+  ],
+  "rewards": {
+    "unlock_next": "T5",
+    "unlock_character": null,
+    "first_time_dialog_card": "credential_card_explained"
+  }
+}

@@ -1,0 +1,81 @@
+============================================================
+平基 (Pinki) - 粉色兔耳陪练伙伴
+============================================================
+
+[INHERIT] Prepend with contents of _STYLE_GUIDE.prompt.txt
+
+============================================================
+CHARACTER SPEC
+============================================================
+
+Name: 平基 (Pinki)
+Personality: cheerful, girly, always by wanwan's side in T1-T5
+Role: wanwan's first friend, tutorial companion (learning-mode sidekick)
+Reference: Position 1 (top-left) in the hand-drawn reference sheet
+
+============================================================
+APPEARANCE — HEAD
+============================================================
+
+Head shape: big round circle
+Head color: pink #FF6B9D (主色)
+
+Head-top decoration: 
+- Two TALL upright rabbit ears rising vertically from top of head
+- Ear color: slightly lighter pink #FFB6D5 with hot pink inner part
+- At the base of the ears, between them: a hot-pink bow #FF1493
+- Bow has visible loops and a center knot
+
+Eyes:
+- Large ovals with sleepy half-lidded top eyelid (universe signature)
+- Big black pupils with white highlight dots
+- Small pink eye-lash lines on outer corners (girly touch)
+- Small pink blush lines under each eye (two short diagonal marks)
+
+Mouth: small curved smile, single line (ω-like but subtler)
+
+============================================================
+APPEARANCE — BODY
+============================================================
+
+Body: trapezoid cylinder (wider at bottom)
+Body color: same pink #FF6B9D as head
+No patterns, no pockets, clean body
+
+============================================================
+COLORS (total: 4)
+============================================================
+
+- Pink        #FF6B9D (main head + body)
+- Light Pink  #FFB6D5 (ear outer)
+- Hot Pink    #FF1493 (bow, ear inner)
+- Black+White for outlines, eyes, highlights
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Around Pinki, add 3-5 wobble lines in pink and hot-pink:
+- Two small curved lines above ears (cheerful motion marks)
+- One on the left side
+- One or two small pink dashes near the body
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png     - default chill smile
+v2_happy.png    - eyes curved ^ ^ with sparkles
+v3_thinking.png - eyes looking up-right
+v4_cheer.png    - both ears slightly tilted, bigger smile
+v5_sleepy.png   - eyes nearly closed, even more chill
+
+============================================================
+OUTPUT
+============================================================
+
+- 512x512 canvas (portrait) + 64x64 in-game sprite
+- Transparent background
+- Front-facing, centered
+
+============================================================

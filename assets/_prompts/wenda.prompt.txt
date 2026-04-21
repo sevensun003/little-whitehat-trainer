@@ -1,0 +1,58 @@
+============================================================
+温达 (Wenda) - 米色礼帽 · 樱桃镇小卖部老板/存档员
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 温达 (Wenda)
+Role: Cherry Town shopkeeper, serves as "save point" NPC throughout Act 1
+Personality: friendly, helpful, walking tutorial database
+Reference: Bottom row, far right — tan with brown fedora hat
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, warm tan / cream #F5DEB3
+Head-top decoration:
+- A BROWN FEDORA HAT sitting on top of the head
+- Hat color: medium brown #8B5A3C  
+- Hat has a darker brown band #5D3A1F around its base
+- Hat slightly tilted (friendly casual angle)
+
+Eyes:
+- Large ovals with sleepy top eyelid
+- Warm welcoming crinkle at outer corners (crow's feet — indicates friendly older character)
+- Black pupils, highlight
+
+Mouth: small curved smile (welcoming shopkeeper)
+
+Body: trapezoid, SAME tan/cream #F5DEB3 as head
+Optional: a small apron pattern on body (but would use up color budget — skip unless needed)
+
+============================================================
+COLORS (total: 4)
+============================================================
+
+- Tan/Cream  #F5DEB3 (main)
+- Brown      #8B5A3C (fedora)
+- Dark Brown #5D3A1F (hat band)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Warm brown and tan wobbles. Include a small coin icon 🪙 
+or "hello" speech bubble hints (shopkeeper vibe).
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png       - welcoming default
+v2_greeting.png   - small nod pose
+v3_explaining.png - finger-up gesture... wait, he has no fingers.
+                   Just eye-brows-up "let me tell you" look
+
+============================================================

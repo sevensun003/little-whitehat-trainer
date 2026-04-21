@@ -1,0 +1,55 @@
+============================================================
+格雷 (Gray) - 灰色猫耳 · T4 图书管理员
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 格雷 (Gray)
+Role: Librarian in T4, introduces credential concept
+Personality: calm, patient, fond of rules but kind
+Reference: Middle row, far left — grey body with cat ears, freckles
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, medium grey #95A5A6
+Head-top decoration:
+- TWO TRIANGULAR CAT EARS on top of head
+- Ear outer: same grey as head
+- Ear INNER: pink #FF6B9D (signature touch)
+- Ears pointing slightly outward
+
+Eyes:
+- Large ovals with SLEEPIEST-of-all half-lidded top (he's a reader)
+- Small freckle-like dots on cheeks (3-4 tiny dots)
+- Black pupils, small white highlight
+
+Mouth: small flat-ish line with slight curve (content, reading mode)
+
+Body: trapezoid, SAME grey #95A5A6 as head
+
+============================================================
+COLORS (total: 3)
+============================================================
+
+- Grey     #95A5A6 (main)
+- Pink     #FF6B9D (inner ears, freckles could be lighter)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Grey and pink wobble lines. Include a small book icon 📖 
+or paper strips floating, suggesting scholarly vibe.
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png      - calm sleepy default
+v2_welcome.png   - eyes open a bit, small wave-like motion
+v3_thinking.png  - one ear slightly tilted
+
+============================================================

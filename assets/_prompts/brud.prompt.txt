@@ -1,0 +1,57 @@
+============================================================
+布鲁德 (Brud) - 棕色白桶帽 · C7 面馆老板 / X2 工头
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 布鲁德 (Brud)
+Role: Dual duty — C7 noodle shop owner / X2 factory foreman
+Personality: hardworking, grumpy outside but kind inside
+Reference: Bottom row, second from right — brown with upside-down white bucket hat
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, warm brown #8B5A3C
+Head-top decoration:
+- AN UPSIDE-DOWN WHITE BUCKET placed ON the head (like a hat)
+- Bucket outer: white #F5F5F5
+- Bucket has a faint grey outline/rim
+- Small HANDLE visible on the side of the bucket (suggesting it's a real bucket, not a designed hat)
+- Slightly askew for comedic effect
+
+Eyes:
+- Large ovals with sleepy top eyelid
+- Slightly downturned brow lines (weary but not angry)
+- One eye may be slightly visible from under the bucket rim
+- Black pupils, highlight
+
+Mouth: small flat line or subtle frown curve
+
+Body: trapezoid, SAME brown #8B5A3C as head
+
+============================================================
+COLORS (total: 3)
+============================================================
+
+- Brown   #8B5A3C (main)
+- White   #F5F5F5 (bucket)
++ Black & White for outlines
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Brown wobbles. Steam/smoke lines coming from the bucket 
+(implying "busy kitchen" vibe).
+
+============================================================
+COSTUME VARIANTS
+============================================================
+
+v1_noodle.png   - C7 version: small noodle bowl icon on body
+v2_foreman.png  - X2 version: small gear icon on body
+v3_crash.png    - C7 crisis: Xs in eyes, sweat drops
+
+============================================================

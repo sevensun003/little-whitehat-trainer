@@ -1,0 +1,65 @@
+============================================================
+大树先生 (Dashu Xiansheng) - 院子里的老橡树
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+[PARTIAL EXCEPTION] This is a TREE, not a standard robot.
+But follow the overall art style (chill eyes, flat colors, outline).
+
+Character: 大树先生 (Mr. Big Tree)
+Role: Static NPC in T5 backyard, teaches wanwan the "repeat" command
+Personality: ancient, sleepy, patient — has seen many seasons
+Reference: NOT in design sheet — design following universe aesthetic
+
+============================================================
+APPEARANCE — SPECIAL FORM
+============================================================
+
+Base structure: stylized cartoon tree
+- TRUNK (like a short wide cylinder) — brown #8B5A3C
+- FOLIAGE (like a bushy cloud of leaves) — green #2ECC71
+  on top of the trunk
+- FACE carved into the trunk (visible bark face)
+
+Face details (on trunk):
+- Large oval eyes with SLEEPIEST of all half-lidded top
+- Eyes look "half asleep", slightly droopy
+- Black pupils with tiny highlight
+- Small closed-mouth expression (could be a yawn oval)
+- Optional: light wood-grain curve lines on the trunk (subtle)
+
+Foliage details:
+- Cloud-like bushy shape with 3-5 rounded bumps
+- A few small pink/yellow flower dots peeking through
+- Optional: one small bird sitting on top (not required)
+
+Size in game: slightly taller than other characters 
+(takes 2 vertical cells on map)
+
+============================================================
+COLORS (total: 4)
+============================================================
+
+- Brown         #8B5A3C (trunk)
+- Dark Brown    #5D3A1F (wood grain, if any)
+- Green         #2ECC71 (foliage)
+- Optional Pink #FF6B9D (flower dots)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Very slow and soft wobble lines — brown and green.
+Include 2-3 small falling leaves 🍃.
+Suggests "ancient and peaceful".
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png      - half-asleep default
+v2_yawn.png      - mouth in "O" yawn shape
+v3_happy.png     - eye curves, flowers glow a bit
+
+============================================================

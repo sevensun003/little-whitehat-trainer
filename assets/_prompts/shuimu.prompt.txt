@@ -1,0 +1,101 @@
+============================================================
+水母妹妹 (Shuimu / Jellyfish) - 婉婉的妈妈
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+[PARTIAL EXCEPTION] This is a jellyfish-themed character — 
+  she has the universe's "chill face" but with tentacles 
+  instead of a standard trapezoid body.
+
+Character: 水母妹妹 (Shuimu, "Jellyfish")
+Role: Wanwan's mother, appears in T2 送早餐
+Personality: gentle, flowy, nurturing — "drifts" rather than walks
+
+============================================================
+APPEARANCE — JELLYFISH FORM
+============================================================
+
+Head (= jellyfish bell / dome):
+- A rounded BELL SHAPE (like an inverted bowl)
+- NOT a perfect circle — slightly wider at bottom, domed at top
+- Color: soft translucent pink #FFB6D5 (main)
+- A slight highlight curve on the top of the bell (glossy hint)
+- A subtle scalloped edge along the bottom rim of the bell
+
+Head-top decoration:
+- Small soft pink SWIRL or TUFT on the very top of the bell 
+  (her signature)
+- Optional: 1-2 tiny bubbles floating near the top
+
+Face (on the front of the bell):
+- Large oval eyes with SLEEPY half-lidded top (universe signature)
+- Eyes slightly downturned at outer corners (gentle/motherly)
+- Long eyelash hints (3 small lines under outer corners)
+- Black pupils, small white highlight
+
+Mouth: small curved warm smile (motherly)
+
+Body (= tentacles):
+- Instead of trapezoid body: 4-6 LONG WAVY TENTACLES 
+  flowing down from the bell's bottom edge
+- Tentacles: same soft pink #FFB6D5, slightly translucent feel
+- Tentacles curve gently like ribbons, not straight
+- Longer in center, shorter on the sides
+- Tips fade to a lighter pink
+
+No arms, no legs, no hands, no feet — the tentacles are her form.
+
+============================================================
+COLORS (total: 4)
+============================================================
+
+- Soft Pink    #FFB6D5 (main bell + tentacles)
+- Lighter Pink #FFD4E5 (tentacle tips, highlight)
+- Hot Pink     #FF6B9D (subtle inner details, blush)
++ Black & White for outlines, eyes
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Soft pink and light-pink wobbles with a "floating underwater" feel:
+- Small bubble circles ○
+- Tiny sparkle dots ✦
+- Wavy curves suggesting water currents
+- Motion lines that float UP (she drifts upward slightly)
+
+============================================================
+ANIMATION NOTE
+============================================================
+
+Her tentacles should have a subtle waving motion when rendered as sprite.
+For static portrait: show tentacles in a natural gentle curve.
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png       - gentle drifting default
+v2_concerned.png  - slight eyebrow tilt, caring
+v3_happy.png      - eyes curved ^ ^, tentacles perkier
+v4_calling.png    - used in T2 opening ("婉婉,早餐在桌上")
+
+============================================================
+OUTPUT
+============================================================
+
+- 512x512 portrait + 64x64 sprite
+- Transparent background
+- Front-facing, centered
+- Bubble wobble lines active
+
+============================================================
+IN-GAME POSITIONING NOTE
+============================================================
+
+Since she floats, when placed on the game map:
+- She hovers slightly above the floor tile (2-4 pixel offset up)
+- Tentacles dangle naturally
+- Do NOT draw her standing flat on the ground
+
+============================================================

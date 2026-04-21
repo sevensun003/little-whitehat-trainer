@@ -1,0 +1,123 @@
+============================================================
+电脑先生 (Diannao Xiansheng / Mr. Computer) - C5 森林图书馆长
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+[NOTE] Unique silhouette — face is a computer monitor, 
+       body is a desktop-tower-like trapezoid.
+       Same universe, but even more "technological" than 加诺德 
+       (who is an ATM). 加诺德 = retro pixel display, 
+       电脑先生 = CRT monitor vibe, older and more scholarly.
+
+Character: 电脑先生 (Mr. Computer)
+Role: Forest library keeper in C5, enforces "管理员 only" rule — 
+       is the character wanwan bypasses via the back door
+Personality: stuffy, bureaucratic, strictly enforces rules
+             (but the rule isn't actually enforced well — 
+              perfect for the "越权访问" lesson)
+
+============================================================
+APPEARANCE — MONITOR HEAD
+============================================================
+
+Head: NOT a round circle. Instead:
+- A slightly ROUNDED SQUARE CRT MONITOR SHAPE
+- Monitor frame (bezel): beige/cream #E8DCC4 (classic 90s PC color)
+- Monitor screen: light grey-green #C8D0B8 (old CRT phosphor tint)
+- The screen has:
+  - Two oval "eye-shapes" as digital eyes (still follow universe sleepy style)
+  - A few horizontal scanlines (very subtle)
+  - A small blinking cursor "▌" in one corner (detail)
+
+Head-top decoration:
+- A small ANTENNA or bent metal rod rising from the top-back of the monitor
+- Optional: a tiny LED indicator light (green dot) on the bottom-right of the bezel
+
+Face (on the screen):
+- Large oval eyes, sleepy half-lidded top
+- Eyebrows present, slightly downturned (stuffy, disapproving)
+- Pupils: black dots with white highlight
+- Small flat mouth (bureaucratic default expression)
+
+Below the screen-head:
+- A narrow "stand" connecting to body (like a monitor stand)
+
+Body (= desktop tower):
+- Trapezoid, but taller and more rectangular than usual
+- Color: same beige/cream #E8DCC4 as monitor frame
+- Features on the tower body:
+  - A horizontal "disk slot" line
+  - A small "power button" circle (grey)
+  - A vertical row of tiny ventilation lines
+  - Optional: a small glowing "hard drive" LED
+
+============================================================
+COLORS (total: 4)
+============================================================
+
+- Cream/Beige  #E8DCC4 (monitor frame + tower body)
+- Green-Grey   #C8D0B8 (CRT screen)
+- Dark Grey    #5D6970 (buttons, slots, details)
+- Green LED    #2ECC71 (tiny indicator, optional)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Grey and beige wobbles, stiffer and more geometric than 
+most characters (matches his bureaucratic vibe):
+- Small rectangular shapes floating
+- "Do not enter" style ✕ marks  
+- Tiny "beep" or rule-book icons
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png       - stuffy default, "only admin" attitude
+v2_refuse.png     - eyebrows down further, screen text "禁止"
+v3_bypassed.png   - confused, "?" on screen (after player goes back door)
+v4_sleeping.png   - screen dim, "Z" above (used in comedic context)
+
+============================================================
+DIFFERENTIATION FROM 加诺德 (Garnold)
+============================================================
+
+Both are technology-faced characters — make sure they are 
+VISUALLY DISTINCT:
+
+加诺德 (Garnold, ATM):
+- Tan/gold colored case (warm tones)
+- Cyan/teal pixel screen (retro ATM)
+- Horizontal wider body (ATM shape)
+- Cash slot on chest
+- Shown in desert setting
+
+电脑先生 (Mr. Computer, Librarian):
+- Beige/cream colored case (cooler tones)
+- Green-grey CRT screen (office PC)
+- Taller more rectangular body (PC tower)
+- Disk slot + power button + vents
+- Shown in library setting
+
+If placed side by side, they should read as "old ATM" vs 
+"old office PC" — clearly related but clearly different.
+
+============================================================
+EMOTIONAL TONE CHECK
+============================================================
+
+- [ ] Looks "stuffy rule-enforcer", not scary or evil
+- [ ] A kid should think "that's a funny old computer"
+- [ ] Still on-brand with the chill-universe aesthetic
+
+============================================================
+OUTPUT
+============================================================
+
+- 512x512 portrait + 64x64 sprite
+- Transparent background
+- Front-facing
+
+============================================================

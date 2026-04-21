@@ -1,0 +1,16 @@
+{
+  "id": "M1",
+  "title": "模考一 · 基础",
+  "act": 3,
+  "chapter": "决战篇 · 模考",
+  "location": "指令塔 100 层考核室",
+  "concept_intro": "模考 · 基础指令",
+  "contest_mode": true,
+  "time_limit_seconds": 3600,
+  "stages": ["T1", "T2", "T3"],
+  "intro_dialog": [
+    { "speaker": "小天", "text": "这是模拟考试。" },
+    { "speaker": "小天", "text": "三道题一起算成绩。" },
+    { "speaker": "小天", "text": "别紧张,我在看着你!" }
+  ]
+}

@@ -1,0 +1,58 @@
+============================================================
+克拉克 (Cikur) - 灰色水龙头头 · C4 真水管工
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 克拉克 (Cikur)
+Role: The REAL plumber in C4 — the villain impersonated him
+Personality: honest, hardworking, slightly flustered
+Reference: Bottom row, second from left — grey with water faucet on head
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, light grey #BDC3C7 (lighter than Gray the librarian)
+Head-top decoration:
+- A METAL WATER FAUCET protruding from the top of the head
+- Faucet body: darker grey #7F8C8D
+- A small DROP OF WATER suspended below the faucet spout
+  (water droplet color: light blue #AEDDFF)
+- Faucet slightly tilted forward (cute angle)
+
+Eyes:
+- Large ovals with the sleepy top eyelid (universe)
+- Slightly raised brow lines (he's always worried/working)
+- Black pupils, highlight
+
+Mouth: small flat line
+
+Body: trapezoid, SAME light grey #BDC3C7 as head
+Optional: small wrench icon 🔧 on body (but counts toward color budget)
+
+============================================================
+COLORS (total: 4)
+============================================================
+
+- Light Grey #BDC3C7 (main)
+- Dark Grey  #7F8C8D (faucet)
+- Light Blue #AEDDFF (water drop)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Grey and blue wobbles. Include 2-3 small water droplets 💧 
+as energy lines (on-theme).
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png       - worried worker default
+v2_running.png    - arriving breathless in C4 opening
+v3_angry.png      - realizing impersonation, small frown
+
+============================================================

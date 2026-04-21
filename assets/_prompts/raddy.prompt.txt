@@ -1,0 +1,68 @@
+============================================================
+瑞迪 (Raddy) - 红色尖角 · T3 信号灯管理员 / C6 工厂守卫
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 瑞迪 (Raddy)
+Role: Dual duty — T3 traffic light manager / C6 factory guard
+Personality: dutiful, stressed, rule-bound (classic "rule follower" robot)
+Reference: Middle row, third from left (red with sharp horns)
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, bright red #E74C3C
+Head-top decoration:
+- THREE TALL SHARP HORNS rising from the top of the head
+- Center horn tallest, two side horns slightly shorter
+- Horns are dark red #922B21 (clearly darker than head)
+- Arranged symmetrically, giving "alert / authoritative" feel
+
+Eyes:
+- Large ovals with sleepy top eyelid (universe)
+- But subtly MORE alert than most (he's always on duty)
+- Black pupils, small white highlight
+
+Mouth: small flat line (serious / focused / stressed)
+
+Body: trapezoid, SAME red #E74C3C as head
+
+============================================================
+COLORS (total: 3)
+============================================================
+
+- Red       #E74C3C (main)
+- Dark Red  #922B21 (horns, wobble lines)  
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Red and dark-red wobbles. Include small signal-light symbols:
+- A tiny red ●, yellow ●, green ● in a vertical row (his job)
+- Short dashes suggesting alertness
+
+============================================================
+COSTUME VARIANTS
+============================================================
+
+v1_traffic.png   - T3 version: small red/yellow/green badge on body
+                   (signal light manager)
+v2_factory.png   - C6 version: same head, body has gray ring 
+                   (factory worker band)
+v3_tricked.png   - C6 version after blue filter trick:
+                   confused eyes (? marks in wobble lines)
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png      - strict default
+v2_panic.png     - T3 opening: signal broken panic
+v3_robotic.png   - C6 opening: mechanical "禁止进入" repetition
+v4_confused.png  - C6 after trick
+
+============================================================

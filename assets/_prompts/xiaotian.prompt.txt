@@ -1,0 +1,106 @@
+============================================================
+小天 (Xiao Tian) - 中央指令塔的 AI 主机
+草图位置:右上角(浅蓝+熊耳)
+============================================================
+
+[INHERIT] Prepend with contents of _STYLE_GUIDE.prompt.txt
+
+[UPDATE 2026-04-20] 小天遵循统一角色风格,不再是发光球。
+视觉特征锁定为草图最右上那位:浅蓝色身体 + 小圆熊耳 + 困困脸。
+
+============================================================
+CHARACTER SPEC
+============================================================
+
+Name: 小天 (Xiao Tian)
+Role: Main AI of the Central Instruction Tower; wanwan's mentor and guide
+Personality: gentle, patient, kind — like a kindergarten teacher
+Voice: soft, slightly slow, warm
+Reference: Position 4 (top-right) in the hand-drawn reference sheet
+           (NOT labeled "Sky" on the sheet — that was a mislabel; this IS Xiao Tian)
+
+============================================================
+APPEARANCE — HEAD
+============================================================
+
+Head shape: big round circle
+Head color: LIGHT BLUE / pale sky blue #8FCFE8 (主色)
+            — softer and paler than Jevin's deep blue
+            — conveys "sky / calm / AI / digital" feeling
+
+Head-top decoration:
+- Two small ROUND BEAR EARS on top of head
+- Ears are the SAME light blue #8FCFE8 as head
+- Inner ear: slightly darker blue-grey #6FAEC9 oval
+- Ears are small and rounded (NOT pointy like a cat or rabbit)
+- This bear-ear shape is Xiao Tian's signature
+
+Eyes:
+- Large ovals with sleepy half-lidded top eyelid (universe signature)
+- Slightly more alert / kinder look than average (she's a teacher)
+- Big black pupils with white highlight dots
+- Eyelashes can be slightly curved (gentle teacher feel)
+
+Mouth: small flat gentle line OR small curved smile
+       — positioned a bit lower on the face (calm expression)
+
+Additional face details (optional):
+- Can have a tiny blush spot under each eye (warmth)
+- A single small antenna on top of the head between the ears 
+  is OPTIONAL (hint of AI / tech) — keep if it reads as AI-ish
+
+============================================================
+APPEARANCE — BODY
+============================================================
+
+Body: trapezoid cylinder (wider at bottom)
+Body color: same light blue #8FCFE8 as head
+No patterns, no badges, clean body
+
+============================================================
+COLORS (total: 3-4)
+============================================================
+
+- Light Blue    #8FCFE8 (main head + body + ears)
+- Darker Blue   #6FAEC9 (inner ear shadow)
+- Black + White (outline, eyes, highlights)
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Around Xiao Tian, add wobble lines in light blue tones:
+- Soft pale blue curved dashes around head
+- 2-3 tiny sparkles ✦ in light blue (subtle AI/magical feel)
+- Gentler and fewer than other characters — she's calm
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png       - default chill teacher smile
+v2_speaking.png   - slight mouth open (talking pose)
+v3_thinking.png   - eyes looking up-right, "..." bubble
+v4_proud.png      - eyes curved ^ ^, encouraging smile (used when wanwan clears a level)
+v5_worried.png    - eyes slightly down, no smile (when warning about danger)
+
+============================================================
+OUTPUT
+============================================================
+
+- 512x512 canvas (detailed portrait) + 64x64 in-game sprite
+- Transparent background
+- Front-facing, centered
+
+============================================================
+NOTES ON DISTINGUISHING FROM OTHER BLUE CHARACTERS
+============================================================
+
+Other blue characters in this universe:
+- Jevin (深蓝): DARK saturated blue, BALD (no decoration), stern
+- Xiao Tian: LIGHT pale blue, ROUND BEAR EARS, gentle teacher
+
+The color contrast (pale vs. deep) and ear presence should make
+them instantly distinguishable even to a 6-year-old.
+
+============================================================

@@ -1,0 +1,58 @@
+============================================================
+莱姆 (Lime) - 嫩绿尖发 · T3 助手
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 莱姆 (Lime)
+Role: Raddy's assistant, appears in T3 signal light scene
+Personality: young, eager, tries to help but sometimes adds to chaos
+Reference: Middle row, second from left in design sheet 
+  (lime-green with tall spiky flame hair)
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, vibrant lime-green #A4E04A
+Head-top decoration:
+- TALL SPIKY FLAME-LIKE HAIR rising from the top
+- Like a single fire flame shape — 3-4 tall pointy tips
+- Hair color: slightly brighter lime #C2F54D
+- Gives a "young and peppy" feel
+
+Eyes:
+- Large ovals with sleepy top eyelid
+- Slightly tilted up at corners (youthful eagerness)
+- Black pupils with highlight
+
+Mouth: small cheerful curve (slightly bigger smile than average)
+
+Body: trapezoid, SAME lime #A4E04A as head
+
+============================================================
+COLORS (total: 3)
+============================================================
+
+- Lime Green    #A4E04A (main)
+- Light Lime    #C2F54D (flame hair)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Lime green wobble lines, more FAST / BOUNCY than others:
+- Small sparkle dots ✦
+- Quick zigzag energy marks
+- Suggests youthful excitement
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png       - eager default
+v2_helping.png    - earnestly pointing
+v3_sorry.png      - small droop eyes (messed up something)
+
+============================================================

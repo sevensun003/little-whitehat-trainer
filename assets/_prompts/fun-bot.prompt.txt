@@ -1,0 +1,103 @@
+============================================================
+Fun Bot (机器人) - 群演通用模板
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+[SPECIAL] This is a TEMPLATE for generating many background robots,
+          not a single named character. Used primarily in C7 面馆关 
+          (50 robots rushing the noodle shop).
+
+============================================================
+DESIGN INTENT
+============================================================
+
+Fun Bot is a "crowd template" — a base robot that can be 
+color-shifted and decoration-swapped in code to produce 
+dozens of visually distinct extras at runtime.
+
+Goal: With ONE SVG source + CSS/code manipulation,
+      generate 50 unique-looking crowd members for C7.
+
+============================================================
+BASE APPEARANCE
+============================================================
+
+Head: big round, NEUTRAL white/grey #E8E8E8 (染色目标)
+Head-top decoration: NONE in base form
+- In code, randomly apply one of the "decoration library" items
+  (see banana_workflow.md decoration library)
+
+Eyes:
+- Large ovals with sleepy half-lidded top (universe)
+- Generic style — no character-specific quirks
+- Black pupils, white highlight
+
+Mouth: small flat line (neutral — this is a random pedestrian)
+
+Body: trapezoid, same grey #E8E8E8 as head (染色目标)
+
+============================================================
+COLOR SWAP STRATEGY
+============================================================
+
+In code, the base grey is replaced with a random color from the 
+universe palette:
+- Red #E74C3C, Blue #3498DB, Green #2ECC71, Yellow #F1C40F, 
+- Purple #9B59B6, Orange #E67E22, Pink #FF6B9D, etc.
+
+Both head and body get the SAME color (simple染色).
+
+============================================================
+DECORATION SWAP STRATEGY
+============================================================
+
+Randomly pick ONE from:
+- rabbit-ears.svg
+- cat-ears.svg
+- bear-ears.svg
+- horn-1.svg (single spike)
+- horn-2.svg (double horns)
+- spike-hair.svg
+- antenna.svg
+- bucket-hat.svg
+- bald (null — keep as-is)
+
+Each decoration is a small SVG overlay placed on top of the head.
+
+============================================================
+OUTPUT (Banana generates the BASE)
+============================================================
+
+What Banana needs to produce:
+- A single base_robot.svg file (vector, editable)
+- Pure shapes, no color fills (or filled with a "#TBD" placeholder)
+- Outlines in black
+- NO decoration (decorations applied in code)
+- Transparent background
+- 64x64 optimal size
+
+============================================================
+RENDER TIME IN GAME
+============================================================
+
+For C7's 50-robot crowd:
+```
+for (let i = 0; i < 50; i++) {
+  const color = randomFromPalette();
+  const deco = randomFromDecorations();  // or null
+  renderFunBot({ baseRobot, color, deco, x, y });
+}
+```
+
+This keeps image-generation budget at 1 robot + ~10 decoration SVGs 
+instead of 50 unique robots.
+
+============================================================
+STYLE CHECK
+============================================================
+
+- [ ] Same art style as named characters (consistent in crowd scenes)
+- [ ] Blank enough that color-shifting doesn't look off
+- [ ] No distinguishing facial features beyond universe defaults
+
+============================================================

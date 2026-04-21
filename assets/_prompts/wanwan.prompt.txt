@@ -1,0 +1,99 @@
+============================================================
+婉婉 (Wanwan) - 主角
+THE PROTAGONIST (HUMAN GIRL - EXCEPTION TO GLOBAL STYLE)
+============================================================
+
+[NOTE] 婉婉是唯一的拟人角色,凸显"你是这个世界的特别存在"。
+不引用 _STYLE_GUIDE.prompt.txt,使用独立风格规则。
+但仍保持"手绘 + 粗描边 + 纯色"的整体美术基调,
+以便与其他机器人角色同屏不违和。
+
+============================================================
+
+Art style: hand-drawn cartoon, same line work and flat color 
+philosophy as the robot characters, but with HUMAN proportions.
+
+Line work: thick uneven black outline (~3px), slightly wobbly.
+Fill: flat solid colors, no gradients or shadows.
+
+============================================================
+CHARACTER SPEC
+============================================================
+
+Name: 婉婉 (Wanwan)
+Age appearance: ~7 years old girl
+Role: The player character, a "white hat" (good hacker) kid
+
+Body proportions: 3-head-tall chibi style 
+(head is ~1/3 of total height)
+
+============================================================
+APPEARANCE
+============================================================
+
+Head:
+- Round cheerful face with large eyes (same sleepy-chill eye style 
+  as other characters, to maintain universe consistency, 
+  but slightly more alert - she's the active hero)
+- Small curved smile, simple
+- Small rosy cheeks (two pink dots)
+
+Hair: 
+- Short bob cut, black #1A1A1A
+- Hair visible under the cap
+
+Signature item: WHITE BASEBALL CAP (鸭舌帽)
+- Pure white #FFFFFF with thin black outline
+- Cap visor pointing forward
+- Small pink star or heart patch on the front (identity marker)
+
+Outfit:
+- White short-sleeve T-shirt #FFFFFF
+- Blue overalls or shorts #3498DB
+- Small white sneakers #FFFFFF with blue laces
+
+Arms and legs: 
+- Simple rounded limbs (SHE HAS them, unlike robots)
+- Small hands, small feet
+
+============================================================
+COLORS (total: 4-5 colors)
+============================================================
+
+- White #FFFFFF (cap, shirt, shoes)
+- Blue #3498DB (pants)
+- Black #1A1A1A (hair, outlines)
+- Skin #FDE3C3 (face, arms)
+- Pink #FF6B9D (cheeks, cap patch)
+
+============================================================
+POSE & EXPRESSION
+============================================================
+
+Default pose: standing facing camera, slight confident smile,
+one hand up in a friendly wave or holding a command card.
+
+Mood: curious, brave, never scared, ready to help.
+
+Wobble lines: add 3-4 light blue/pink wobble lines around her
+to match the universe style.
+
+============================================================
+OUTPUT
+============================================================
+
+- 512x512 canvas (detailed portrait) or 64x64 in-game sprite
+- Transparent background
+- Front-facing or 3/4 view
+
+============================================================
+VARIANTS NEEDED
+============================================================
+
+v1_default.png   - standing idle
+v2_walking.png   - walking pose (one foot forward)
+v3_thinking.png  - hand on chin, thinking
+v4_success.png   - arms up in victory
+v5_sad.png       - head down slightly (used when level fails)
+
+============================================================

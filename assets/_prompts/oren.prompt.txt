@@ -1,0 +1,77 @@
+============================================================
+奥伦 (Oren) - 橙色耳机 DJ 信号中继员
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 奥伦 (Oren)
+Role: Signal relay messenger, DJ-vibes robot, joins party in C3
+Personality: chill, laid-back, "in the zone", surprisingly observant
+Reference position in design sheet: middle row, second from left
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, orange #E67E22
+Head-top decoration: LARGE OVER-EAR HEADPHONES
+- Beige/cream #F5DEB3 headphone cups (like coffee foam color)
+- Thick headband arching across the top of the head
+- Small round balls/antenna tips on either end of the headband
+- A small lightning or sound-wave icon on each ear cup
+- The cups slightly overflow the edges of the round head
+
+Eyes:
+- Large oval eyes, MOST PRONOUNCED sleepy-lid of the whole cast
+- Almost "half-closed while vibing to music" energy
+- Thin focused eyebrow-like lines above the eyes 
+  (showing deep listening concentration)
+- Black pupils with tiny highlight
+- Little curve below each eye (chill mark)
+
+Mouth: a subtle flat dash (neutral/zen) OR small open oval 
+(as if lightly humming)
+
+Body:
+- Trapezoid, SAME orange #E67E22 as head
+- Optional: tiny beige stripe pattern on body (like speaker grille)
+  — kept minimal to respect 4-color limit
+
+============================================================
+COLORS (total: 4)
+============================================================
+
+- Orange  #E67E22 (main head + body)
+- Beige   #F5DEB3 (headphones)
+- Dark Orange #D35400 (inner headphone cups, wobble lines)
++ Black & White for outlines, eyes
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Musical-themed energy lines in orange:
+- Small musical notes floating ♪ ♫
+- Curved sound waves emanating from headphones
+- 2-3 orange dash marks
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png        - ultra chill, default DJ vibes
+v2_alert.png       - eyebrows lift slightly (signal detected!)
+v3_confused.png    - one eyebrow up, other down (something's off)
+v4_happy.png       - cheerful hum, small smile curl
+v5_thinking.png    - head-tilt, looking up
+
+============================================================
+OUTPUT
+============================================================
+
+- 512x512 portrait + 64x64 sprite  
+- Transparent background
+- Front-facing
+- Musical wobble lines active
+
+============================================================

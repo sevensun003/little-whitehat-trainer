@@ -1,0 +1,59 @@
+{
+  "id": "X2",
+  "title": "工厂大逃亡",
+  "act": 2,
+  "chapter": "追踪篇 · 综合",
+  "location": "废弃工厂出口",
+  "concept_intro": "综合 · 社工+越权",
+  "available_commands": ["direction", "social"],
+  "intro_dialog": [
+    { "speaker": "奥伦",     "text": "工厂大门上锁了!" },
+    { "speaker": "藤蔓妹妹", "text": "前门有守卫。" },
+    { "speaker": "小天",     "text": "先骗守卫,再找后门。" }
+  ],
+  "map": {
+    "size": [10, 8],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 7, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 8 },
+      { "x": 9, "y": 0, "w": 1, "h": 8 },
+      { "x": 4, "y": 3, "w": 1, "h": 4 },
+      { "x": 5, "y": 5, "w": 1, "h": 1 },
+      { "x": 6, "y": 5, "w": 1, "h": 1 },
+      { "x": 7, "y": 5, "w": 1, "h": 1 }
+    ],
+    "objects": [
+      { "type": "desk",  "pos": [2, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [1, 6], "size": [1, 1] },
+      { "type": "plant", "pos": [8, 6], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 4], "facing": "right" },
+    { "id": "guard",  "type": "npc", "pos": [2, 2], "facing": "down", "role": "guard", "aside_pos": [2, 1], "block_message": "站住!工单呢?" },
+    { "id": "front_door", "type": "blocked_door", "pos": [4, 2], "label": "管理员", "message": "管理员才能开!" },
+    { "id": "back_door",  "type": "goal_zone",    "pos": [8, 2], "goal": true, "label": "后门" }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上",  "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下",  "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左",  "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右",  "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "social",     "category": "social",    "label": "假扮水电工", "icon": "social_engineer", "action": "social_engineer", "persona": "水电工" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "back_door" },
+  "optimal_steps": 4,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "先上到守卫边,骗他让开。" },
+    { "level": 2, "text": "上 2 → 右 1 → 假扮 → 上 1 → 右 6。" },
+    { "level": 3, "text": "上 2,右 1,假扮,右 6,上 1。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "小天", "text": "骗守卫 + 绕后门。" },
+    { "speaker": "小天", "text": "两招加起来效果翻倍。" }
+  ],
+  "rewards": { "unlock_next": "X3" }
+}

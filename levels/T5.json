@@ -1,0 +1,71 @@
+{
+  "id": "T5",
+  "title": "重复浇花",
+  "act": 1,
+  "chapter": "学徒篇",
+  "location": "婉婉家院子",
+  "concept_intro": "逻辑指令·重复",
+  "available_commands": ["direction", "function", "logic"],
+  "intro_dialog": [
+    { "speaker": "大树先生", "text": "5 盆花要浇水..." },
+    { "speaker": "大树先生", "text": "一盆一盆好麻烦..." },
+    { "speaker": "小天",      "text": "试试「重复 5 次」指令!" },
+    { "speaker": "旁白",       "text": "把指令放进重复里,就能一次做 5 次。" }
+  ],
+  "map": {
+    "size": [10, 8],
+    "tileset": "garden",
+    "floor_tiles": "grass",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 7, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 8 },
+      { "x": 9, "y": 0, "w": 1, "h": 8 }
+    ],
+    "objects": [
+      { "type": "tree",   "pos": [1, 1], "size": [1, 1] },
+      { "type": "tree",   "pos": [8, 1], "size": [1, 1] },
+      { "type": "plant",  "pos": [1, 6], "size": [1, 1] },
+      { "type": "plant",  "pos": [8, 6], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player",  "type": "wanwan", "start_pos": [1, 4], "facing": "right" },
+    { "id": "dashu",    "type": "dashu",  "pos": [5, 2], "facing": "down" },
+    { "id": "flower1", "type": "flower", "pos": [2, 4], "watered": false, "goal_set": true },
+    { "id": "flower2", "type": "flower", "pos": [3, 4], "watered": false, "goal_set": true },
+    { "id": "flower3", "type": "flower", "pos": [4, 4], "watered": false, "goal_set": true },
+    { "id": "flower4", "type": "flower", "pos": [5, 4], "watered": false, "goal_set": true },
+    { "id": "flower5", "type": "flower", "pos": [6, 4], "watered": false, "goal_set": true }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上", "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下", "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左", "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右", "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "water",      "category": "function",  "label": "浇水", "icon": "water_drop", "action": "water" },
+    { "id": "repeat",     "category": "logic",     "label": "重复", "icon": "repeat_loop", "action": "repeat", "times_input": true, "is_container": true }
+  ],
+  "success_condition": {
+    "type": "all_watered",
+    "entity_ids": ["flower1","flower2","flower3","flower4","flower5"]
+  },
+  "optimal_steps": 2,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "用「重复」一次做很多事。" },
+    { "level": 2, "text": "重复 5 次:向右 1 步 + 浇水。" },
+    { "level": 3, "text": "加「重复 5 次」,里面放:向右1步、浇水。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "大树先生", "text": "舒服多啦~" },
+    { "speaker": "小天(紧急)", "text": "不好!" },
+    { "speaker": "小天",       "text": "镇上发现坏人的痕迹!" },
+    { "speaker": "小天",       "text": "需要你的帮助!" }
+  ],
+  "rewards": {
+    "unlock_next": "C1",
+    "unlock_character": null,
+    "first_time_dialog_card": "logic_card_explained"
+  }
+}

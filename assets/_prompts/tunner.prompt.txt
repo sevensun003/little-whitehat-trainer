@@ -1,0 +1,56 @@
+============================================================
+特纳 (Tunner) - 灰色尖刺 · C8 沙漠商人
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+
+Character: 特纳 (Tunner)
+Role: Desert merchant in C8, plays the "guess the password" game
+Personality: mysterious, enigmatic, amused by clever guessers
+Reference: Middle row, far right in design sheet (grey with outward spiky hair)
+
+============================================================
+APPEARANCE
+============================================================
+
+Head: big round, cool grey #7F8C8D
+Head-top decoration:
+- MANY SHARP SPIKES radiating OUTWARD from the head
+  (not just on top — all around the top half of the head)
+- Like a compass rose or a sun's rays, but sharp
+- Spike color: same grey, with slightly darker tips
+- ~6-8 spikes total, pointing in different directions
+
+Eyes:
+- Large ovals with sleepy top eyelid
+- Slight inward tilt at outer corners (mysterious/calculating)
+- Black pupils, small white highlight
+
+Mouth: small flat line with tiny curl (enigmatic)
+
+Body: trapezoid, SAME grey #7F8C8D as head
+
+============================================================
+COLORS (total: 3)
+============================================================
+
+- Grey       #7F8C8D (main)
+- Dark Grey  #5D6970 (spike tips, wobbles)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Grey wobbles. Include "?" marks and small geometric shapes 
+(triangles, diamonds) — feels puzzle-related.
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png      - enigmatic default
+v2_amused.png    - small curve up on mouth, one eye narrower
+v3_impressed.png - both eyes slightly open wider (at C8 clearing)
+
+============================================================

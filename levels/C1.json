@@ -1,0 +1,280 @@
+{
+  "id": "C1",
+  "title": "被偷改的购物清单",
+  "act": 1,
+  "chapter": "学徒篇",
+  "location": "樱桃镇超市入口",
+  "concept_intro": "指令注入",
+  "security_concept": {
+    "name": "指令注入",
+    "analogy": "就像有人在你妈妈的字条上偷加字",
+    "defense": "执行前,先检查每一条指令。"
+  },
+  "available_commands": [
+    "direction",
+    "function"
+  ],
+  "preset_queue": [
+    {
+      "id": "q1",
+      "action": "move",
+      "dir": "right",
+      "steps": 2,
+      "label": "向右 2 步",
+      "icon": "arrow_right"
+    },
+    {
+      "id": "q2",
+      "action": "buy",
+      "item": "milk",
+      "label": "买牛奶",
+      "icon": "buy_milk",
+      "safe": true
+    },
+    {
+      "id": "q3",
+      "action": "buy",
+      "item": "ice_cream",
+      "label": "买 100 个冰淇淋",
+      "icon": "buy_icecream",
+      "malicious": true
+    },
+    {
+      "id": "q4",
+      "action": "move",
+      "dir": "right",
+      "steps": 2,
+      "label": "向右 2 步",
+      "icon": "arrow_right"
+    }
+  ],
+  "intro_dialog": [
+    {
+      "speaker": "平基",
+      "text": "婉婉!出大事了!"
+    },
+    {
+      "speaker": "平基",
+      "text": "爸爸的购物清单被改了!"
+    },
+    {
+      "speaker": "平基",
+      "text": "他本来只要买牛奶。"
+    },
+    {
+      "speaker": "小天",
+      "text": "看右边队列。"
+    },
+    {
+      "speaker": "小天",
+      "text": "哪条指令不该在那里?"
+    }
+  ],
+  "map": {
+    "size": [
+      10,
+      8
+    ],
+    "tileset": "street",
+    "floor_tiles": "stone",
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 10,
+        "h": 1
+      },
+      {
+        "x": 0,
+        "y": 7,
+        "w": 10,
+        "h": 1
+      },
+      {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 8
+      },
+      {
+        "x": 9,
+        "y": 0,
+        "w": 1,
+        "h": 8
+      }
+    ],
+    "objects": [
+      {
+        "type": "tree",
+        "pos": [
+          1,
+          1
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "tree",
+        "pos": [
+          8,
+          1
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "shop",
+        "pos": [
+          4,
+          2
+        ],
+        "size": [
+          2,
+          2
+        ]
+      },
+      {
+        "type": "plant",
+        "pos": [
+          1,
+          6
+        ],
+        "size": [
+          1,
+          1
+        ]
+      },
+      {
+        "type": "plant",
+        "pos": [
+          8,
+          6
+        ],
+        "size": [
+          1,
+          1
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "id": "player",
+      "type": "wanwan",
+      "start_pos": [
+        1,
+        4
+      ],
+      "facing": "right"
+    },
+    {
+      "id": "papa",
+      "type": "pinki",
+      "pos": [
+        1,
+        3
+      ],
+      "facing": "down",
+      "role": "follower",
+      "follows": "player"
+    },
+    {
+      "id": "cashier",
+      "type": "npc",
+      "pos": [
+        6,
+        4
+      ],
+      "facing": "left"
+    },
+    {
+      "id": "milk_shelf",
+      "type": "shelf",
+      "pos": [
+        3,
+        3
+      ],
+      "sprite": "milk"
+    },
+    {
+      "id": "icecream_shelf",
+      "type": "shelf",
+      "pos": [
+        4,
+        3
+      ],
+      "sprite": "ice_cream",
+      "trap": true
+    },
+    {
+      "id": "checkout",
+      "type": "goal_zone",
+      "pos": [
+        5,
+        4
+      ],
+      "goal": true,
+      "label": "收银台"
+    }
+  ],
+  "available_command_cards": [],
+  "success_condition": {
+    "type": "execute_safe_queue",
+    "must_keep_actions": [
+      "move",
+      "buy:milk"
+    ],
+    "must_remove_actions": [
+      "buy:ice_cream"
+    ],
+    "reach_goal_id": "checkout"
+  },
+  "optimal_steps": 3,
+  "max_hint_level": 3,
+  "hints": [
+    {
+      "level": 1,
+      "text": "队列里有一条不对,找出来。"
+    },
+    {
+      "level": 2,
+      "text": "爸爸不需要买冰淇淋。"
+    },
+    {
+      "level": 3,
+      "text": "点「买 100 个冰淇淋」后面的 ×。"
+    }
+  ],
+  "on_clear_dialog": [
+    {
+      "speaker": "爸爸(平基)",
+      "text": "哎呀!差点被骗。"
+    },
+    {
+      "speaker": "小天",
+      "text": "这叫「指令注入」。"
+    },
+    {
+      "speaker": "小天",
+      "text": "坏人塞多余的指令。"
+    },
+    {
+      "speaker": "小天",
+      "text": "像有人在字条上偷加字。"
+    },
+    {
+      "speaker": "小天",
+      "text": "以后执行前要先看!"
+    }
+  ],
+  "rewards": {
+    "unlock_next": "C2",
+    "unlock_character": "pinki",
+    "first_time_dialog_card": "injection_explained"
+  },
+  "manual_tip": "🛒 爸爸的清单<br>被坏人改过了<br><br>看看<strong>右边</strong><br>队列里的指令<br><br>哪条不对?<br>点指令后的 <strong>×</strong><br>删掉它<br><br>再按 ▶ 执行"
+}

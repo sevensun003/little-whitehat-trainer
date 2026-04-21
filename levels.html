@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>白帽小队训练营 · 关卡选择</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body {
+      font-family: "PingFang SC","Microsoft YaHei",sans-serif;
+      background: linear-gradient(180deg, #AEDDFF 0%, #FFF5E6 60%, #FFD4DC 100%);
+      min-height: 100vh; overflow-x: hidden;
+    }
+    header {
+      text-align: center; padding: 20px;
+    }
+    header h1 {
+      font-size: 32px; color: #6B4423;
+      text-shadow: 2px 2px 0 #FFF;
+    }
+    header .subtitle {
+      font-size: 16px; color: #8B5A3C; margin-top: 4px;
+    }
+
+    /* 婉婉迷你像素头像(简版) */
+    .wanwan-mini {
+      display: inline-block; width: 40px; height: 40px;
+      background: #FFF; border: 3px solid #6B4423; border-radius: 50%;
+      position: relative; vertical-align: middle; margin: 0 8px;
+    }
+    .wanwan-mini::before {
+      content: ''; position: absolute; top: 4px; left: 4px; right: 4px; height: 10px;
+      background: #FFF; border-bottom: 2px solid #6B4423;
+    }
+    .wanwan-mini::after {
+      content: '❤'; position: absolute; top: 3px; left: 50%;
+      transform: translateX(-50%); color: #FF6B9D; font-size: 7px;
+    }
+
+    /* 进度条 */
+    #progress-bar {
+      max-width: 500px; margin: 10px auto;
+      background: #FFF; border: 3px solid #6B4423; border-radius: 12px;
+      padding: 8px 12px; display: flex; align-items: center; gap: 10px;
+    }
+    #progress-bar .label { color: #6B4423; font-weight: bold; }
+    #progress-bar .bar {
+      flex: 1; height: 20px; background: #EEE;
+      border-radius: 10px; overflow: hidden; border: 2px solid #CCC;
+    }
+    #progress-bar .fill {
+      height: 100%; background: linear-gradient(90deg, #66CC66, #2ECC71);
+      transition: width 0.5s;
+    }
+
+    /* 地图容器 */
+    #map {
+      position: relative;
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    /* 关卡节点 */
+    .level-node {
+      position: relative;
+      display: inline-block;
+      margin: 10px;
+      width: 120px; height: 140px;
+      vertical-align: top;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .level-node.locked { cursor: not-allowed; opacity: 0.5; filter: grayscale(0.8); }
+    .level-node:not(.locked):hover { transform: translateY(-4px); }
+
+    .level-icon {
+      width: 80px; height: 80px;
+      background: #FFF;
+      border: 4px solid #6B4423;
+      border-radius: 20px;
+      margin: 0 auto 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+      box-shadow: 0 4px 0 rgba(107, 68, 35, 0.3);
+      position: relative;
+    }
+    .level-node.cleared .level-icon {
+      background: #FFFACD;
+      border-color: #D4AC0D;
+    }
+    .level-node.cleared .level-icon::after {
+      content: '✓';
+      position: absolute;
+      top: -8px; right: -8px;
+      background: #2ECC71;
+      color: white;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 2px solid #FFF;
+      font-weight: bold;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .level-node.locked .level-icon {
+      background: #DDD;
+    }
+    .level-node.locked .level-icon::after {
+      content: '🔒';
+      position: absolute;
+      font-size: 30px;
+    }
+
+    .level-id {
+      font-weight: bold; color: #6B4423;
+      font-size: 14px;
+      background: #FFE4B5;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 2px solid #6B4423;
+    }
+    .level-title {
+      font-size: 13px; color: #6B4423;
+      margin-top: 4px;
+      height: 32px;
+      line-height: 1.2;
+    }
+    .level-concept {
+      font-size: 11px; color: #999;
+      margin-top: 2px;
+    }
+
+    /* 章节分组 */
+    .chapter {
+      margin: 40px 0 20px;
+    }
+    .chapter-title {
+      text-align: center;
+      font-size: 22px; color: #6B4423;
+      background: #FFF;
+      display: inline-block;
+      padding: 8px 24px;
+      border: 4px solid #6B4423;
+      border-radius: 20px;
+      box-shadow: 0 4px 0 rgba(107, 68, 35, 0.3);
+      margin-bottom: 16px;
+    }
+    .chapter-container {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.5);
+      border: 3px dashed #C19A6B;
+      border-radius: 20px;
+      padding: 10px;
+    }
+
+    /* 底部导航 */
+    footer {
+      text-align: center; padding: 20px;
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+    }
+    .btn {
+      padding: 12px 24px;
+      border: 3px solid #6B4423;
+      border-radius: 15px;
+      background: #FFF;
+      font-size: 16px; font-weight: bold;
+      color: #6B4423;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: translateY(1px); }
+    .btn.primary { background: #66CC66; color: white; border-color: #339933; }
+    .btn.danger { background: #FF9999; color: white; border-color: #CC3333; }
+
+    /* 云朵装饰 */
+    .cloud {
+      position: absolute;
+      background: #FFF;
+      border-radius: 50%;
+      opacity: 0.8;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="cloud" style="width:80px;height:40px;top:60px;left:10%;"></div>
+<div class="cloud" style="width:120px;height:60px;top:100px;right:15%;"></div>
+
+<header>
+  <h1>
+    <span class="wanwan-mini"></span>
+    白帽小队训练营
+  </h1>
+  <div class="subtitle">婉婉的冒险 · 选择一关开始</div>
+
+  <div id="progress-bar">
+    <span class="label">进度</span>
+    <div class="bar"><div class="fill" id="progress-fill" style="width:0%;"></div></div>
+    <span id="progress-text" style="color:#6B4423;font-weight:bold;">0 / 23</span>
+  </div>
+</header>
+
+<div id="map">
+  <!-- 章节和关卡由 JS 渲染 -->
+</div>
+
+<footer>
+  <button class="btn" onclick="window.location.href='index.html'">🎮 继续游戏</button>
+  <button class="btn" onclick="exportProgress()">💾 导出进度</button>
+  <button class="btn danger" onclick="resetProgress()">🔄 重新开始</button>
+</footer>
+
+<script>
+/* 关卡清单(从 SKILL 剧情结构) */
+const LEVELS = [
+  { chapter: '第一幕 · 学徒篇', icon: '🛏️', items: [
+    { id: 'T1', title: '醒来的婉婉', concept: '方向' },
+    { id: 'T2', title: '送早餐',    concept: '功能' },
+    { id: 'T3', title: '彩色信号灯', concept: '颜色' },
+    { id: 'T4', title: '图书馆借书证', concept: '凭证' },
+    { id: 'T5', title: '重复浇花',    concept: '逻辑' },
+    { id: 'C1', title: '被偷改的购物清单', concept: '指令注入' },
+    { id: 'C2', title: '红钥匙不见了',     concept: '凭证窃取' },
+    { id: 'C3', title: '会传话的邮筒',     concept: '中间人' },
+  ]},
+  { chapter: '第二幕 · 追踪篇', icon: '🌲', items: [
+    { id: 'C4', title: '假扮的水电工',     concept: '社工' },
+    { id: 'C5', title: '后门里的图书馆',   concept: '越权' },
+    { id: 'C6', title: '蓝色的危险',       concept: 'AI越狱' },
+    { id: 'C7', title: '冲进面馆的熊孩子', concept: 'DoS' },
+    { id: 'C8', title: '不告诉答案的 NPC', concept: '信息推断' },
+    { id: 'C9', title: '妈妈的 100 块',    concept: '时序' },
+    { id: 'X1', title: '森林迷路小队',     concept: '综合 1' },
+    { id: 'X2', title: '工厂大逃亡',       concept: '综合 2' },
+    { id: 'X3', title: '沙漠追影',         concept: '综合 3' },
+  ]},
+  { chapter: '第三幕 · 决战篇', icon: '🗼', items: [
+    { id: 'X4', title: '指令塔一层·大堂',  concept: '综合 4' },
+    { id: 'X5', title: '指令塔 50 层',     concept: '综合 5' },
+    { id: 'X6', title: '指令塔 99 层',     concept: '总决战' },
+    { id: 'M1', title: '模考一 · 基础',    concept: '模拟赛' },
+    { id: 'M2', title: '模考二 · 概念',    concept: '模拟赛' },
+    { id: 'M3', title: '模考三 · 实战',    concept: '模拟赛' },
+  ]},
+];
+
+/* 图标分配(按关卡类型) */
+const ICONS = {
+  T1:'🛏️', T2:'🥣', T3:'🚦', T4:'📚', T5:'🌻',
+  C1:'🛒', C2:'🗝️', C3:'📬', C4:'🌲', C5:'🚪',
+  C6:'🔵', C7:'🍜', C8:'🤐', C9:'💴',
+  X1:'🧭', X2:'⚙️', X3:'🏜️', X4:'🏛️', X5:'🌀',
+  X6:'👤', M1:'⏱️', M2:'⏱️', M3:'⏱️'
+};
+
+/* 读取进度 */
+function loadProgress() {
+  try {
+    return JSON.parse(localStorage.getItem('wanwan_progress') || '{}');
+  } catch { return {}; }
+}
+
+/* 判断关卡是否解锁:第一关默认解锁,其余要求前一关通关 */
+function isUnlocked(levelId, progress) {
+  const allIds = LEVELS.flatMap(c => c.items.map(i => i.id));
+  const idx = allIds.indexOf(levelId);
+  if (idx === 0) return true;
+  const prevId = allIds[idx - 1];
+  return !!progress[prevId]?.cleared;
+}
+
+/* 渲染 */
+function render() {
+  const progress = loadProgress();
+  const mapEl = document.getElementById('map');
+  mapEl.innerHTML = '';
+
+  const totalLevels = LEVELS.flatMap(c => c.items).length;
+  const clearedCount = Object.values(progress).filter(p => p.cleared).length;
+
+  // 进度条
+  document.getElementById('progress-fill').style.width =
+    (clearedCount / totalLevels * 100) + '%';
+  document.getElementById('progress-text').textContent =
+    `${clearedCount} / ${totalLevels}`;
+
+  LEVELS.forEach(chapter => {
+    const chapterDiv = document.createElement('div');
+    chapterDiv.className = 'chapter';
+
+    const titleDiv = document.createElement('div');
+    titleDiv.style.textAlign = 'center';
+    titleDiv.innerHTML = `<div class="chapter-title">${chapter.icon} ${chapter.chapter}</div>`;
+    chapterDiv.appendChild(titleDiv);
+
+    const container = document.createElement('div');
+    container.className = 'chapter-container';
+
+    chapter.items.forEach(item => {
+      const cleared = !!progress[item.id]?.cleared;
+      const unlocked = isUnlocked(item.id, progress);
+
+      const node = document.createElement('div');
+      node.className = 'level-node' +
+        (cleared ? ' cleared' : '') +
+        (!unlocked ? ' locked' : '');
+
+      node.innerHTML = `
+        <div class="level-icon">${unlocked ? (ICONS[item.id] || '❓') : ''}</div>
+        <div class="level-id">${item.id}</div>
+        <div class="level-title">${item.title}</div>
+        <div class="level-concept">${item.concept}</div>
+      `;
+
+      if (unlocked) {
+        node.onclick = () => {
+          // 跳到主游戏,带上 levelId 参数
+          window.location.href = `index.html?level=${item.id}`;
+        };
+      }
+
+      container.appendChild(node);
+    });
+
+    chapterDiv.appendChild(container);
+    mapEl.appendChild(chapterDiv);
+  });
+}
+
+function exportProgress() {
+  const p = localStorage.getItem('wanwan_progress') || '{}';
+  const blob = new Blob([p], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `wanwan-progress-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function resetProgress() {
+  if (!confirm('确定要重置所有进度吗?这会清空所有已通关的记录。')) return;
+  localStorage.removeItem('wanwan_progress');
+  render();
+  alert('✅ 进度已重置!');
+}
+
+// 启动
+render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+============================================================
+加诺德 (Garnold) - 蓝屏数字脸 · C9 ATM 机器人
+============================================================
+
+[INHERIT] Prepend _STYLE_GUIDE.prompt.txt
+[NOTE] Most unique silhouette — face is a rectangular screen,
+       not a round head. But body is still a trapezoid.
+
+Character: 加诺德 (Garnold)
+Role: Old ATM machine in C9, demonstrates timing attack
+Personality: slow, procedural, glitchy
+Reference: Middle row, second from right — tan body with blue screen face
+
+============================================================
+APPEARANCE — HEAD EXCEPTION
+============================================================
+
+Head: NOT a round circle. Instead:
+- A slightly ROUNDED SQUARE / RECTANGULAR screen
+- Screen frame: tan/gold color #D4AC6E (ATM case color)
+- Screen itself: cyan/teal #4ECDC4 (retro ATM display)
+- The "face" features are on the screen:
+  - Two horizontal rectangles for eyes (like old pixel display)
+  - Subtle scanline effect (horizontal thin lines across screen)
+  - Small loading dots "..." below eyes
+  
+This is still within universe (same silhouette shape, trapezoid body),
+but the "face" is digital rather than biological.
+
+Below the screen-head:
+- A narrow neck-like bar connecting head to body
+- Maybe one "slot" (card/cash slot) horizontal line
+
+Body: 
+- Trapezoid, tan color #D4AC6E
+- Slightly wider than usual (ATM is bulky)
+- A horizontal "cash slot" line on chest
+- Small button/keypad dots on lower body
+
+============================================================
+COLORS (total: 4)
+============================================================
+
+- Tan         #D4AC6E (case)
+- Cyan/Teal   #4ECDC4 (screen)
+- Dark Teal   #2E8E88 (screen scanlines)
++ Black & White
+
+============================================================
+WOBBLE LINES
+============================================================
+
+Teal pixel-art style wobbles:
+- Small pixel squares floating
+- "$" and number fragments
+- Loading "..." dots
+
+============================================================
+EXPRESSION VARIANTS
+============================================================
+
+v1_idle.png       - default display "欢迎使用"
+v2_processing.png - "处理中..." loading animation frame
+v3_glitch.png     - screen distorted (timing attack moment)
+v4_error.png      - "X" on screen + sparks
+
+============================================================
