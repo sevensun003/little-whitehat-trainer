@@ -1,0 +1,78 @@
+{
+  "id": "Y1",
+  "title": "银行联防战",
+  "act": 4,
+  "chapter": "实战篇 · 综合",
+  "location": "樱桃镇银行 + 妈妈厨房",
+  "concept_intro": "综合 · 弱口令 + CSRF",
+  "available_commands": ["direction", "guess", "password"],
+  "intro_dialog": [
+    { "speaker": "水母妹妹", "text": "银行密码要重设!" },
+    { "speaker": "水母妹妹", "text": "同时还收到四个礼物..." },
+    { "speaker": "小天",     "text": "先开保险箱再挑礼物。" },
+    { "speaker": "小天",     "text": "两招都要用上!" }
+  ],
+  "map": {
+    "size": [12, 7],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 12, "h": 1 },
+      { "x": 0, "y": 6, "w": 12, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 7 },
+      { "x": 11, "y": 0, "w": 1, "h": 7 }
+    ],
+    "objects": [
+      { "type": "desk",  "pos": [6, 5], "size": [1, 1] },
+      { "type": "plant", "pos": [1, 5], "size": [1, 1] },
+      { "type": "plant", "pos": [10, 5], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 3], "facing": "right", "tier": 2 },
+
+    { "id": "h1", "type": "shuimu", "pos": [2, 1], "facing": "down", "tier": 2,
+      "hint_text": "宝宝出生在 20 号~" },
+    { "id": "h2", "type": "durple", "pos": [2, 5], "facing": "up", "tier": 2,
+      "hint_text": "他是 19 年生的!" },
+    { "id": "h3", "type": "lime",   "pos": [3, 2], "facing": "down", "tier": 2,
+      "hint_text": "密码:年份 + 日子 4 位" },
+
+    { "id": "safe", "type": "safe_box", "pos": [5, 3], "correct_password": "2019" },
+
+    { "id": "gift_1", "type": "blocked_door", "pos": [7, 2], "label": "🎁 1",
+      "message": "字条:点我领红包!👎" },
+    { "id": "gift_2", "type": "blocked_door", "pos": [7, 4], "label": "🎁 2",
+      "message": "字条:帮我转 100 块!👎" },
+    { "id": "gift_3", "type": "goal_zone",    "pos": [10, 3], "goal": true, "label": "🎁 生日" },
+    { "id": "gift_4", "type": "blocked_door", "pos": [9, 2], "label": "🎁 4",
+      "message": "字条:填密码自动领奖!👎" },
+
+    { "id": "g_s1", "type": "info_stone", "pos": [8, 2], "hint_text": "礼物 1:点我领红包!" },
+    { "id": "g_s2", "type": "info_stone", "pos": [8, 4], "hint_text": "礼物 2:帮我转 100 块!" },
+    { "id": "g_s3", "type": "info_stone", "pos": [9, 3], "hint_text": "礼物 3:妈妈生日快乐!✅" },
+    { "id": "g_s4", "type": "info_stone", "pos": [10, 2], "hint_text": "礼物 4:填密码领奖!" }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上",  "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下",  "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左",  "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右",  "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "ask",        "category": "guess",     "label": "问一问", "icon": "ask_hint",    "action": "ask_hint" },
+    { "id": "enter_pwd",  "category": "password",  "label": "输密码", "icon": "keypad",      "action": "enter_password" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "gift_3" },
+  "optimal_steps": 14,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "先问 3 个邻居,再开保险箱。" },
+    { "level": 2, "text": "密码 2019;再找「生日快乐」礼物。" },
+    { "level": 3, "text": "走向 10 号,就是生日那份!" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "水母妹妹", "text": "钱没丢,礼物也对!" },
+    { "speaker": "小天", "text": "两招一起才安全。" },
+    { "speaker": "小天", "text": "密码要难、链接要警惕。" },
+    { "speaker": "小天", "text": "大人也要记这两条。" }
+  ],
+  "rewards": { "unlock_next": "Y2" }
+}

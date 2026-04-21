@@ -1,0 +1,17 @@
+{
+  "id": "M4",
+  "title": "模考四 · 实战",
+  "act": 4,
+  "chapter": "实战篇 · 模考",
+  "location": "星野站实战考场",
+  "concept_intro": "模考 · 进阶实战",
+  "contest_mode": true,
+  "time_limit_seconds": 1800,
+  "stages": ["D1", "D5", "D7"],
+  "intro_dialog": [
+    { "speaker": "小天", "text": "最后一场模考!" },
+    { "speaker": "小天", "text": "30 分钟内搞定 3 题。" },
+    { "speaker": "小天", "text": "密码、CSRF、凯撒。" },
+    { "speaker": "小天", "text": "都在平时学过~" }
+  ]
+}

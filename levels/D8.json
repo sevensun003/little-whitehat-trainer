@@ -1,0 +1,75 @@
+{
+  "id": "D8",
+  "title": "画里有话",
+  "act": 4,
+  "chapter": "实战篇",
+  "location": "星野站画廊",
+  "concept_intro": "隐写术",
+  "security_concept": {
+    "name": "隐写",
+    "analogy": "坏人把秘密字藏在图画里,表面看不出来。",
+    "defense": "重要图别乱发;要检查图里有没有东西。"
+  },
+  "available_commands": ["direction", "guess", "password"],
+  "intro_dialog": [
+    { "speaker": "藤蔓妹妹", "text": "墙上四幅画。" },
+    { "speaker": "藤蔓妹妹", "text": "其中一幅藏了字!" },
+    { "speaker": "小天",     "text": "仔细看每一幅。" },
+    { "speaker": "小天",     "text": "找到数字再输进去。" }
+  ],
+  "map": {
+    "size": [10, 7],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 6, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 7 },
+      { "x": 9, "y": 0, "w": 1, "h": 7 }
+    ],
+    "objects": [
+      { "type": "rug",   "pos": [4, 4], "size": [1, 1] },
+      { "type": "plant", "pos": [1, 5], "size": [1, 1] },
+      { "type": "plant", "pos": [8, 5], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player",  "type": "wanwan",  "start_pos": [1, 4], "facing": "right", "tier": 2 },
+    { "id": "tengman", "type": "tengman", "pos": [2, 4], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+
+    { "id": "p1", "type": "info_stone", "pos": [2, 2], "hint_text": "🏞️ 普通风景。没东西。" },
+    { "id": "p2", "type": "info_stone", "pos": [4, 2], "hint_text": "🌊 蓝色大海。没东西。" },
+    { "id": "p3", "type": "info_stone", "pos": [6, 2], "hint_text": "🌲 看右下角...有数字 4!" },
+    { "id": "p4", "type": "info_stone", "pos": [8, 2], "hint_text": "🌸 满是樱花。没东西。" },
+
+    { "id": "safe", "type": "safe_box",  "pos": [5, 4], "correct_password": "4" },
+    { "id": "goal", "type": "goal_zone", "pos": [5, 4], "goal": true, "label": "画廊深处" }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上",    "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下",    "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左",    "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右",    "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "ask",        "category": "guess",     "label": "看画",    "icon": "inspect_gift","action": "ask_hint" },
+    { "id": "enter_pwd",  "category": "password",  "label": "输数字",  "icon": "keypad",      "action": "enter_password" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 9,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "一幅一幅去看。" },
+    { "level": 2, "text": "森林那张右下角有字!" },
+    { "level": 3, "text": "数字是 4,直接输。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "藤蔓妹妹", "text": "真的藏字了!" },
+    { "speaker": "小天",     "text": "这叫「隐写」。" },
+    { "speaker": "小天",     "text": "把秘密塞到图片里。" },
+    { "speaker": "小天",     "text": "正常人根本看不出。" },
+    { "speaker": "小天",     "text": "坏人传情报用这招。" },
+    { "speaker": "藤蔓妹妹", "text": "所以要小心陌生图片!" }
+  ],
+  "rewards": {
+    "unlock_next": "Y1",
+    "first_time_dialog_card": "steganography_explained"
+  }
+}
