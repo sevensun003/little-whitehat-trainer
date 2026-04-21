@@ -15,9 +15,9 @@
   "preset_queue": [
     { "id": "q1", "action": "move", "dir": "right", "steps": 3, "label": "向右 3 步", "icon": "arrow_right" },
     { "id": "q2", "action": "move", "dir": "down",  "steps": 5, "label": "向下 5 步(坏)", "icon": "arrow_down", "malicious": true },
-    { "id": "q3", "action": "move", "dir": "up",    "steps": 1, "label": "向上 1 步", "icon": "arrow_up" },
-    { "id": "q4", "action": "move", "dir": "right", "steps": 3, "label": "向右 3 步", "icon": "arrow_right" },
-    { "id": "q5", "action": "move", "dir": "left",  "steps": 9, "label": "向左 9 步(坏)", "icon": "arrow_left", "malicious": true }
+    { "id": "q3", "action": "move", "dir": "right", "steps": 2, "label": "向右 2 步", "icon": "arrow_right" },
+    { "id": "q4", "action": "move", "dir": "left",  "steps": 9, "label": "向左 9 步(坏)", "icon": "arrow_left", "malicious": true },
+    { "id": "q5", "action": "move", "dir": "right", "steps": 2, "label": "向右 2 步", "icon": "arrow_right" }
   ],
   "map": {
     "size": [10, 5],
@@ -50,7 +50,7 @@
   "hints": [
     { "level": 1, "text": "队列里有两条坏指令。" },
     { "level": 2, "text": "向下 5 步、向左 9 步是坏的。" },
-    { "level": 3, "text": "删掉「向下 5 步」和「向左 9 步」。" }
+    { "level": 3, "text": "删掉它俩,剩下三条右步刚好到终点。" }
   ],
   "on_clear_dialog": [
     { "speaker": "小天", "text": "大堂安全了!" },
