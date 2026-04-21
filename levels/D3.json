@@ -1,0 +1,76 @@
+{
+  "id": "D3",
+  "title": "会说谎的魔盒",
+  "act": 4,
+  "chapter": "实战篇",
+  "location": "星野站废弃工厂地下室",
+  "concept_intro": "逆向工程",
+  "security_concept": {
+    "name": "逆向工程",
+    "analogy": "拆开盒子看里面,就能猜出规律。",
+    "defense": "重要秘密要加「罩子」,叫代码混淆。"
+  },
+  "available_commands": ["direction", "guess", "password"],
+  "intro_dialog": [
+    { "speaker": "藤蔓妹妹", "text": "这个盒子好奇怪!" },
+    { "speaker": "藤蔓妹妹", "text": "输 1 吐 3,输 2 吐 5。" },
+    { "speaker": "小天",     "text": "它现在要我们吐出 11。" },
+    { "speaker": "小天",     "text": "找出规律,倒推输入!" }
+  ],
+  "map": {
+    "size": [10, 7],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 6, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 7 },
+      { "x": 9, "y": 0, "w": 1, "h": 7 }
+    ],
+    "objects": [
+      { "type": "desk",      "pos": [4, 1], "size": [1, 1] },
+      { "type": "bookshelf", "pos": [1, 1], "size": [1, 1] },
+      { "type": "bookshelf", "pos": [8, 1], "size": [1, 1] },
+      { "type": "plant",     "pos": [1, 5], "size": [1, 1] },
+      { "type": "plant",     "pos": [8, 5], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player",  "type": "wanwan", "start_pos": [1, 3], "facing": "right", "tier": 2 },
+    { "id": "tengman", "type": "tengman", "pos": [2, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+
+    { "id": "stone_1", "type": "info_stone", "pos": [3, 4], "hint_text": "输 1 → 吐出 3" },
+    { "id": "stone_2", "type": "info_stone", "pos": [5, 4], "hint_text": "输 2 → 吐出 5" },
+    { "id": "stone_3", "type": "info_stone", "pos": [7, 4], "hint_text": "输 3 → 吐出 7" },
+
+    { "id": "box",     "type": "safe_box",   "pos": [8, 3], "correct_password": "5" },
+    { "id": "goal",    "type": "goal_zone",  "pos": [8, 3], "goal": true, "label": "魔盒中心" }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上",  "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下",  "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左",  "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右",  "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "ask",        "category": "guess",     "label": "问石头", "icon": "ask_hint",    "action": "ask_hint" },
+    { "id": "enter_pwd",  "category": "password",  "label": "输数字", "icon": "keypad",      "action": "enter_password" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 9,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "先看三组:1→3、2→5、3→7。" },
+    { "level": 2, "text": "规律:输入乘 2 再加 1。" },
+    { "level": 3, "text": "要 11,就 5 × 2 + 1 → 输 5。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "藤蔓妹妹", "text": "原来是 ×2+1!" },
+    { "speaker": "小天",     "text": "这叫「逆向工程」。" },
+    { "speaker": "小天",     "text": "拆开看,就能找规律。" },
+    { "speaker": "小天",     "text": "白帽用它找漏洞。" },
+    { "speaker": "小天",     "text": "坏人用它偷秘密。" },
+    { "speaker": "藤蔓妹妹", "text": "所以代码要加保护罩!" }
+  ],
+  "rewards": {
+    "unlock_next": "D4",
+    "first_time_dialog_card": "reverse_engineering_explained"
+  }
+}

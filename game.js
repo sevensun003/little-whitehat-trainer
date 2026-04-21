@@ -354,7 +354,7 @@ function renderCommandCards(cards) {
         social_engineer: '🕴️', hourglass: '⏳',
         send_noise: '📢', press_button: '🔘',
         ask_hint: '❓', break_mirror: '🔨',
-        keypad: '🔢'
+        keypad: '🔢', cable_cut: '✂️', inspect_gift: '🎁'
       };
       div.innerHTML = `<span class="icon">${iconMap[card.icon] || '●'}</span> ${card.label}`;
       div.onclick = () => onCardClick(card);
@@ -500,7 +500,7 @@ function renderQueue() {
         social_engineer: '🕴️', hourglass: '⏳',
         send_noise: '📢', press_button: '🔘',
         ask_hint: '❓', break_mirror: '🔨',
-        keypad: '🔢'
+        keypad: '🔢', cable_cut: '✂️', inspect_gift: '🎁'
       };
       const iconStr = iconMap[item.icon] ? iconMap[item.icon] + ' ' : '';
       div.innerHTML = `

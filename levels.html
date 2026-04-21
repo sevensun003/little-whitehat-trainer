@@ -199,7 +199,7 @@
   <div id="progress-bar">
     <span class="label">进度</span>
     <div class="bar"><div class="fill" id="progress-fill" style="width:0%;"></div></div>
-    <span id="progress-text" style="color:#6B4423;font-weight:bold;">0 / 24</span>
+    <span id="progress-text" style="color:#6B4423;font-weight:bold;">0 / 28</span>
   </div>
 </header>
 
@@ -246,7 +246,11 @@ const LEVELS = [
     { id: 'M3', title: '模考三 · 实战',    concept: '模拟赛' },
   ]},
   { chapter: '第四幕 · 实战篇 · 星野站危机', icon: '🌟', items: [
-    { id: 'D1', title: '奶奶的生日密码',  concept: '弱口令' },
+    { id: 'D1', title: '奶奶的生日密码',    concept: '弱口令' },
+    { id: 'D2', title: '一万次每秒',        concept: '暴力破解' },
+    { id: 'D3', title: '会说谎的魔盒',      concept: '逆向工程' },
+    { id: 'D4', title: '整个书架都不见了',  concept: '拖库/泄露' },
+    { id: 'D5', title: '带字条的礼物',      concept: 'CSRF' },
   ]},
 ];
 
@@ -257,7 +261,7 @@ const ICONS = {
   C6:'🔵', C7:'🍜', C8:'🤐', C9:'💴',
   X1:'🧭', X2:'⚙️', X3:'🏜️', X4:'🏛️', X5:'🌀',
   X6:'👤', M1:'⏱️', M2:'⏱️', M3:'⏱️',
-  D1:'🔐'
+  D1:'🔐', D2:'⏲️', D3:'🎲', D4:'📚', D5:'🎁'
 };
 
 /* 读取进度 */
