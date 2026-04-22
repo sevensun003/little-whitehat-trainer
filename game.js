@@ -56,7 +56,7 @@ function speak(text) {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.21b`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.22a`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
