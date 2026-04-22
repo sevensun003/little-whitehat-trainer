@@ -64,11 +64,11 @@
   ],
   "on_clear_dialog": [
     { "speaker": "奥伦", "text": "原来这么简单!" },
-    { "speaker": "小天", "text": "这叫「凯撒密码」。" },
+    { "speaker": "小天", "text": "这叫「**凯撒密码**」。" },
     { "speaker": "小天", "text": "把每个字或数往后移。" },
-    { "speaker": "小天", "text": "知道「移几位」就能读懂。" },
+    { "speaker": "小天", "text": "知道「**移几位**」就能读懂。" },
     { "speaker": "小天", "text": "真密码学比这难得多。" },
-    { "speaker": "奥伦", "text": "学到了!我也要加密我的日记!" }
+    { "speaker": "奥伦", "text": "学到了!我也要**加密**我的日记!" }
   ],
   "rewards": {
     "unlock_next": "D8",

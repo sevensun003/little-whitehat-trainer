@@ -63,11 +63,11 @@
   ],
   "on_clear_dialog": [
     { "speaker": "藤蔓妹妹", "text": "原来是 ×2+1!" },
-    { "speaker": "小天",     "text": "这叫「逆向工程」。" },
+    { "speaker": "小天",     "text": "这叫「**逆向工程**」。" },
     { "speaker": "小天",     "text": "拆开看,就能找规律。" },
     { "speaker": "小天",     "text": "白帽用它找漏洞。" },
     { "speaker": "小天",     "text": "坏人用它偷秘密。" },
-    { "speaker": "藤蔓妹妹", "text": "所以代码要加保护罩!" }
+    { "speaker": "藤蔓妹妹", "text": "所以代码要**加保护罩**!" }
   ],
   "rewards": {
     "unlock_next": "D4",

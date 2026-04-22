@@ -66,10 +66,10 @@
   ],
   "on_clear_dialog": [
     { "speaker": "小天", "text": "啊!我被骗了!" },
-    { "speaker": "小天", "text": "这叫「提示词绕过」。" },
+    { "speaker": "小天", "text": "这叫「**提示词绕过**」。" },
     { "speaker": "小天", "text": "让 AI 假装别人。" },
     { "speaker": "小天", "text": "它就忘了原来的规则。" },
-    { "speaker": "小天", "text": "真 AI 不能随便换身份。" },
+    { "speaker": "小天", "text": "真 AI **不能随便换身份**。" },
     { "speaker": "婉婉", "text": "我以后不这样骗你了!" }
   ],
   "rewards": {

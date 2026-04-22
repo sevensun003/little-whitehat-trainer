@@ -68,11 +68,11 @@
     { "level": 3, "text": "选最右边那条:1 亿年!" }
   ],
   "on_clear_dialog": [
-    { "speaker": "小天", "text": "这叫「暴力破解」。" },
+    { "speaker": "小天", "text": "这叫「**暴力破解**」。" },
     { "speaker": "小天", "text": "机器会挨个试完所有组合。" },
     { "speaker": "小天", "text": "短又简单 → 秒破。" },
     { "speaker": "小天", "text": "长又带符号 → 破不掉。" },
-    { "speaker": "特纳", "text": "记住:大写+小写+符号+数字!" },
+    { "speaker": "特纳", "text": "记住:**大写+小写+符号+数字**!" },
     { "speaker": "奥伦", "text": "我回去改 WiFi 密码!" }
   ],
   "rewards": {

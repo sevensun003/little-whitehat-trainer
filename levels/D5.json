@@ -68,11 +68,11 @@
   ],
   "on_clear_dialog": [
     { "speaker": "水母妹妹", "text": "幸好拦住了!" },
-    { "speaker": "小天",     "text": "这叫 CSRF。" },
+    { "speaker": "小天",     "text": "这叫 **CSRF**。" },
     { "speaker": "小天",     "text": "坏人借你登录过的身份。" },
     { "speaker": "小天",     "text": "你点一下,钱就飞啦!" },
-    { "speaker": "平基",     "text": "陌生链接都不点!" },
-    { "speaker": "小天",     "text": "转账要再开新窗口确认。" }
+    { "speaker": "平基",     "text": "**陌生链接都不点**!" },
+    { "speaker": "小天",     "text": "转账要**再开新窗口**确认。" }
   ],
   "rewards": {
     "unlock_next": "D6",

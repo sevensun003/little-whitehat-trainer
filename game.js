@@ -56,7 +56,7 @@ function speak(text) {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.22a`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.22b`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -83,6 +83,7 @@ async function loadLevel(levelId) {
   G.currentLevel = data;
   G.commandQueue = [];
   G.hintLevel = 0;
+  G._hintShown = new Set();   // 新关卡重置已弹出的线索记录
   if (typeof _editTarget !== 'undefined') _editTarget = null;
 
   // 支持预填队列(概念关用来展示"被篡改的队列"等初始状态)
@@ -609,6 +610,22 @@ function showDialog(lines, onFinish) {
   nextDialog();
 }
 
+// 把 **关键词** 替换成红色高亮 span;其余字符 HTML 转义
+function formatDialogText(raw) {
+  if (!raw) return '';
+  const escaped = String(raw)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+  // **xxx** → <span class="hl">xxx</span>
+  return escaped.replace(/\*\*([^*]+?)\*\*/g, '<span class="hl">$1</span>');
+}
+
+function stripMarkup(raw) {
+  return (raw || '').replace(/\*\*([^*]+?)\*\*/g, '$1');
+}
+
 function nextDialog() {
   if (_dialogQueue.length === 0) {
     document.getElementById('dialog-overlay').classList.remove('show');
@@ -617,8 +634,8 @@ function nextDialog() {
   }
   const line = _dialogQueue.shift();
   document.getElementById('dialog-speaker').textContent = line.speaker;
-  document.getElementById('dialog-text').textContent = line.text;
-  speak(line.text); // 自动朗读
+  document.getElementById('dialog-text').innerHTML = formatDialogText(line.text);
+  speak(stripMarkup(line.text)); // 朗读时去掉 ** 标记
 }
 
 document.getElementById('btn-dialog-next').onclick = nextDialog;
@@ -2286,7 +2303,8 @@ class MainScene extends Phaser.Scene {
               });
             }
           });
-          resolve(true);
+          // 自动提示:路过石头/NPC 会自动弹出它的线索(再等泡泡播完再继续)
+          this.autoShowNearbyHints().then(() => resolve(true));
         }
       });
     });
@@ -3172,20 +3190,47 @@ class MainScene extends Phaser.Scene {
     });
   }
 
-  showBubble(target, text) {
+  showBubble(target, text, holdMs) {
     return new Promise(resolve => {
+      // 自动根据文字长度计算停留时间(每字约 220ms,最少 1500ms,最多 5000ms)
+      const autoHold = Math.max(1500, Math.min(5000, (text || '').length * 220));
+      const hold = holdMs != null ? holdMs : autoHold;
+      const fade = 400;
+
       const bubble = this.add.text(target.x, target.y - 40, text, {
-        fontSize: '14px', color: '#6B4423',
+        fontSize: '15px', color: '#6B4423',
         backgroundColor: '#FFFACD',
-        padding: { x: 8, y: 4 }
+        padding: { x: 8, y: 5 },
+        wordWrap: { width: 200, useAdvancedWrap: true }
       }).setOrigin(0.5).setDepth(20);
+
+      // 等 hold ms 再开始淡出
       this.tweens.add({
         targets: bubble,
         y: target.y - 60, alpha: 0,
-        duration: 1500,
+        duration: fade,
+        delay: hold,
         onComplete: () => { bubble.destroy(); resolve(); }
       });
     });
+  }
+
+  // 在移动一步后,自动弹出附近未展示过的 info_stone / hint NPC 气泡
+  async autoShowNearbyHints() {
+    if (!G.entities) return;
+    if (!G._hintShown) G._hintShown = new Set();
+    const px = G.player.gridX, py = G.player.gridY;
+    for (const [id, en] of Object.entries(G.entities)) {
+      if (!en.hint_text) continue;
+      if (G._hintShown.has(id)) continue;
+      const dist = Math.abs(en.gridX - px) + Math.abs(en.gridY - py);
+      // info_stone:踩上即触发 (dist=0);NPC:相邻即触发 (dist<=1)
+      const threshold = en.type === 'info_stone' ? 0 : 1;
+      if (dist <= threshold) {
+        G._hintShown.add(id);
+        await this.showBubble(en.sprite, en.hint_text);
+      }
+    }
   }
 
   playSuccessAnim() {

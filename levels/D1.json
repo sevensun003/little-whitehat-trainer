@@ -70,9 +70,9 @@
   ],
   "on_clear_dialog": [
     { "speaker": "温达",  "text": "照片找到啦!谢谢婉婉!" },
-    { "speaker": "小天",  "text": "这叫「弱口令」。" },
+    { "speaker": "小天",  "text": "这叫「**弱口令**」。" },
     { "speaker": "小天",  "text": "生日门牌,大家都知道。" },
-    { "speaker": "小天",  "text": "密码要长、要难猜。" },
+    { "speaker": "小天",  "text": "**密码要长、要难猜**。" },
     { "speaker": "小天",  "text": "短密码几秒破。" },
     { "speaker": "小天",  "text": "长又难猜就超安全。" },
     { "speaker": "温达",  "text": "我换个更难的密码!" }

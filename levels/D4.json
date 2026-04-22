@@ -71,11 +71,11 @@
   ],
   "on_clear_dialog": [
     { "speaker": "电脑先生", "text": "书架保住啦!" },
-    { "speaker": "小天",     "text": "这叫「拖库」。" },
+    { "speaker": "小天",     "text": "这叫「**拖库**」。" },
     { "speaker": "小天",     "text": "坏人一口气抄整个仓库。" },
     { "speaker": "小天",     "text": "里面有电话、地址、生日..." },
-    { "speaker": "电脑先生", "text": "这些会被「信息泄露」出去!" },
-    { "speaker": "小天",     "text": "所以重要数据要加密保护。" }
+    { "speaker": "电脑先生", "text": "这些会被「**信息泄露**」出去!" },
+    { "speaker": "小天",     "text": "所以重要数据要**加密**保护。" }
   ],
   "rewards": {
     "unlock_next": "D5",

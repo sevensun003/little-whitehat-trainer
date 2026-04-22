@@ -179,6 +179,15 @@
       line-height: 1.6; min-height: 60px;
       margin-bottom: 15px;
     }
+    /* 对话里 **关键词** 渲染成红色高亮 */
+    #dialog-text .hl {
+      color: #E74C3C;
+      font-weight: bold;
+      background: #FFF3CD;
+      padding: 0 5px;
+      border-radius: 5px;
+      margin: 0 1px;
+    }
     #dialog-controls { display: flex; justify-content: flex-end; gap: 10px; }
 
     /* 步数输入弹窗 */
@@ -372,7 +381,7 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.22a</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.22b</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
@@ -432,6 +441,6 @@
 </div>
 
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=2026.04.22a"></script>
+<script src="game.js?v=2026.04.22b"></script>
 </body>
 </html>
