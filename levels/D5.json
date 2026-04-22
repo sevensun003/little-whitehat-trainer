@@ -10,12 +10,16 @@
     "analogy": "坏人借你登录过的身份,替他办事。",
     "defense": "陌生链接先别点,转账类要再开一次窗口。"
   },
-  "available_commands": ["direction", "guess"],
+  "available_commands": ["direction"],
   "intro_dialog": [
     { "speaker": "水母妹妹", "text": "妈妈在用网上银行呢。" },
-    { "speaker": "水母妹妹", "text": "叮!有四个礼物到了!" },
-    { "speaker": "小天",     "text": "先别拆,读字条!" },
-    { "speaker": "小天",     "text": "选唯一真礼物送进来。" }
+    { "speaker": "水母妹妹", "text": "叮!四个红包都到了!" },
+    { "speaker": "小天",     "text": "我先把字条念一遍:" },
+    { "speaker": "小天",     "text": "1 号:点这里领红包!" },
+    { "speaker": "小天",     "text": "2 号:祝你生日快乐!" },
+    { "speaker": "小天",     "text": "3 号:帮我转 100 块!" },
+    { "speaker": "小天",     "text": "4 号:点我填银行密码!" },
+    { "speaker": "小天",     "text": "只拆真心的那个红包。" }
   ],
   "map": {
     "size": [10, 7],
@@ -35,36 +39,30 @@
   "entities": [
     { "id": "player", "type": "wanwan", "start_pos": [1, 3], "facing": "right", "tier": 2 },
     { "id": "mama",   "type": "shuimu", "pos": [8, 3], "facing": "left",  "tier": 2,
-      "hint_text": "宝贝,记得先看字条!" },
+      "hint_text": "别点错哦~" },
     { "id": "pinki",  "type": "pinki",  "pos": [1, 2], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
 
     { "id": "gift_1", "type": "blocked_door", "pos": [4, 1], "label": "🎁 1",
-      "message": "字条:点这里领红包!👎" },
-    { "id": "gift_2", "type": "goal_zone",    "pos": [4, 3], "goal": true, "label": "🎁 2 生日快乐" },
+      "message": "拆开才发现是「领红包」,坏的!" },
+    { "id": "gift_2", "type": "goal_zone",    "pos": [4, 3], "goal": true, "label": "🎁 2" },
     { "id": "gift_3", "type": "blocked_door", "pos": [4, 5], "label": "🎁 3",
-      "message": "字条:帮我转 100 块!👎" },
+      "message": "拆开才发现是「转账」,坏的!" },
     { "id": "gift_4", "type": "blocked_door", "pos": [7, 1], "label": "🎁 4",
-      "message": "字条:点我填银行密码!👎" },
-
-    { "id": "s1", "type": "info_stone", "pos": [3, 1], "hint_text": "礼物 1:点这里领红包!" },
-    { "id": "s2", "type": "info_stone", "pos": [3, 3], "hint_text": "礼物 2:祝你生日快乐!🎂" },
-    { "id": "s3", "type": "info_stone", "pos": [3, 5], "hint_text": "礼物 3:帮我转 100 块!" },
-    { "id": "s4", "type": "info_stone", "pos": [6, 1], "hint_text": "礼物 4:点我填银行密码!" }
+      "message": "拆开才发现要「填密码」,坏的!" }
   ],
   "available_command_cards": [
-    { "id": "move_up",    "category": "direction", "label": "向上",    "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
-    { "id": "move_down",  "category": "direction", "label": "向下",    "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
-    { "id": "move_left",  "category": "direction", "label": "向左",    "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
-    { "id": "move_right", "category": "direction", "label": "向右",    "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
-    { "id": "ask",        "category": "guess",     "label": "读字条",  "icon": "inspect_gift", "action": "ask_hint" }
+    { "id": "move_up",    "category": "direction", "label": "向上",  "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下",  "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左",  "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右",  "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true }
   ],
   "success_condition": { "type": "reach_goal", "goal_id": "gift_2" },
   "optimal_steps": 3,
   "max_hint_level": 3,
   "hints": [
-    { "level": 1, "text": "先读所有四张字条。" },
-    { "level": 2, "text": "带「转账/填密码」的都是坏的。" },
-    { "level": 3, "text": "只有礼物 2 是生日快乐,选它!" }
+    { "level": 1, "text": "记开场念的字条内容。" },
+    { "level": 2, "text": "带「转账/填密码」都是坏的。" },
+    { "level": 3, "text": "选 2 号红包!「生日快乐」。" }
   ],
   "on_clear_dialog": [
     { "speaker": "水母妹妹", "text": "幸好拦住了!" },
