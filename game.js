@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23m`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23n`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1272,11 +1272,11 @@ class MainScene extends Phaser.Scene {
     const isNarrow = window.innerWidth < 1100;
 
     if (isNarrow) {
-      // 手机:追求格子适中 —— 靠 camera 跟随处理溢出
-      // 120px 上限:地图刚刚超屏,不需要大幅度滑动就能看全
+      // 手机:格子上限 80,避免地图被 cap 撑得太大超过 canvas
+      // canvas 宽固定 700 -> 10 列 70 / 12 列 58,大多数情况短边就自然匹配
       const tightFit = Math.min(maxTileW, maxTileH);
       const looseFit = Math.max(maxTileW, maxTileH);
-      G.tileSize = Math.max(tightFit, Math.min(looseFit, 120));
+      G.tileSize = Math.max(tightFit, Math.min(looseFit, 80));
     } else {
       G.tileSize = Math.min(maxTileW, maxTileH, 64);
     }
@@ -4242,10 +4242,14 @@ window.addEventListener('DOMContentLoaded', async () => {
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
   // 手机/平板窄屏:canvas CSS 已固定 700px,Phaser 内部世界也设成 700px
-  // 用 FIT 模式让 Phaser 按 CSS 的 700px 绘制,且不尝试"自动铺满 parent"
   const isNarrow = window.innerWidth < 1100;
+  const gameOuter = document.getElementById('game');
+  // 重要:高度读外层 #game 的实际可见高(grid 1fr 分配给地图的真实高度)
+  // 不读 #game-canvas,因为它是 height:100% 且被 flex 撑开,读回来不稳定
+  const gameHeight = isNarrow
+    ? (gameOuter ? gameOuter.clientHeight : window.innerHeight * 0.4)
+    : (gameDiv.clientHeight || window.innerHeight * 0.55);
   const gameWidth = isNarrow ? 700 : (gameDiv.clientWidth || window.innerWidth);
-  const gameHeight = gameDiv.clientHeight || window.innerHeight * 0.55;
 
   new Phaser.Game({
     type: Phaser.AUTO,
@@ -4255,8 +4259,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     backgroundColor: '#E8F4F8',
     scene: MainScene,
     scale: {
-      // 窄屏:NONE(不自动 resize,Phaser 世界就固定 700 × h)
-      // 宽屏:RESIZE(桌面无固定宽,随 parent 变)
       mode: isNarrow ? Phaser.Scale.NONE : Phaser.Scale.RESIZE,
       autoCenter: Phaser.Scale.NO_CENTER
     }
@@ -4274,10 +4276,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     _resizeTimer = setTimeout(() => {
       if (G.currentLevel && G.phaserScene) {
         _clearLoopTimers();
-        // 窄屏:Phaser 宽度固定 700,高度跟随 #game-canvas 实际高度
         const nowNarrow = window.innerWidth < 1100;
         if (nowNarrow && G.phaserScene.scale) {
-          const curH = gameDiv.clientHeight || window.innerHeight * 0.55;
+          // 高度用外层 #game 的可见高,不用 #game-canvas
+          const outer = document.getElementById('game');
+          const curH = outer ? outer.clientHeight : (window.innerHeight * 0.4);
           G.phaserScene.scale.resize(700, curH);
         }
         G.phaserScene.scene.restart({ levelData: G.currentLevel });
