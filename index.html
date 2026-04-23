@@ -273,6 +273,9 @@
       box-shadow: 0 0 0 4px rgba(212, 172, 13, 0.4);
     }
 
+    /* 底部空白占位(仅手机端激活,桌面默认隐藏) */
+    #bottom-spacer { display: none; }
+
     /* ============================================================
        手机/平板竖屏布局:视觉 3 层(指令列表 / 地图 / 指令序列)
        触发条件:窄屏 (<=1100px) 或竖屏 —— 覆盖手机 + iPad 竖屏
@@ -283,19 +286,28 @@
         /* iOS Safari 动态 UI 用 dvh 更稳 */
       }
 
-      /* —— 主栅格:68px 顶栏 + 220px cmdbar(容 2 行卡片) + 1fr game + 170px queue —— */
+      /* —— 主栅格:68 顶栏 + 220 cmdbar + 1fr game + 170 queue + 140 spacer —— */
       #app {
         display: grid;
-        grid-template-rows: 68px 220px 1fr 170px;
+        grid-template-rows: 68px 220px 1fr 170px 140px;
         grid-template-columns: 1fr;
         grid-template-areas:
           "topbar"
           "cmdbar"
           "game"
-          "queue";
+          "queue"
+          "spacer";
         height: 100dvh;
         width: 100vw;
         overflow: hidden;
+      }
+
+      /* 第 4 行:空白占位,把主要内容整体上推到屏幕上半部 */
+      #bottom-spacer {
+        grid-area: spacer;
+        display: block;
+        background: linear-gradient(180deg, #7CB342 0%, #558B2F 100%);
+        border-top: 3px solid #E8C579;
       }
 
       /* —— 顶栏:68px,按钮再大一档 —— */
@@ -404,12 +416,12 @@
         -webkit-overflow-scrolling: touch;
       }
       #game-canvas {
-        width: 900px;
+        width: 700px;
         height: 100%;
         min-height: 0;
       }
       #game-canvas canvas {
-        width: 900px !important;
+        width: 700px !important;
         height: 100% !important;
         display: block;
       }
@@ -478,7 +490,7 @@
       .speak-btn { width: 54px; height: 54px; font-size: 26px; }
     }
 
-    /* 注:v2026.04.23i 起移除 ≤380px 小屏压缩(用户确认不使用小屏手机)
+    /* 注:v2026.04.23j 起移除 ≤380px 小屏压缩(用户确认不使用小屏手机)
        所有手机尺寸统一使用上方主手机布局,字体保持 1.5× 大 */
   </style>
 </head>
@@ -491,7 +503,7 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23i</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23j</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
@@ -520,6 +532,9 @@
     </div>
     <div id="queue-list"></div>
   </div>
+
+  <!-- 第 4 行:底部空白占位(手机端把布局整体上移,方便单手操作) -->
+  <div id="bottom-spacer" aria-hidden="true"></div>
 
 </div>
 
@@ -557,6 +572,6 @@
 </div>
 
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=2026.04.23i"></script>
+<script src="game.js?v=2026.04.23j"></script>
 </body>
 </html>
