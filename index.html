@@ -404,24 +404,32 @@
       }
       .cmd-card .icon { font-size: 36px; line-height: 1; }
 
-      /* —— 第 2 层 · 游戏地图:手机端 canvas 固定 900px 宽(略超屏可横滑),外层横向滚动 —— */
+      /* —— 第 2 层 · 游戏地图:flex 确保子元素按 700px 撑开 —— */
       #game {
         grid-area: game;
         min-height: 0;
         min-width: 0;
-        background: #E8F4F8;
+        background: #7CB342;  /* 草地绿 —— 即使有空白也不是刺眼的天蓝 */
         position: relative;
         overflow-x: auto;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
+        display: flex;                /* 关键:让子元素不被压缩 */
+        align-items: stretch;
       }
       #game-canvas {
         width: 700px;
         height: 100%;
         min-height: 0;
+        flex-shrink: 0;                /* 不被 flex 父级压缩 */
+        flex-grow: 0;
+        flex-basis: 700px;             /* 明确基础宽 */
+        display: block;
+        position: relative;            /* 给云朵绝对定位的锚点 */
       }
-      /* Phaser 自己给 canvas 设尺寸;CSS 不再强制覆盖 */
-      #game-canvas canvas {
+      #game-canvas > canvas {
+        width: 100% !important;
+        height: 100% !important;
         display: block;
       }
 
@@ -489,7 +497,7 @@
       .speak-btn { width: 54px; height: 54px; font-size: 26px; }
     }
 
-    /* 注:v2026.04.23k 起移除 ≤380px 小屏压缩(用户确认不使用小屏手机)
+    /* 注:v2026.04.23l 起移除 ≤380px 小屏压缩(用户确认不使用小屏手机)
        所有手机尺寸统一使用上方主手机布局,字体保持 1.5× 大 */
   </style>
 </head>
@@ -502,7 +510,7 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23k</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23l</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
@@ -571,6 +579,6 @@
 </div>
 
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=2026.04.23k"></script>
+<script src="game.js?v=2026.04.23l"></script>
 </body>
 </html>
