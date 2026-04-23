@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=20260424b`);
+  const res = await fetch(`levels/${levelId}.json?v=20260424c`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1265,16 +1265,15 @@ class MainScene extends Phaser.Scene {
     const availH = this.scale.height;
     const maxTileW = Math.floor(availW / cols);
     const maxTileH = Math.floor(availH / rows);
-    // 手机/平板竖屏:允许格子大到 160,地图会溢出屏幕,用户横滑查看
+    // 手机/平板竖屏:tileSize 上限 100,且取 min(宽, 高)确保地图不溢出
     const isNarrow = window.innerWidth < 1100;
-    const cap = isNarrow ? 160 : 64;
-    G.tileSize = Math.min(Math.max(maxTileW, maxTileH), cap);
+    const cap = isNarrow ? 100 : 64;
+    G.tileSize = Math.min(maxTileW, maxTileH, cap);
 
     const mapPixW = cols * G.tileSize;
     const mapPixH = rows * G.tileSize;
 
-    // 窄屏:把 Phaser 世界 resize 成地图实际大小,canvas 会跟着变大
-    // 这样地图 100% 铺满 canvas,用户通过 #game 外层 overflow-x 横滑查看
+    // 窄屏:把 Phaser 世界 resize 成地图实际大小
     if (isNarrow && this.scale) {
       this.scale.resize(mapPixW, mapPixH);
     }
@@ -1283,7 +1282,6 @@ class MainScene extends Phaser.Scene {
     const finalW = isNarrow ? mapPixW : availW;
     const finalH = isNarrow ? mapPixH : availH;
 
-    // 地图居中(窄屏因为 canvas = 地图大小,居中 = 0)
     G.mapOriginX = Math.max(0, (finalW - mapPixW) / 2);
     G.mapOriginY = Math.max(0, (finalH - mapPixH) / 2);
 
