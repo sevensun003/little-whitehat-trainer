@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23g`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23h`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1267,8 +1267,9 @@ class MainScene extends Phaser.Scene {
     const availH = this.scale.height;
     const maxTileW = Math.floor(availW / cols);
     const maxTileH = Math.floor(availH / rows);
-    // 用视口宽度判断是否手机(canvas 现在手机端被固定到 1200,不能用它判断)
-    const isNarrow = window.innerWidth < 700;
+    // 用视口宽度判断是否窄屏(手机/平板竖屏)
+    // 1100 的阈值覆盖:手机(<500)、iPad 竖屏(~820)、iPad Pro 竖屏(~1024)
+    const isNarrow = window.innerWidth < 1100;
 
     if (isNarrow) {
       // 手机:追求格子尽可能大 —— 靠 camera 跟随处理溢出
@@ -2787,8 +2788,8 @@ class MainScene extends Phaser.Scene {
             en.gridX === nx && en.gridY === ny
           );
           const afterHint = async () => {
-            // 手机端:把 DOM 视口滚到婉婉附近(canvas 1200px 宽,用户视口更小)
-            if (window.innerWidth < 700) {
+            // 手机/平板竖屏:把 DOM 视口滚到婉婉附近(canvas 1200px 宽,用户视口更小)
+            if (window.innerWidth < 1100) {
               this._scrollViewportToPlayer();
             }
             if (fakeDoor) {

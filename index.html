@@ -274,20 +274,19 @@
     }
 
     /* ============================================================
-       手机竖屏 / 窄屏布局:
-       视觉 3 层(指令列表 / 地图 / 指令序列)+ 最细顶栏保留按钮
-       触发条件:窄屏 (<=768px) 或竖屏
+       手机/平板竖屏布局:视觉 3 层(指令列表 / 地图 / 指令序列)
+       触发条件:窄屏 (<=1100px) 或竖屏 —— 覆盖手机 + iPad 竖屏
        ============================================================ */
-    @media (max-width: 768px), (orientation: portrait) {
+    @media (max-width: 1100px), (orientation: portrait) {
       html, body {
         height: 100%; overflow: hidden;
         /* iOS Safari 动态 UI 用 dvh 更稳 */
       }
 
-      /* —— 主栅格:68px 顶栏 + 120px cmdbar + 1fr game + 170px queue —— */
+      /* —— 主栅格:68px 顶栏 + 220px cmdbar(容 2 行卡片) + 1fr game + 170px queue —— */
       #app {
         display: grid;
-        grid-template-rows: 68px 120px 1fr 170px;
+        grid-template-rows: 68px 220px 1fr 170px;
         grid-template-columns: 1fr;
         grid-template-areas:
           "topbar"
@@ -327,34 +326,36 @@
         border-radius: 14px;
       }
 
-      /* —— 第 1 层 · 指令列表:72px 一行横排 + 横向滚动(含分类名) —— */
+      /* —— 第 1 层 · 指令列表:单行 120px;指令多时可以纵向滚(内部 wrap 到 2 行) —— */
       #cmdbar {
         grid-area: cmdbar;
         border-right: none;
         border-bottom: 2px solid #E8C579;
         background: #FFF;
         padding: 4px 6px;
-        overflow-x: auto;
-        overflow-y: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;         /* 纵向滚:2 行排不下时可以上下滑 */
         -webkit-overflow-scrolling: touch;
         min-width: 0;
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
-        align-items: center;
+        align-items: flex-start;
         gap: 4px;
       }
       /* 静态的 "指令手册" 外层标题 —— 手机端隐藏,省空间 */
       #cmdbar > h3 { display: none; }
 
-      /* 动态内容容器 cmd-list —— 也横排,这样里面的"分类 h3 + 卡片"才能一起横着滑 */
+      /* 动态内容容器 cmd-list —— 横排,指令多时自动换行成 2 行 */
       #cmd-list {
         display: flex;
         flex-direction: row;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;        /* 允许换行 */
         align-items: center;
+        justify-content: flex-start;
         gap: 6px;
         min-width: 0;
+        padding: 2px 0;
       }
 
       /* 分类名小标签(方向 / 密码 / 病毒…) */
@@ -477,7 +478,7 @@
       .speak-btn { width: 54px; height: 54px; font-size: 26px; }
     }
 
-    /* 注:v2026.04.23g 起移除 ≤380px 小屏压缩(用户确认不使用小屏手机)
+    /* 注:v2026.04.23h 起移除 ≤380px 小屏压缩(用户确认不使用小屏手机)
        所有手机尺寸统一使用上方主手机布局,字体保持 1.5× 大 */
   </style>
 </head>
@@ -490,7 +491,7 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23g</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23h</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
@@ -556,6 +557,6 @@
 </div>
 
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=2026.04.23g"></script>
+<script src="game.js?v=2026.04.23h"></script>
 </body>
 </html>
