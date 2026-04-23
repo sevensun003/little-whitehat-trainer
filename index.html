@@ -273,124 +273,106 @@
       box-shadow: 0 0 0 4px rgba(212, 172, 13, 0.4);
     }
 
-    /* 底部空白占位(仅手机端激活,桌面默认隐藏) */
-    #bottom-spacer { display: none; }
-
     /* ============================================================
-       手机/平板竖屏布局:视觉 3 层(指令列表 / 地图 / 指令序列)
-       触发条件:窄屏 (<=1100px) 或竖屏 —— 覆盖手机 + iPad 竖屏
+       手机 / 平板竖屏布局(v2026.04.23q 重写版)
+       目标屏幕:980 × 2400(iPad 竖屏 / 大手机),CSS innerWidth ~980
+       设计原则:
+         1. 纯 grid 4 行:顶栏 60 / 指令列表 140 / 地图 1fr / 队列 160
+         2. 指令列表有 4+ 条自动换行
+         3. 地图自适应 grid 行高,不固定 canvas 宽度,不用 camera follow
+         4. 字体按 980 宽适中(不抄小手机也不抄桌面)
+       触发条件:竖屏 或 窄屏(≤ 1100)
        ============================================================ */
     @media (max-width: 1100px), (orientation: portrait) {
-      html, body {
-        height: 100%; overflow: hidden;
-        /* iOS Safari 动态 UI 用 dvh 更稳 */
-      }
+      html, body { height: 100%; overflow: hidden; }
 
-      /* —— 主栅格:68 顶栏 + 220 cmdbar + 1fr game + 170 queue + 140 spacer —— */
       #app {
-        display: grid;
-        grid-template-rows: 68px 220px 1fr 170px 140px;
+        grid-template-rows: 60px 140px 1fr 160px;
         grid-template-columns: 1fr;
         grid-template-areas:
           "topbar"
           "cmdbar"
           "game"
-          "queue"
-          "spacer";
+          "queue";
         height: 100dvh;
         width: 100vw;
         overflow: hidden;
       }
 
-      /* 第 4 行:空白占位,把主要内容整体上推到屏幕上半部 */
-      #bottom-spacer {
-        grid-area: spacer;
-        display: block;
-        background: linear-gradient(180deg, #7CB342 0%, #558B2F 100%);
-        border-top: 3px solid #E8C579;
-      }
-
-      /* —— 顶栏:68px,按钮再大一档 —— */
+      /* —— 顶栏 —— */
       #topbar {
         padding: 0 12px;
+        height: 60px;
+        gap: 8px;
         flex-wrap: nowrap;
-        gap: 10px;
         min-width: 0;
-        height: 68px;
-        border-bottom-width: 3px;
       }
       #topbar .level-info {
-        font-size: 24px;
+        font-size: 20px;
+        font-weight: bold;
         flex: 1;
         min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      #topbar .level-info .concept { font-size: 19px; margin-left: 10px; }
+      #topbar .level-info .concept { font-size: 15px; margin-left: 8px; }
       #topbar #version-tag { display: none; }
-      #topbar .controls { gap: 10px; flex-wrap: nowrap; flex-shrink: 0; }
+      #topbar .controls { gap: 8px; flex-wrap: nowrap; flex-shrink: 0; }
       .btn {
-        padding: 13px 20px;
-        font-size: 22px;
+        padding: 10px 16px;
+        font-size: 18px;
         font-weight: bold;
         border-width: 3px;
-        border-radius: 14px;
+        border-radius: 12px;
       }
 
-      /* —— 第 1 层 · 指令列表:单行 120px;指令多时可以纵向滚(内部 wrap 到 2 行) —— */
+      /* —— 第 1 层 · 指令列表:140px(允许 1-2 行,多了可纵向滚) —— */
       #cmdbar {
-        grid-area: cmdbar;
         border-right: none;
-        border-bottom: 2px solid #E8C579;
+        border-bottom: 3px solid #E8C579;
         background: #FFF;
-        padding: 4px 6px;
+        padding: 8px 10px;
         overflow-x: hidden;
-        overflow-y: auto;         /* 纵向滚:2 行排不下时可以上下滑 */
+        overflow-y: auto;
         -webkit-overflow-scrolling: touch;
         min-width: 0;
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
         align-items: flex-start;
-        gap: 4px;
+        gap: 6px;
       }
-      /* 静态的 "指令手册" 外层标题 —— 手机端隐藏,省空间 */
-      #cmdbar > h3 { display: none; }
-
-      /* 动态内容容器 cmd-list —— 横排,指令多时自动换行成 2 行 */
+      #cmdbar > h3 { display: none; }   /* 外层"指令手册"静态标题隐藏 */
       #cmd-list {
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;        /* 允许换行 */
+        flex-wrap: wrap;     /* 关键:超过 4 张自动换行 */
         align-items: center;
-        justify-content: flex-start;
-        gap: 6px;
+        gap: 8px;
         min-width: 0;
-        padding: 2px 0;
+        width: 100%;
       }
-
-      /* 分类名小标签(方向 / 密码 / 病毒…) */
+      /* 分类标签(方向 / 密码 ...) */
       #cmdbar h3 {
-        font-size: 22px;
+        font-size: 16px;
         margin: 0;
-        padding: 8px 14px;
+        padding: 5px 12px;
         flex-shrink: 0;
-        writing-mode: horizontal-tb;
         white-space: nowrap;
         background: #FFE4B5;
         color: #6B4423;
-        border-radius: 12px;
+        border-radius: 10px;
         line-height: 1.2;
         font-weight: bold;
       }
+      /* 指令卡(图标 + 文字并排) */
       .cmd-card {
         margin: 0;
-        min-width: 130px;
-        max-width: 170px;
-        min-height: 0;
-        padding: 10px 12px;
-        font-size: 22px;
+        min-width: 110px;
+        max-width: 150px;
+        padding: 8px 12px;
+        font-size: 18px;
         font-weight: bold;
         flex: 0 0 auto;
         gap: 6px;
@@ -400,57 +382,40 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        height: 100px;
+        height: 56px;
       }
-      .cmd-card .icon { font-size: 36px; line-height: 1; }
+      .cmd-card .icon { font-size: 26px; line-height: 1; }
 
-      /* —— 第 2 层 · 游戏地图:flex 确保子元素按 700px 撑开 —— */
+      /* —— 第 2 层 · 地图:自适应 grid 1fr,不做特殊处理 —— */
       #game {
-        grid-area: game;
         min-height: 0;
         min-width: 0;
-        background: #7CB342;  /* 草地绿 —— 即使有空白也不是刺眼的天蓝 */
+        background: #E8F4F8;
         position: relative;
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        display: flex;                /* 关键:让子元素不被压缩 */
-        align-items: stretch;
       }
       #game-canvas {
-        width: 700px;
-        height: 100%;
         min-height: 0;
-        flex-shrink: 0;                /* 不被 flex 父级压缩 */
-        flex-grow: 0;
-        flex-basis: 700px;             /* 明确基础宽 */
-        display: block;
-        position: relative;            /* 给云朵绝对定位的锚点 */
-      }
-      #game-canvas > canvas {
-        /* Phaser render buffer 是 700 × gameHeight;显示尺寸也按这个
-           不强制 100%,避免把地图挤扁 */
-        display: block;
+        width: 100%;
+        height: 100%;
       }
 
-      /* —— 第 3 层 · 指令序列:170px(吃掉地图下方空白) —— */
+      /* —— 第 3 层 · 指令队列:160px —— */
       #queue {
-        grid-area: queue;
-        padding: 10px 12px 12px;
+        padding: 8px 12px 10px;
         display: flex;
         flex-direction: column;
         min-width: 0;
         background: #FFF;
         border-top: 3px solid #E8C579;
       }
-      #queue-header { margin-bottom: 8px; align-items: center; }
-      #queue-title { font-size: 24px; font-weight: bold; }
-      #queue-header .btn { padding: 9px 20px; font-size: 20px; }
+      #queue-title { font-size: 20px; font-weight: bold; }
+      #queue-header { margin-bottom: 6px; align-items: center; }
+      #queue-header .btn { padding: 7px 16px; font-size: 16px; }
       #queue-list {
         min-height: 0;
         flex: 1;
-        padding: 8px;
-        gap: 10px;
+        padding: 6px;
+        gap: 8px;
         overflow-x: auto;
         overflow-y: hidden;
         align-items: center;
@@ -458,47 +423,46 @@
       }
       #queue-list:empty::before {
         content: "点上面的指令放到这里 ↑";
-        font-size: 22px;
+        font-size: 18px;
       }
       .queue-item {
-        padding: 13px 20px;
-        font-size: 22px;
+        padding: 10px 16px;
+        font-size: 18px;
         font-weight: bold;
         flex-shrink: 0;
       }
-      .queue-item .remove { font-size: 32px; margin-left: 8px; }
+      .queue-item .remove { font-size: 26px; margin-left: 6px; }
 
       /* —— 对话弹窗 —— */
       #dialog-box {
-        margin: 10px;
+        margin: 12px;
         min-width: unset;
-        max-width: calc(100vw - 20px);
-        padding: 26px 28px;
+        max-width: calc(100vw - 24px);
+        padding: 22px 24px;
       }
-      #dialog-speaker { font-size: 32px; }
-      #dialog-text { font-size: 34px; min-height: 90px; line-height: 1.5; }
+      #dialog-speaker { font-size: 22px; }
+      #dialog-text { font-size: 26px; min-height: 70px; line-height: 1.5; }
       #dialog-controls {
         flex-wrap: wrap;
         justify-content: center;
-        gap: 12px;
+        gap: 10px;
       }
 
       /* —— 步数输入弹窗 —— */
       #step-input-box {
-        margin: 10px;
+        margin: 12px;
         min-width: unset;
-        max-width: calc(100vw - 20px);
-        padding: 28px;
+        max-width: calc(100vw - 24px);
+        padding: 22px;
       }
-      #step-input-box h3 { font-size: 32px; }
-      .step-btn { width: 72px; height: 72px; font-size: 32px; }
+      #step-input-box h3 { font-size: 24px; }
+      .step-btn { width: 56px; height: 56px; font-size: 24px; }
 
       /* —— 朗读按钮 —— */
-      .speak-btn { width: 54px; height: 54px; font-size: 26px; }
+      .speak-btn { width: 40px; height: 40px; font-size: 18px; }
     }
 
-    /* 注:v2026.04.23p 起移除 ≤380px 小屏压缩(用户确认不使用小屏手机)
-       所有手机尺寸统一使用上方主手机布局,字体保持 1.5× 大 */
+    /* 原先的 ≤380px 小屏压缩:已移除(用户明确不用小屏手机) */
   </style>
 </head>
 <body>
@@ -510,7 +474,7 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23p</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23q</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
@@ -539,9 +503,6 @@
     </div>
     <div id="queue-list"></div>
   </div>
-
-  <!-- 第 4 行:底部空白占位(手机端把布局整体上移,方便单手操作) -->
-  <div id="bottom-spacer" aria-hidden="true"></div>
 
 </div>
 
@@ -578,23 +539,7 @@
   <span class="close-x" onclick="document.getElementById('hint-bubble').style.display='none'">×</span>
 </div>
 
-<!-- 调试浮层(v2026.04.23p):显示尺寸参数,手机上方便排查 -->
-<div id="debug-overlay" style="
-  position:fixed; top:6px; left:6px; z-index:9999;
-  background:rgba(0,0,0,0.82); color:#0F0;
-  font-family:monospace; font-size:11px; line-height:1.4;
-  padding:6px 8px; border-radius:6px;
-  pointer-events:auto; max-width:52vw;
-  border:1px solid #0F0;
-">
-  <div id="dbg-line">📏 测量中…</div>
-  <button onclick="this.parentElement.style.display='none'" style="
-    margin-top:4px; padding:2px 8px; font-size:10px;
-    background:#222; color:#0F0; border:1px solid #0F0;
-    border-radius:4px; cursor:pointer;">关掉</button>
-</div>
-
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=2026.04.23p"></script>
+<script src="game.js?v=2026.04.23q"></script>
 </body>
 </html>

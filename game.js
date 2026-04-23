@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23p`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23q`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1260,38 +1260,14 @@ class MainScene extends Phaser.Scene {
 
     const [cols, rows] = this.levelData.map.size;
 
-    // 计算 tile 尺寸:
-    // 窄屏(手机)追求大 —— 允许地图超出屏幕,靠 camera 跟随玩家
-    // 宽屏(桌面)保持原先的"能装下就装下"
+    // 计算地图居中 + tile 尺寸自适应
     const availW = this.scale.width;
     const availH = this.scale.height;
     const maxTileW = Math.floor(availW / cols);
     const maxTileH = Math.floor(availH / rows);
-    // 用视口宽度判断是否窄屏(手机/平板竖屏)
-    // 1100 的阈值覆盖:手机(<500)、iPad 竖屏(~820)、iPad Pro 竖屏(~1024)
-    const isNarrow = window.innerWidth < 1100;
-
-    if (isNarrow) {
-      // 手机:简单干脆 —— tileSize 取两个方向都能装下的那个值(短边装下)
-      // 不再追求"宁愿溢出也要大",因为 canvas 宽是固定 700,横向溢出就会被裁
-      G.tileSize = Math.min(maxTileW, maxTileH);
-    } else {
-      G.tileSize = Math.min(maxTileW, maxTileH, 64);
-    }
-
-    const mapPixW = cols * G.tileSize;
-    const mapPixH = rows * G.tileSize;
-    G.mapOriginX = Math.max(0, (availW - mapPixW) / 2);
-    // 窄屏:地图顶到上方(仅 12px 边距),不再居中 —— 消除上方大片空白
-    // 宽屏:居中
-    G.mapOriginY = isNarrow ? 12 : Math.max(0, (availH - mapPixH) / 2);
-
-    // 若地图超出屏幕,启用摄像机跟随玩家
-    if (this.cameras && this.cameras.main) {
-      const worldW = Math.max(availW, mapPixW + G.mapOriginX * 2);
-      const worldH = Math.max(availH, mapPixH + G.mapOriginY * 2);
-      this.cameras.main.setBounds(0, 0, worldW, worldH);
-    }
+    G.tileSize = Math.min(maxTileW, maxTileH, 64);
+    G.mapOriginX = (availW - cols * G.tileSize) / 2;
+    G.mapOriginY = (availH - rows * G.tileSize) / 2;
 
     // ---- 登记墙壁(供 movePlayer 碰撞检测)----
     G.walls = new Set();
@@ -1320,50 +1296,6 @@ class MainScene extends Phaser.Scene {
           floorG.lineStyle(2, 0x2C3E50, 1);
           floorG.strokeRect(px + 1, py + 1, G.tileSize - 3, G.tileSize - 3);
           floorG.lineStyle(0);
-        }
-      }
-    }
-
-    // ---- 窄屏:在地图上下空白处绘制草地/天空,消除浅蓝空白 ----
-    // 关键:如果启用了 camera follow,这些装饰要固定在屏幕上不跟镜头滚 -> scrollFactor 0
-    if (isNarrow) {
-      const mapTop = G.mapOriginY;
-      const mapBottom = G.mapOriginY + rows * G.tileSize;
-      const decoTop = this.add.graphics();
-      decoTop.setScrollFactor(0);
-      decoTop.setDepth(-5);
-      // 上方(天空带):淡蓝 + 几朵云
-      if (mapTop > 0) {
-        decoTop.fillStyle(0xB8E0F5, 1);
-        decoTop.fillRect(0, 0, availW, mapTop);
-        decoTop.fillStyle(0xFFFFFF, 0.9);
-        [[availW*0.15, mapTop*0.5], [availW*0.55, mapTop*0.3], [availW*0.85, mapTop*0.6]].forEach(([x,y]) => {
-          decoTop.fillCircle(x, y, 14);
-          decoTop.fillCircle(x+14, y+4, 12);
-          decoTop.fillCircle(x-12, y+4, 10);
-        });
-      }
-      // 下方(草地带):绿色 + 草丛 + 花
-      if (mapBottom < availH) {
-        const decoBot = this.add.graphics();
-        decoBot.setScrollFactor(0);
-        decoBot.setDepth(-5);
-        decoBot.fillStyle(0x7CB342, 1);
-        decoBot.fillRect(0, mapBottom, availW, availH - mapBottom);
-        // 草丛小三角
-        decoBot.fillStyle(0x558B2F, 1);
-        for (let gx = 8; gx < availW; gx += 22) {
-          const gy = mapBottom + 8;
-          decoBot.fillTriangle(gx, gy + 10, gx + 4, gy, gx + 8, gy + 10);
-        }
-        // 几朵花
-        const spacing = Math.max(60, availW * 0.15);
-        for (let fx = availW * 0.12; fx < availW; fx += spacing) {
-          const fy = mapBottom + (availH - mapBottom) * 0.55;
-          decoBot.fillStyle(0xFFD54F, 1);
-          decoBot.fillCircle(fx, fy, 6);
-          decoBot.fillStyle(0xFF8A65, 1);
-          decoBot.fillCircle(fx + spacing * 0.5, fy + 8, 5);
         }
       }
     }
@@ -1684,11 +1616,6 @@ class MainScene extends Phaser.Scene {
     const player = entityList.find(e => e.id === 'player');
     if (player) {
       G.player = this.createWanwanSprite(player.start_pos[0], player.start_pos[1]);
-      // 手机端:canvas 被 CSS 固定成 1200px,外层 #game 横向滚动
-      // 我们让外层 DOM 自动滚到婉婉附近,不用 Phaser camera follow
-      if (isNarrow) {
-        this._scrollViewportToPlayer();
-      }
     }
 
     // ---- 开场对话 ----
@@ -2788,10 +2715,6 @@ class MainScene extends Phaser.Scene {
             en.gridX === nx && en.gridY === ny
           );
           const afterHint = async () => {
-            // 手机/平板竖屏:把 DOM 视口滚到婉婉附近(canvas 1200px 宽,用户视口更小)
-            if (window.innerWidth < 1100) {
-              this._scrollViewportToPlayer();
-            }
             if (fakeDoor) {
               fakeDoor.revealed = true;
               if (fakeDoor.reveal) fakeDoor.reveal();
@@ -4150,17 +4073,6 @@ class MainScene extends Phaser.Scene {
     });
   }
 
-  // 手机端:把外层 #game DIV 横向/纵向滚动,让玩家显示在视口中央附近
-  _scrollViewportToPlayer() {
-    const gameDiv = document.getElementById('game');
-    if (!gameDiv || !G.player) return;
-    const viewW = gameDiv.clientWidth;
-    const viewH = gameDiv.clientHeight;
-    const targetLeft = Math.max(0, G.player.x - viewW / 2);
-    const targetTop  = Math.max(0, G.player.y - viewH / 2);
-    gameDiv.scrollTo({ left: targetLeft, top: targetTop, behavior: 'smooth' });
-  }
-
   showBubble(target, text, holdMs) {
     return new Promise(resolve => {
       // 自动根据文字长度计算停留时间(每字约 220ms,最少 1500ms,最多 5000ms)
@@ -4237,34 +4149,18 @@ class MainScene extends Phaser.Scene {
 
 window.addEventListener('DOMContentLoaded', async () => {
   const gameDiv = document.getElementById('game-canvas');
-
-  // 等两帧,让 grid 布局(尤其 dvh)稳定下来再测量
-  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
-
-  const isNarrow = window.innerWidth < 1100;
-  const gameOuter = document.getElementById('game');
-  // 窄屏:Phaser 高度不再读容器,而是限制到一个固定的合理值 —— 避免 canvas 过高导致地图居中偏下
-  //  - 700(最大 720)刚好装下 10 列 × 70px / 7 行 × 80 的主流地图 + 上下装饰
-  //  - 下方露出的 #game 父级(草地绿)自然延伸到第 4 行 spacer,视觉连贯
-  const gameHeight = isNarrow
-    ? Math.min(720, Math.max(540, gameOuter ? gameOuter.clientHeight : 600))
-    : (gameDiv.clientHeight || window.innerHeight * 0.55);
-  // 但如果 #game 实际可用高度比 720 小,还是用实际的,避免超出 grid 区
-  const finalHeight = isNarrow && gameOuter && gameOuter.clientHeight > 0
-    ? Math.min(gameHeight, gameOuter.clientHeight - 8)
-    : gameHeight;
-  const gameWidth = isNarrow ? 700 : (gameDiv.clientWidth || window.innerWidth);
+  const w = gameDiv.clientWidth;
+  const h = gameDiv.clientHeight;
 
   new Phaser.Game({
     type: Phaser.AUTO,
-    width: gameWidth,
-    height: finalHeight,
+    width: w, height: h,
     parent: 'game-canvas',
-    backgroundColor: '#7CB342',   // 草地绿(若地图有空白露出,和下方草地融合)
+    backgroundColor: '#E8F4F8',
     scene: MainScene,
     scale: {
-      mode: isNarrow ? Phaser.Scale.NONE : Phaser.Scale.RESIZE,
-      autoCenter: Phaser.Scale.NO_CENTER
+      mode: Phaser.Scale.RESIZE,
+      autoCenter: Phaser.Scale.CENTER_BOTH
     }
   });
 
@@ -4272,53 +4168,4 @@ window.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   const levelId = params.get('level') || 'T1';
   await loadLevel(levelId);
-
-  // 窗口尺寸/朝向变化时,重算地图格子位置(关卡 restart)
-  let _resizeTimer = null;
-  const onResize = () => {
-    if (_resizeTimer) clearTimeout(_resizeTimer);
-    _resizeTimer = setTimeout(() => {
-      if (G.currentLevel && G.phaserScene) {
-        _clearLoopTimers();
-        const nowNarrow = window.innerWidth < 1100;
-        if (nowNarrow && G.phaserScene.scale) {
-          const outer = document.getElementById('game');
-          const outerH = outer ? outer.clientHeight : 600;
-          const newH = Math.min(720, Math.max(540, outerH - 8));
-          G.phaserScene.scale.resize(700, newH);
-        }
-        G.phaserScene.scene.restart({ levelData: G.currentLevel });
-      }
-    }, 250);
-  };
-  window.addEventListener('resize', onResize);
-  window.addEventListener('orientationchange', onResize);
-
-  // ========== 调试面板 ==========
-  // 每 500ms 更新一次,显示关键尺寸,手机端排查用
-  const dbgLine = document.getElementById('dbg-line');
-  if (dbgLine) {
-    const tick = () => {
-      try {
-        const g = document.getElementById('game');
-        const gc = document.getElementById('game-canvas');
-        const cnv = document.querySelector('#game-canvas canvas');
-        const vis = document.visualViewport;
-        const lines = [
-          `innerW  = ${window.innerWidth}  DPR=${window.devicePixelRatio}`,
-          `visualW = ${vis ? Math.round(vis.width) : '?'}`,
-          `#game.W = ${g ? g.offsetWidth : '?'}   scroll=${g ? g.scrollLeft + '/' + g.scrollWidth : '?'}`,
-          `#canvasDiv.W = ${gc ? gc.offsetWidth : '?'}`,
-          `canvas.W     = ${cnv ? cnv.offsetWidth : 'null'}  attr=${cnv ? cnv.width : '?'}`,
-          `tile = ${G.tileSize || '?'}   map = ${G.currentLevel ? G.currentLevel.map.size.join('x') : '?'}`,
-          `phaserW/H = ${G.phaserScene && G.phaserScene.scale ? Math.round(G.phaserScene.scale.width) + 'x' + Math.round(G.phaserScene.scale.height) : '?'}`
-        ];
-        dbgLine.innerHTML = lines.join('<br>');
-      } catch (e) {
-        dbgLine.textContent = 'dbg err: ' + e.message;
-      }
-    };
-    tick();
-    setInterval(tick, 500);
-  }
 });
