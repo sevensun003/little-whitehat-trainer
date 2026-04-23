@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23f`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23g`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1267,7 +1267,8 @@ class MainScene extends Phaser.Scene {
     const availH = this.scale.height;
     const maxTileW = Math.floor(availW / cols);
     const maxTileH = Math.floor(availH / rows);
-    const isNarrow = availW < 700;
+    // 用视口宽度判断是否手机(canvas 现在手机端被固定到 1200,不能用它判断)
+    const isNarrow = window.innerWidth < 700;
 
     if (isNarrow) {
       // 手机:追求格子尽可能大 —— 靠 camera 跟随处理溢出
@@ -1682,13 +1683,10 @@ class MainScene extends Phaser.Scene {
     const player = entityList.find(e => e.id === 'player');
     if (player) {
       G.player = this.createWanwanSprite(player.start_pos[0], player.start_pos[1]);
-      // 窄屏:地图可能超屏,让摄像机跟随婉婉,平滑过渡
-      if (isNarrow && this.cameras && this.cameras.main) {
-        const mapPixW = cols * G.tileSize;
-        const mapPixH = rows * G.tileSize;
-        if (mapPixW > availW || mapPixH > availH) {
-          this.cameras.main.startFollow(G.player, true, 0.15, 0.15);
-        }
+      // 手机端:canvas 被 CSS 固定成 1200px,外层 #game 横向滚动
+      // 我们让外层 DOM 自动滚到婉婉附近,不用 Phaser camera follow
+      if (isNarrow) {
+        this._scrollViewportToPlayer();
       }
     }
 
@@ -2789,6 +2787,10 @@ class MainScene extends Phaser.Scene {
             en.gridX === nx && en.gridY === ny
           );
           const afterHint = async () => {
+            // 手机端:把 DOM 视口滚到婉婉附近(canvas 1200px 宽,用户视口更小)
+            if (window.innerWidth < 700) {
+              this._scrollViewportToPlayer();
+            }
             if (fakeDoor) {
               fakeDoor.revealed = true;
               if (fakeDoor.reveal) fakeDoor.reveal();
@@ -4145,6 +4147,17 @@ class MainScene extends Phaser.Scene {
       duration: 300,
       onComplete: () => mirror.sprite.destroy()
     });
+  }
+
+  // 手机端:把外层 #game DIV 横向/纵向滚动,让玩家显示在视口中央附近
+  _scrollViewportToPlayer() {
+    const gameDiv = document.getElementById('game');
+    if (!gameDiv || !G.player) return;
+    const viewW = gameDiv.clientWidth;
+    const viewH = gameDiv.clientHeight;
+    const targetLeft = Math.max(0, G.player.x - viewW / 2);
+    const targetTop  = Math.max(0, G.player.y - viewH / 2);
+    gameDiv.scrollTo({ left: targetLeft, top: targetTop, behavior: 'smooth' });
   }
 
   showBubble(target, text, holdMs) {
