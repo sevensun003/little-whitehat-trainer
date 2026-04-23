@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23j`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23k`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -4241,18 +4241,24 @@ window.addEventListener('DOMContentLoaded', async () => {
   // 等两帧,让 grid 布局(尤其 dvh)稳定下来再测量
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-  const w = gameDiv.clientWidth || window.innerWidth;
-  const h = gameDiv.clientHeight || 300;
+  // 手机/平板窄屏:canvas CSS 已固定 700px,Phaser 内部世界也设成 700px
+  // 用 FIT 模式让 Phaser 按 CSS 的 700px 绘制,且不尝试"自动铺满 parent"
+  const isNarrow = window.innerWidth < 1100;
+  const gameWidth = isNarrow ? 700 : (gameDiv.clientWidth || window.innerWidth);
+  const gameHeight = gameDiv.clientHeight || window.innerHeight * 0.55;
 
   new Phaser.Game({
     type: Phaser.AUTO,
-    width: w, height: h,
+    width: gameWidth,
+    height: gameHeight,
     parent: 'game-canvas',
     backgroundColor: '#E8F4F8',
     scene: MainScene,
     scale: {
-      mode: Phaser.Scale.RESIZE,
-      autoCenter: Phaser.Scale.CENTER_BOTH
+      // 窄屏:NONE(不自动 resize,Phaser 世界就固定 700 × h)
+      // 宽屏:RESIZE(桌面无固定宽,随 parent 变)
+      mode: isNarrow ? Phaser.Scale.NONE : Phaser.Scale.RESIZE,
+      autoCenter: Phaser.Scale.NO_CENTER
     }
   });
 
@@ -4268,6 +4274,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     _resizeTimer = setTimeout(() => {
       if (G.currentLevel && G.phaserScene) {
         _clearLoopTimers();
+        // 窄屏:Phaser 宽度固定 700,高度跟随 #game-canvas 实际高度
+        const nowNarrow = window.innerWidth < 1100;
+        if (nowNarrow && G.phaserScene.scale) {
+          const curH = gameDiv.clientHeight || window.innerHeight * 0.55;
+          G.phaserScene.scale.resize(700, curH);
+        }
         G.phaserScene.scene.restart({ levelData: G.currentLevel });
       }
     }, 250);

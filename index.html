@@ -420,9 +420,8 @@
         height: 100%;
         min-height: 0;
       }
+      /* Phaser 自己给 canvas 设尺寸;CSS 不再强制覆盖 */
       #game-canvas canvas {
-        width: 700px !important;
-        height: 100% !important;
         display: block;
       }
 
@@ -490,7 +489,7 @@
       .speak-btn { width: 54px; height: 54px; font-size: 26px; }
     }
 
-    /* 注:v2026.04.23j 起移除 ≤380px 小屏压缩(用户确认不使用小屏手机)
+    /* 注:v2026.04.23k 起移除 ≤380px 小屏压缩(用户确认不使用小屏手机)
        所有手机尺寸统一使用上方主手机布局,字体保持 1.5× 大 */
   </style>
 </head>
@@ -503,7 +502,7 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23j</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23k</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
@@ -572,6 +571,6 @@
 </div>
 
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=2026.04.23j"></script>
+<script src="game.js?v=2026.04.23k"></script>
 </body>
 </html>
