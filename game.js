@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=20260424c`);
+  const res = await fetch(`levels/${levelId}.json?v=20260424d`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1342,11 +1342,12 @@ class MainScene extends Phaser.Scene {
         const lx = G.mapOriginX + e.pos[0] * G.tileSize + G.tileSize / 2;
         const ly = G.mapOriginY + e.pos[1] * G.tileSize - 2;
         label = this.add.text(lx, ly, e.hint_text, {
-          fontSize: '12px', color: '#6B4423',
+          fontSize: '48px', color: '#6B4423',
           backgroundColor: '#FFFACD',
-          padding: { x: 5, y: 2 },
-          wordWrap: { width: 120, useAdvancedWrap: true },
-          align: 'center'
+          padding: { x: 20, y: 10 },
+          wordWrap: { width: 480, useAdvancedWrap: true },
+          align: 'center',
+          fontStyle: 'bold'
         }).setOrigin(0.5, 1).setDepth(18);
       }
       G.entities[e.id] = {
@@ -1487,11 +1488,12 @@ class MainScene extends Phaser.Scene {
         const lx = G.mapOriginX + e.pos[0] * G.tileSize + G.tileSize / 2;
         const ly = G.mapOriginY + e.pos[1] * G.tileSize - 2;
         label = this.add.text(lx, ly, e.hint_text, {
-          fontSize: '12px', color: '#6B4423',
+          fontSize: '48px', color: '#6B4423',
           backgroundColor: '#FFFACD',
-          padding: { x: 5, y: 2 },
-          wordWrap: { width: 120, useAdvancedWrap: true },
-          align: 'center'
+          padding: { x: 20, y: 10 },
+          wordWrap: { width: 480, useAdvancedWrap: true },
+          align: 'center',
+          fontStyle: 'bold'
         }).setOrigin(0.5, 1).setDepth(18);
       }
       G.entities[e.id] = {
@@ -1705,11 +1707,11 @@ class MainScene extends Phaser.Scene {
       // 文字标签(如果 JSON 提供 label)
       if (e.label) {
         const labelText = this.add.text(cxPx, gy - 28, e.label, {
-          fontSize: '12px',
+          fontSize: '24px',
           color: '#D4AC0D',
           fontStyle: 'bold',
           backgroundColor: '#FFF',
-          padding: { x: 4, y: 2 }
+          padding: { x: 8, y: 4 }
         }).setOrigin(0.5).setDepth(16);
       }
     }
@@ -3260,9 +3262,10 @@ class MainScene extends Phaser.Scene {
     // 小标签
     if (e.label) {
       const lbl = this.add.text(G.tileSize / 2, -2, e.label, {
-        fontSize: '10px', color: '#FFFFFF',
+        fontSize: '20px', color: '#FFFFFF',
         backgroundColor: '#E74C3C',
-        padding: { x: 3, y: 1 }
+        padding: { x: 6, y: 2 },
+        fontStyle: 'bold'
       }).setOrigin(0.5, 1);
       container.add(lbl);
     }
