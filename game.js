@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23l`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23m`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -4286,4 +4286,32 @@ window.addEventListener('DOMContentLoaded', async () => {
   };
   window.addEventListener('resize', onResize);
   window.addEventListener('orientationchange', onResize);
+
+  // ========== 调试面板 ==========
+  // 每 500ms 更新一次,显示关键尺寸,手机端排查用
+  const dbgLine = document.getElementById('dbg-line');
+  if (dbgLine) {
+    const tick = () => {
+      try {
+        const g = document.getElementById('game');
+        const gc = document.getElementById('game-canvas');
+        const cnv = document.querySelector('#game-canvas canvas');
+        const vis = document.visualViewport;
+        const lines = [
+          `innerW  = ${window.innerWidth}  DPR=${window.devicePixelRatio}`,
+          `visualW = ${vis ? Math.round(vis.width) : '?'}`,
+          `#game.W = ${g ? g.offsetWidth : '?'}   scroll=${g ? g.scrollLeft + '/' + g.scrollWidth : '?'}`,
+          `#canvasDiv.W = ${gc ? gc.offsetWidth : '?'}`,
+          `canvas.W     = ${cnv ? cnv.offsetWidth : 'null'}  attr=${cnv ? cnv.width : '?'}`,
+          `tile = ${G.tileSize || '?'}   map = ${G.currentLevel ? G.currentLevel.map.size.join('x') : '?'}`,
+          `phaserW/H = ${G.phaserScene && G.phaserScene.scale ? Math.round(G.phaserScene.scale.width) + 'x' + Math.round(G.phaserScene.scale.height) : '?'}`
+        ];
+        dbgLine.innerHTML = lines.join('<br>');
+      } catch (e) {
+        dbgLine.textContent = 'dbg err: ' + e.message;
+      }
+    };
+    tick();
+    setInterval(tick, 500);
+  }
 });
