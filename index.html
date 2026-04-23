@@ -392,24 +392,24 @@
       }
       .cmd-card .icon { font-size: 36px; line-height: 1; }
 
-      /* —— 第 2 层 · 游戏地图:手机端 canvas 固定 1200px 宽,外层横向滚动 —— */
+      /* —— 第 2 层 · 游戏地图:手机端 canvas 固定 900px 宽(略超屏可横滑),外层横向滚动 —— */
       #game {
         grid-area: game;
         min-height: 0;
         min-width: 0;
         background: #E8F4F8;
         position: relative;
-        overflow-x: auto;           /* 允许横向滚动查看地图 */
+        overflow-x: auto;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
       }
       #game-canvas {
-        width: 1200px;              /* 手机端固定 1200px 宽 */
+        width: 900px;
         height: 100%;
         min-height: 0;
       }
       #game-canvas canvas {
-        width: 1200px !important;
+        width: 900px !important;
         height: 100% !important;
         display: block;
       }
@@ -478,7 +478,7 @@
       .speak-btn { width: 54px; height: 54px; font-size: 26px; }
     }
 
-    /* 注:v2026.04.23h 起移除 ≤380px 小屏压缩(用户确认不使用小屏手机)
+    /* 注:v2026.04.23i 起移除 ≤380px 小屏压缩(用户确认不使用小屏手机)
        所有手机尺寸统一使用上方主手机布局,字体保持 1.5× 大 */
   </style>
 </head>
@@ -491,7 +491,7 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23h</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23i</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
@@ -557,6 +557,6 @@
 </div>
 
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=2026.04.23h"></script>
+<script src="game.js?v=2026.04.23i"></script>
 </body>
 </html>

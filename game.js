@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23h`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23i`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1272,11 +1272,11 @@ class MainScene extends Phaser.Scene {
     const isNarrow = window.innerWidth < 1100;
 
     if (isNarrow) {
-      // 手机:追求格子尽可能大 —— 靠 camera 跟随处理溢出
-      // 取两个方向里更大的那个,但不超过屏幕宽高中较大的一半(避免奇葩超大)
+      // 手机:追求格子适中 —— 靠 camera 跟随处理溢出
+      // 120px 上限:地图刚刚超屏,不需要大幅度滑动就能看全
       const tightFit = Math.min(maxTileW, maxTileH);
       const looseFit = Math.max(maxTileW, maxTileH);
-      G.tileSize = Math.max(tightFit, Math.min(looseFit, 180));
+      G.tileSize = Math.max(tightFit, Math.min(looseFit, 120));
     } else {
       G.tileSize = Math.min(maxTileW, maxTileH, 64);
     }
