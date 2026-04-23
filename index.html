@@ -274,20 +274,15 @@
     }
 
     /* ============================================================
-       手机 / 平板竖屏布局(v2026.04.23q 重写版)
-       目标屏幕:980 × 2400(iPad 竖屏 / 大手机),CSS innerWidth ~980
-       设计原则:
-         1. 纯 grid 4 行:顶栏 60 / 指令列表 140 / 地图 1fr / 队列 160
-         2. 指令列表有 4+ 条自动换行
-         3. 地图自适应 grid 行高,不固定 canvas 宽度,不用 camera follow
-         4. 字体按 980 宽适中(不抄小手机也不抄桌面)
-       触发条件:竖屏 或 窄屏(≤ 1100)
+       手机 / 平板竖屏布局(v2026.04.23r · 字体 3x)
+       目标屏幕:980 × 2400
        ============================================================ */
     @media (max-width: 1100px), (orientation: portrait) {
       html, body { height: 100%; overflow: hidden; }
 
+      /* 行高重分配:顶栏 100 / 指令列表 180 / 地图(1fr,尽量大) / 队列 200 */
       #app {
-        grid-template-rows: 60px 140px 1fr 160px;
+        grid-template-rows: 100px 180px 1fr 200px;
         grid-template-columns: 1fr;
         grid-template-areas:
           "topbar"
@@ -301,14 +296,14 @@
 
       /* —— 顶栏 —— */
       #topbar {
-        padding: 0 12px;
-        height: 60px;
-        gap: 8px;
+        padding: 0 20px;
+        height: 100px;
+        gap: 14px;
         flex-wrap: nowrap;
         min-width: 0;
       }
       #topbar .level-info {
-        font-size: 20px;
+        font-size: 36px;
         font-weight: bold;
         flex: 1;
         min-width: 0;
@@ -316,23 +311,23 @@
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      #topbar .level-info .concept { font-size: 15px; margin-left: 8px; }
+      #topbar .level-info .concept { font-size: 26px; margin-left: 12px; }
       #topbar #version-tag { display: none; }
-      #topbar .controls { gap: 8px; flex-wrap: nowrap; flex-shrink: 0; }
+      #topbar .controls { gap: 14px; flex-wrap: nowrap; flex-shrink: 0; }
       .btn {
-        padding: 10px 16px;
-        font-size: 18px;
+        padding: 16px 26px;
+        font-size: 30px;
         font-weight: bold;
-        border-width: 3px;
-        border-radius: 12px;
+        border-width: 4px;
+        border-radius: 16px;
       }
 
-      /* —— 第 1 层 · 指令列表:140px(允许 1-2 行,多了可纵向滚) —— */
+      /* —— 第 1 层 · 指令列表 —— */
       #cmdbar {
         border-right: none;
-        border-bottom: 3px solid #E8C579;
+        border-bottom: 4px solid #E8C579;
         background: #FFF;
-        padding: 8px 10px;
+        padding: 10px 14px;
         overflow-x: hidden;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
@@ -341,52 +336,52 @@
         flex-direction: row;
         flex-wrap: nowrap;
         align-items: flex-start;
-        gap: 6px;
+        gap: 10px;
       }
-      #cmdbar > h3 { display: none; }   /* 外层"指令手册"静态标题隐藏 */
+      #cmdbar > h3 { display: none; }
       #cmd-list {
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;     /* 关键:超过 4 张自动换行 */
+        flex-wrap: wrap;
         align-items: center;
-        gap: 8px;
+        gap: 12px;
         min-width: 0;
         width: 100%;
       }
-      /* 分类标签(方向 / 密码 ...) */
+      /* 分类标签 */
       #cmdbar h3 {
-        font-size: 16px;
+        font-size: 28px;
         margin: 0;
-        padding: 5px 12px;
+        padding: 8px 18px;
         flex-shrink: 0;
         white-space: nowrap;
         background: #FFE4B5;
         color: #6B4423;
-        border-radius: 10px;
+        border-radius: 14px;
         line-height: 1.2;
         font-weight: bold;
       }
-      /* 指令卡(图标 + 文字并排) */
+      /* 指令卡 */
       .cmd-card {
         margin: 0;
-        min-width: 110px;
-        max-width: 150px;
-        padding: 8px 12px;
-        font-size: 18px;
+        min-width: 180px;
+        max-width: 230px;
+        padding: 14px 18px;
+        font-size: 28px;
         font-weight: bold;
         flex: 0 0 auto;
-        gap: 6px;
+        gap: 10px;
         line-height: 1.2;
         white-space: nowrap;
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        height: 56px;
+        height: 72px;
       }
-      .cmd-card .icon { font-size: 26px; line-height: 1; }
+      .cmd-card .icon { font-size: 40px; line-height: 1; }
 
-      /* —— 第 2 层 · 地图:自适应 grid 1fr,不做特殊处理 —— */
+      /* —— 第 2 层 · 地图 —— */
       #game {
         min-height: 0;
         min-width: 0;
@@ -399,23 +394,23 @@
         height: 100%;
       }
 
-      /* —— 第 3 层 · 指令队列:160px —— */
+      /* —— 第 3 层 · 指令队列 —— */
       #queue {
-        padding: 8px 12px 10px;
+        padding: 12px 16px 14px;
         display: flex;
         flex-direction: column;
         min-width: 0;
         background: #FFF;
-        border-top: 3px solid #E8C579;
+        border-top: 4px solid #E8C579;
       }
-      #queue-title { font-size: 20px; font-weight: bold; }
-      #queue-header { margin-bottom: 6px; align-items: center; }
-      #queue-header .btn { padding: 7px 16px; font-size: 16px; }
+      #queue-title { font-size: 32px; font-weight: bold; }
+      #queue-header { margin-bottom: 10px; align-items: center; }
+      #queue-header .btn { padding: 10px 20px; font-size: 24px; }
       #queue-list {
         min-height: 0;
         flex: 1;
-        padding: 6px;
-        gap: 8px;
+        padding: 8px;
+        gap: 12px;
         overflow-x: auto;
         overflow-y: hidden;
         align-items: center;
@@ -423,43 +418,43 @@
       }
       #queue-list:empty::before {
         content: "点上面的指令放到这里 ↑";
-        font-size: 18px;
+        font-size: 26px;
       }
       .queue-item {
-        padding: 10px 16px;
-        font-size: 18px;
+        padding: 14px 22px;
+        font-size: 28px;
         font-weight: bold;
         flex-shrink: 0;
       }
-      .queue-item .remove { font-size: 26px; margin-left: 6px; }
+      .queue-item .remove { font-size: 40px; margin-left: 10px; }
 
       /* —— 对话弹窗 —— */
       #dialog-box {
-        margin: 12px;
+        margin: 16px;
         min-width: unset;
-        max-width: calc(100vw - 24px);
-        padding: 22px 24px;
+        max-width: calc(100vw - 32px);
+        padding: 32px 36px;
       }
-      #dialog-speaker { font-size: 22px; }
-      #dialog-text { font-size: 26px; min-height: 70px; line-height: 1.5; }
+      #dialog-speaker { font-size: 34px; }
+      #dialog-text { font-size: 40px; min-height: 100px; line-height: 1.5; }
       #dialog-controls {
         flex-wrap: wrap;
         justify-content: center;
-        gap: 10px;
+        gap: 14px;
       }
 
       /* —— 步数输入弹窗 —— */
       #step-input-box {
-        margin: 12px;
+        margin: 16px;
         min-width: unset;
-        max-width: calc(100vw - 24px);
-        padding: 22px;
+        max-width: calc(100vw - 32px);
+        padding: 32px;
       }
-      #step-input-box h3 { font-size: 24px; }
-      .step-btn { width: 56px; height: 56px; font-size: 24px; }
+      #step-input-box h3 { font-size: 36px; }
+      .step-btn { width: 80px; height: 80px; font-size: 36px; }
 
       /* —— 朗读按钮 —— */
-      .speak-btn { width: 40px; height: 40px; font-size: 18px; }
+      .speak-btn { width: 60px; height: 60px; font-size: 28px; }
     }
 
     /* 原先的 ≤380px 小屏压缩:已移除(用户明确不用小屏手机) */
@@ -474,7 +469,7 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23q</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23r</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
@@ -540,6 +535,6 @@
 </div>
 
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=2026.04.23q"></script>
+<script src="game.js?v=2026.04.23r"></script>
 </body>
 </html>
