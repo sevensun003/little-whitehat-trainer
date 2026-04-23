@@ -274,14 +274,20 @@
     }
 
     /* ============================================================
-       手机竖屏 / 窄屏布局:整体改成单列堆叠,字号放大,按钮加大
+       手机竖屏 / 窄屏布局:
+       视觉 3 层(指令列表 / 地图 / 指令序列)+ 最细顶栏保留按钮
        触发条件:窄屏 (<=768px) 或竖屏
        ============================================================ */
     @media (max-width: 768px), (orientation: portrait) {
-      html, body { height: 100%; overflow: hidden; }
-      /* iOS 地址栏动态隐藏/显示会变更 vh,用 dvh 跟随真实视口 */
+      html, body {
+        height: 100%; overflow: hidden;
+        /* iOS Safari 动态 UI 用 dvh 更稳 */
+      }
+
+      /* —— 主栅格:极细顶栏(42px) + cmdbar / game(弹性) / queue —— */
       #app {
-        grid-template-rows: 48px 88px 1fr 112px;
+        display: grid;
+        grid-template-rows: 42px 26vh 1fr 24vh;
         grid-template-columns: 1fr;
         grid-template-areas:
           "topbar"
@@ -293,81 +299,115 @@
         overflow: hidden;
       }
 
-      /* —— 顶栏 —— */
+      /* —— 顶栏:压到 42px,按钮迷你 —— */
       #topbar {
-        padding: 0 8px;
+        padding: 0 6px;
         flex-wrap: nowrap;
-        gap: 6px;
+        gap: 4px;
         min-width: 0;
+        height: 42px;
+        border-bottom-width: 2px;
       }
       #topbar .level-info {
-        font-size: 14px;
+        font-size: 13px;
         flex: 1;
         min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-      #topbar .level-info .concept { font-size: 11px; margin-left: 4px; }
+      #topbar .level-info .concept { font-size: 10px; margin-left: 4px; }
       #topbar #version-tag { display: none; }
       #topbar .controls { gap: 4px; flex-wrap: nowrap; flex-shrink: 0; }
       .btn {
-        padding: 5px 9px;
+        padding: 4px 8px;
         font-size: 12px;
         border-width: 2px;
-        border-radius: 10px;
+        border-radius: 8px;
       }
 
-      /* —— 指令栏:固定高度 88px,横向滚动 —— */
+      /* —— 第 1 层 · 指令列表:26vh 高,类别标题 + 卡片横排滚动 —— */
       #cmdbar {
+        grid-area: cmdbar;
         border-right: none;
-        border-bottom: 4px solid #E8C579;
-        display: flex;
-        flex-direction: row;
+        border-bottom: 3px solid #E8C579;
+        background: #FFF;
+        padding: 6px 8px;
         overflow-x: auto;
         overflow-y: hidden;
-        padding: 6px 8px;
-        gap: 6px;
-        align-items: center;
-        min-width: 0;
-        height: 88px;
         -webkit-overflow-scrolling: touch;
+        min-width: 0;
+        /* 关键:用 flex 把"类别标题 + 该类别所有卡片"紧挨着横排 */
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        gap: 6px;
       }
       #cmdbar h3 {
         font-size: 11px;
         margin: 0;
-        padding: 3px 6px;
+        padding: 4px 6px;
         flex-shrink: 0;
         min-width: unset;
         white-space: nowrap;
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+        letter-spacing: 1px;
+        background: #FFE4B5;
+        color: #6B4423;
+        border-radius: 6px;
       }
       .cmd-card {
         margin: 0;
-        min-width: 72px;
-        max-width: 84px;
-        padding: 8px 6px;
-        font-size: 13px;
+        min-width: 64px;
+        max-width: 78px;
+        min-height: auto;
+        padding: 6px 4px;
+        font-size: 12px;
         flex: 0 0 auto;
         gap: 2px;
         line-height: 1.2;
         white-space: nowrap;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
-      .cmd-card .icon { font-size: 18px; }
+      .cmd-card .icon { font-size: 20px; }
 
-      /* —— 游戏区:吃掉剩余空间,不强加 min-height 防挤压 —— */
-      #game { min-height: 0; min-width: 0; }
-      #game-canvas { min-height: 0; }
+      /* —— 第 2 层 · 游戏地图:吃掉剩余 —— */
+      #game {
+        grid-area: game;
+        min-height: 0;
+        min-width: 0;
+        background: #E8F4F8;
+        position: relative;
+      }
+      #game-canvas {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+      }
+      #game-canvas canvas {
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
+      }
 
-      /* —— 队列:固定高度 112px,内部横向滚动 —— */
+      /* —— 第 3 层 · 指令序列:24vh 高 —— */
       #queue {
-        padding: 4px 8px 6px;
-        height: 112px;
+        grid-area: queue;
+        padding: 4px 6px 6px;
         display: flex;
         flex-direction: column;
         min-width: 0;
+        background: #FFF;
+        border-top: 3px solid #E8C579;
       }
-      #queue-title { font-size: 13px; }
-      #queue-header { margin-bottom: 2px; }
+      #queue-header { margin-bottom: 2px; align-items: center; }
+      #queue-title { font-size: 12px; }
+      #queue-header .btn { padding: 3px 8px; font-size: 11px; }
       #queue-list {
         min-height: 0;
         flex: 1;
@@ -383,7 +423,7 @@
         font-size: 12px;
       }
       .queue-item {
-        padding: 5px 9px;
+        padding: 5px 8px;
         font-size: 12px;
         flex-shrink: 0;
       }
@@ -420,11 +460,16 @@
 
     /* —— 小屏手机(竖屏,≤ 380px)再压一层 —— */
     @media (max-width: 380px) {
+      #app {
+        grid-template-rows: 40px 24vh 1fr 22vh;
+      }
+      #topbar { height: 40px; }
       #topbar .level-info { font-size: 12px; }
       #topbar .level-info .concept { display: none; }
-      .btn { padding: 4px 7px; font-size: 11px; }
-      .cmd-card { min-width: 62px; max-width: 74px; padding: 6px 4px; font-size: 12px; }
-      .cmd-card .icon { font-size: 16px; }
+      .btn { padding: 3px 6px; font-size: 11px; }
+      #cmdbar h3 { font-size: 10px; padding: 3px 4px; }
+      .cmd-card { min-width: 58px; max-width: 70px; padding: 5px 3px; font-size: 11px; }
+      .cmd-card .icon { font-size: 18px; }
       .queue-item { font-size: 11px; padding: 4px 7px; }
       #dialog-text { font-size: 15px; }
     }
@@ -439,7 +484,7 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23a</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23b</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
@@ -505,6 +550,6 @@
 </div>
 
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=2026.04.23a"></script>
+<script src="game.js?v=2026.04.23b"></script>
 </body>
 </html>

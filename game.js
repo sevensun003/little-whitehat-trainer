@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23a`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23b`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -4149,8 +4149,12 @@ class MainScene extends Phaser.Scene {
 
 window.addEventListener('DOMContentLoaded', async () => {
   const gameDiv = document.getElementById('game-canvas');
-  const w = gameDiv.clientWidth;
-  const h = gameDiv.clientHeight;
+
+  // 等两帧,让 grid 布局(尤其 dvh)稳定下来再测量
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+  const w = gameDiv.clientWidth || window.innerWidth;
+  const h = gameDiv.clientHeight || 300;
 
   new Phaser.Game({
     type: Phaser.AUTO,
@@ -4168,4 +4172,18 @@ window.addEventListener('DOMContentLoaded', async () => {
   const params = new URLSearchParams(window.location.search);
   const levelId = params.get('level') || 'T1';
   await loadLevel(levelId);
+
+  // 窗口尺寸/朝向变化时,重算地图格子位置(关卡 restart)
+  let _resizeTimer = null;
+  const onResize = () => {
+    if (_resizeTimer) clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(() => {
+      if (G.currentLevel && G.phaserScene) {
+        _clearLoopTimers();
+        G.phaserScene.scene.restart({ levelData: G.currentLevel });
+      }
+    }, 250);
+  };
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', onResize);
 });
