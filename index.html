@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 强制禁用缓存(改 UI 太频繁,避免用户一直看老版) -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>白帽小队训练营 · 婉婉的冒险</title>
 
   <!-- Phaser 3 via CDN,无需 npm -->
@@ -115,6 +119,7 @@
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 6px;
     }
+    #queue-header .btn { font-size: 14px; padding: 4px 12px; }  /* 桌面:小一点的清空键 */
     #queue-title { font-weight: bold; color: #6B4423; font-size: 16px; }
     #queue-list {
       flex: 1;
@@ -274,7 +279,7 @@
     }
 
     /* ============================================================
-       手机 / 平板竖屏布局(v2026.04.23r · 字体 3x)
+       手机 / 平板竖屏布局(v20260424a · 字体 3x)
        目标屏幕:980 × 2400
        ============================================================ */
     @media (max-width: 1100px), (orientation: portrait) {
@@ -469,7 +474,7 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23r</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v20260424a</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
@@ -494,7 +499,7 @@
   <div id="queue">
     <div id="queue-header">
       <span id="queue-title">📜 我的指令队列</span>
-      <button class="btn" id="btn-clear-queue" style="font-size:14px;padding:4px 12px;">清空</button>
+      <button class="btn" id="btn-clear-queue">清空</button>
     </div>
     <div id="queue-list"></div>
   </div>
@@ -535,6 +540,6 @@
 </div>
 
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=2026.04.23r"></script>
+<script src="game.js?v=20260424a"></script>
 </body>
 </html>
