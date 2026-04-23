@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23e`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23f`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1270,11 +1270,11 @@ class MainScene extends Phaser.Scene {
     const isNarrow = availW < 700;
 
     if (isNarrow) {
-      // 手机:以"短边刚好装下"为下限,但上限拉到 110,再取两者较大 ——
-      // 这样地图总有一边铺满屏幕,另一边用摄像机滚动
+      // 手机:追求格子尽可能大 —— 靠 camera 跟随处理溢出
+      // 取两个方向里更大的那个,但不超过屏幕宽高中较大的一半(避免奇葩超大)
       const tightFit = Math.min(maxTileW, maxTileH);
       const looseFit = Math.max(maxTileW, maxTileH);
-      G.tileSize = Math.max(tightFit, Math.min(looseFit, 110));
+      G.tileSize = Math.max(tightFit, Math.min(looseFit, 180));
     } else {
       G.tileSize = Math.min(maxTileW, maxTileH, 64);
     }
@@ -1318,6 +1318,50 @@ class MainScene extends Phaser.Scene {
           floorG.lineStyle(2, 0x2C3E50, 1);
           floorG.strokeRect(px + 1, py + 1, G.tileSize - 3, G.tileSize - 3);
           floorG.lineStyle(0);
+        }
+      }
+    }
+
+    // ---- 窄屏:在地图上下空白处绘制草地/天空,消除浅蓝空白 ----
+    // 关键:如果启用了 camera follow,这些装饰要固定在屏幕上不跟镜头滚 -> scrollFactor 0
+    if (isNarrow) {
+      const mapTop = G.mapOriginY;
+      const mapBottom = G.mapOriginY + rows * G.tileSize;
+      const decoTop = this.add.graphics();
+      decoTop.setScrollFactor(0);
+      decoTop.setDepth(-5);
+      // 上方(天空带):淡蓝 + 几朵云
+      if (mapTop > 0) {
+        decoTop.fillStyle(0xB8E0F5, 1);
+        decoTop.fillRect(0, 0, availW, mapTop);
+        decoTop.fillStyle(0xFFFFFF, 0.9);
+        [[availW*0.15, mapTop*0.5], [availW*0.55, mapTop*0.3], [availW*0.85, mapTop*0.6]].forEach(([x,y]) => {
+          decoTop.fillCircle(x, y, 14);
+          decoTop.fillCircle(x+14, y+4, 12);
+          decoTop.fillCircle(x-12, y+4, 10);
+        });
+      }
+      // 下方(草地带):绿色 + 草丛 + 花
+      if (mapBottom < availH) {
+        const decoBot = this.add.graphics();
+        decoBot.setScrollFactor(0);
+        decoBot.setDepth(-5);
+        decoBot.fillStyle(0x7CB342, 1);
+        decoBot.fillRect(0, mapBottom, availW, availH - mapBottom);
+        // 草丛小三角
+        decoBot.fillStyle(0x558B2F, 1);
+        for (let gx = 8; gx < availW; gx += 22) {
+          const gy = mapBottom + 8;
+          decoBot.fillTriangle(gx, gy + 10, gx + 4, gy, gx + 8, gy + 10);
+        }
+        // 几朵花
+        const spacing = Math.max(60, availW * 0.15);
+        for (let fx = availW * 0.12; fx < availW; fx += spacing) {
+          const fy = mapBottom + (availH - mapBottom) * 0.55;
+          decoBot.fillStyle(0xFFD54F, 1);
+          decoBot.fillCircle(fx, fy, 6);
+          decoBot.fillStyle(0xFF8A65, 1);
+          decoBot.fillCircle(fx + spacing * 0.5, fy + 8, 5);
         }
       }
     }
