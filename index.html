@@ -284,10 +284,10 @@
         /* iOS Safari 动态 UI 用 dvh 更稳 */
       }
 
-      /* —— 主栅格:极细顶栏(42px) + cmdbar / game(弹性) / queue —— */
+      /* —— 主栅格:极细顶栏(40px) + cmdbar 固定 72px(横排) + game(弹性) + queue 固定 88px —— */
       #app {
         display: grid;
-        grid-template-rows: 42px 26vh 1fr 24vh;
+        grid-template-rows: 40px 72px 1fr 88px;
         grid-template-columns: 1fr;
         grid-template-areas:
           "topbar"
@@ -299,13 +299,13 @@
         overflow: hidden;
       }
 
-      /* —— 顶栏:压到 42px,按钮迷你 —— */
+      /* —— 顶栏:压到 40px —— */
       #topbar {
         padding: 0 6px;
         flex-wrap: nowrap;
         gap: 4px;
         min-width: 0;
-        height: 42px;
+        height: 40px;
         border-bottom-width: 2px;
       }
       #topbar .level-info {
@@ -326,55 +326,54 @@
         border-radius: 8px;
       }
 
-      /* —— 第 1 层 · 指令列表:26vh 高,类别标题 + 卡片横排滚动 —— */
+      /* —— 第 1 层 · 指令列表:72px 一行横排 + 横向滚动(含分类名) —— */
       #cmdbar {
         grid-area: cmdbar;
         border-right: none;
-        border-bottom: 3px solid #E8C579;
+        border-bottom: 2px solid #E8C579;
         background: #FFF;
-        padding: 6px 8px;
+        padding: 4px 6px;
         overflow-x: auto;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
         min-width: 0;
-        /* 关键:用 flex 把"类别标题 + 该类别所有卡片"紧挨着横排 */
         display: flex;
-        flex-direction: row;
+        flex-direction: row;  /* 横向堆叠 */
         flex-wrap: nowrap;
-        align-items: stretch;
-        gap: 6px;
+        align-items: center;
+        gap: 4px;
       }
       #cmdbar h3 {
-        font-size: 11px;
+        /* 关键:手机横排 —— 窄横向标签,不再竖排 */
+        font-size: 10px;
         margin: 0;
-        padding: 4px 6px;
+        padding: 2px 5px;
         flex-shrink: 0;
-        min-width: unset;
+        writing-mode: horizontal-tb;
         white-space: nowrap;
-        writing-mode: vertical-rl;
-        text-orientation: upright;
-        letter-spacing: 1px;
         background: #FFE4B5;
         color: #6B4423;
         border-radius: 6px;
+        line-height: 1.2;
       }
       .cmd-card {
         margin: 0;
-        min-width: 64px;
-        max-width: 78px;
-        min-height: auto;
-        padding: 6px 4px;
-        font-size: 12px;
+        min-width: 60px;
+        max-width: 76px;
+        min-height: 0;
+        padding: 4px 4px;
+        font-size: 11px;
         flex: 0 0 auto;
-        gap: 2px;
-        line-height: 1.2;
+        gap: 1px;
+        line-height: 1.15;
         white-space: nowrap;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        height: 62px;  /* 填满 cmdbar 内高,两行文字友好 */
       }
-      .cmd-card .icon { font-size: 20px; }
+      .cmd-card .icon { font-size: 18px; line-height: 1; }
 
       /* —— 第 2 层 · 游戏地图:吃掉剩余 —— */
       #game {
@@ -395,7 +394,7 @@
         display: block;
       }
 
-      /* —— 第 3 层 · 指令序列:24vh 高 —— */
+      /* —— 第 3 层 · 指令序列:88px 固定 —— */
       #queue {
         grid-area: queue;
         padding: 4px 6px 6px;
@@ -403,7 +402,7 @@
         flex-direction: column;
         min-width: 0;
         background: #FFF;
-        border-top: 3px solid #E8C579;
+        border-top: 2px solid #E8C579;
       }
       #queue-header { margin-bottom: 2px; align-items: center; }
       #queue-title { font-size: 12px; }
@@ -461,15 +460,15 @@
     /* —— 小屏手机(竖屏,≤ 380px)再压一层 —— */
     @media (max-width: 380px) {
       #app {
-        grid-template-rows: 40px 24vh 1fr 22vh;
+        grid-template-rows: 38px 66px 1fr 80px;
       }
-      #topbar { height: 40px; }
+      #topbar { height: 38px; }
       #topbar .level-info { font-size: 12px; }
       #topbar .level-info .concept { display: none; }
       .btn { padding: 3px 6px; font-size: 11px; }
-      #cmdbar h3 { font-size: 10px; padding: 3px 4px; }
-      .cmd-card { min-width: 58px; max-width: 70px; padding: 5px 3px; font-size: 11px; }
-      .cmd-card .icon { font-size: 18px; }
+      #cmdbar h3 { font-size: 10px; padding: 2px 4px; }
+      .cmd-card { min-width: 54px; max-width: 68px; padding: 3px 3px; font-size: 10px; height: 56px; }
+      .cmd-card .icon { font-size: 16px; }
       .queue-item { font-size: 11px; padding: 4px 7px; }
       #dialog-text { font-size: 15px; }
     }
@@ -484,7 +483,7 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23b</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23c</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
@@ -550,6 +549,6 @@
 </div>
 
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=2026.04.23b"></script>
+<script src="game.js?v=2026.04.23c"></script>
 </body>
 </html>

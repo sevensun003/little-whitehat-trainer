@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23b`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23c`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1261,13 +1261,21 @@ class MainScene extends Phaser.Scene {
     const [cols, rows] = this.levelData.map.size;
 
     // 计算地图居中 + tile 尺寸自适应
+    // 手机屏幕窄,允许更大的格子填满地图区域(降低上下/左右空白)
     const availW = this.scale.width;
     const availH = this.scale.height;
     const maxTileW = Math.floor(availW / cols);
     const maxTileH = Math.floor(availH / rows);
-    G.tileSize = Math.min(maxTileW, maxTileH, 64);
+    // 窄屏(手机)允许最大 88px;桌面 64px 仍然够大(避免过度拉伸)
+    const isNarrow = availW < 700;
+    const cap = isNarrow ? 88 : 64;
+    G.tileSize = Math.min(maxTileW, maxTileH, cap);
     G.mapOriginX = (availW - cols * G.tileSize) / 2;
-    G.mapOriginY = (availH - rows * G.tileSize) / 2;
+    // 窄屏:地图顶到上方(只保留 6px 上边距),把空白留在下方(像"地面+天空")
+    // 宽屏:保持居中
+    G.mapOriginY = isNarrow
+      ? 6
+      : (availH - rows * G.tileSize) / 2;
 
     // ---- 登记墙壁(供 movePlayer 碰撞检测)----
     G.walls = new Set();
