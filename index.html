@@ -234,6 +234,45 @@
     }
     .speak-btn:hover { background: #D4ECFF; }
 
+    /* 提示按钮"首次出现"气泡提醒 */
+    #hint-bubble {
+      position: absolute;
+      background: #FFFACD;
+      border: 3px solid #D4AC0D;
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #6B4423;
+      box-shadow: 0 4px 0 rgba(107, 68, 35, 0.3);
+      z-index: 150;
+      display: none;
+      max-width: 220px;
+      line-height: 1.4;
+    }
+    #hint-bubble::after {
+      content: '';
+      position: absolute;
+      top: -10px; right: 30px;
+      width: 0; height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 10px solid #D4AC0D;
+    }
+    #hint-bubble .close-x {
+      margin-left: 8px;
+      color: #CC3333; cursor: pointer;
+      font-weight: bold;
+    }
+    @keyframes hint-bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    #btn-hint.new-hint {
+      animation: hint-bounce 0.8s ease-in-out 3;
+      box-shadow: 0 0 0 4px rgba(212, 172, 13, 0.4);
+    }
+
     /* ============================================================
        手机竖屏 / 窄屏布局:整体改成单列堆叠,字号放大,按钮加大
        触发条件:窄屏 (<=768px) 或竖屏
@@ -400,11 +439,11 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.22c</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v2026.04.23a</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
-      <button class="btn" id="btn-hint">💡 提示</button>
+      <button class="btn" id="btn-hint" style="display:none;">💡 提示</button>
       <button class="btn warn" id="btn-reset">🔄 重来</button>
       <button class="btn primary" id="btn-run">▶ 执行</button>
     </div>
@@ -459,7 +498,13 @@
   </div>
 </div>
 
+<!-- 提示按钮首次出现的气泡 -->
+<div id="hint-bubble">
+  💡 卡住了?点这里看提示!
+  <span class="close-x" onclick="document.getElementById('hint-bubble').style.display='none'">×</span>
+</div>
+
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=2026.04.22c"></script>
+<script src="game.js?v=2026.04.23a"></script>
 </body>
 </html>

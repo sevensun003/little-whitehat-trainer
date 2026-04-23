@@ -1,0 +1,76 @@
+{
+  "id": "E11",
+  "title": "循环的影子",
+  "act": 5,
+  "chapter": "余烬反扑",
+  "location": "指令塔地下",
+  "concept_intro": "综合:重放 + 密码学",
+  "security_concept": {
+    "name": "观察 + 解密",
+    "analogy": "看别人输的密文,解开真密码。",
+    "defense": "只会抄没用,要理解怎么算。"
+  },
+  "available_commands": ["direction", "password"],
+  "intro_dialog": [
+    { "speaker": "克拉克", "text": "这人影一直循环!" },
+    { "speaker": "克拉克", "text": "他输的是密文。" },
+    { "speaker": "小天",   "text": "看石头:规则是字母 -1。" },
+    { "speaker": "小天",   "text": "把密文解出来再过门。" }
+  ],
+  "map": {
+    "size": [10, 7],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 6, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 7 },
+      { "x": 9, "y": 0, "w": 1, "h": 7 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [1, 1], "size": [1, 1] },
+      { "type": "bookshelf", "pos": [3, 1], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 3], "facing": "right", "tier": 2 },
+    {
+      "id": "loop_shadow",
+      "type": "loop_npc",
+      "pos": [2, 5],
+      "loop_steps": ["say:DBU (密文,每次说)"],
+      "loop_period_ms": 4000
+    },
+    { "id": "s1", "type": "info_stone", "pos": [4, 3], "hint_text": "密文第1位:D" },
+    { "id": "s2", "type": "info_stone", "pos": [5, 3], "hint_text": "密文第2位:B" },
+    { "id": "s3", "type": "info_stone", "pos": [6, 3], "hint_text": "密文第3位:U" },
+    { "id": "rule", "type": "info_stone", "pos": [4, 2], "hint_text": "规则:字母 -1" },
+    { "id": "safe", "type": "safe_box", "pos": [8, 3], "correct_password": "CAT", "password_kind": "letter" },
+    { "id": "goal", "type": "goal_zone", "pos": [8, 3], "goal": true, "label": "档案" }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上", "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下", "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左", "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右", "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "enter_pwd",  "category": "password",  "label": "输字母", "icon": "keypad_letter", "action": "enter_password" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 8,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "人影在说 DBU,你要解码。" },
+    { "level": 2, "text": "D→C, B→A, U→T → CAT。" },
+    { "level": 3, "text": "右 7 → 输 CAT → 开门。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "克拉克", "text": "原来如此!" },
+    { "speaker": "小天",   "text": "这关考了**观察 + 解密**。" },
+    { "speaker": "小天",   "text": "坏人只会抄密文。" },
+    { "speaker": "小天",   "text": "真正懂的,才能过关。" },
+    { "speaker": "奥伦",   "text": "抄作业没用,要**理解**!" }
+  ],
+  "rewards": {
+    "unlock_next": "E12",
+    "first_time_dialog_card": "combo_replay_caesar"
+  }
+}

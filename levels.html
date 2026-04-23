@@ -325,6 +325,20 @@ const LEVELS = [
     { id: 'Y3', title: '星野站决战',        concept: '总决战' },
     { id: 'M4', title: '模考四 · 实战',     concept: '实战模考' },
   ]},
+  { chapter: '第五幕 · 余烬反扑', icon: '🔥', items: [
+    { id: 'E1',  title: '开学第一天',     concept: '过渡引入' },
+    { id: 'E2',  title: '消失的提示',     concept: '弱口令(无线索)' },
+    { id: 'E3',  title: '门口的大胡子',   concept: '社工辨识' },
+    { id: 'E4',  title: '循环的快递员',   concept: '重放攻击' },
+    { id: 'E5',  title: '字里藏箭',       concept: '注入(位置)' },
+    { id: 'E6',  title: '移位情书',       concept: '凯撒(字母)' },
+    { id: 'E7',  title: '前端的贴纸',     concept: '前后端分离' },
+    { id: 'E8',  title: '会传染的小怪',   concept: '病毒清理' },
+    { id: 'E9',  title: '藏在好物里的坏', concept: '木马检查' },
+    { id: 'E10', title: '双重关卡',       concept: '综合 · 前后端+注入' },
+    { id: 'E11', title: '循环的影子',     concept: '综合 · 重放+密码' },
+    { id: 'E12', title: '扑灭最后一簇',   concept: 'BOSS · 大扫除' },
+  ]},
 ];
 
 /* 图标分配(按关卡类型) */
@@ -336,7 +350,9 @@ const ICONS = {
   X6:'👤', M1:'⏱️', M2:'⏱️', M3:'⏱️',
   D1:'🔐', D2:'⏲️', D3:'🎲', D4:'📚', D5:'🎁',
   D6:'🎭', D7:'📜', D8:'🖼️',
-  Y1:'🏦', Y2:'🔓', Y3:'🌟', M4:'⏱️'
+  Y1:'🏦', Y2:'🔓', Y3:'🌟', M4:'⏱️',
+  E1:'🎒', E2:'🔐', E3:'🧔', E4:'🔁', E5:'🧩', E6:'📜',
+  E7:'🚪', E8:'🦠', E9:'🎁', E10:'⚔️', E11:'👤', E12:'🔥'
 };
 
 /* 读取进度 */
@@ -346,11 +362,14 @@ function loadProgress() {
   } catch { return {}; }
 }
 
-/* 判断关卡是否解锁:第一关默认解锁,其余要求前一关通关 */
+/* 判断关卡是否解锁:第一关默认解锁;每幕第一关单独解锁;其余要求前一关通关 */
 function isUnlocked(levelId, progress) {
   const allIds = LEVELS.flatMap(c => c.items.map(i => i.id));
   const idx = allIds.indexOf(levelId);
   if (idx === 0) return true;
+  // 每幕第一关:默认解锁(方便跳幕试玩,开发/老玩家都受益)
+  const actFirstIds = LEVELS.map(c => c.items[0].id);
+  if (actFirstIds.includes(levelId)) return true;
   const prevId = allIds[idx - 1];
   return !!progress[prevId]?.cleared;
 }

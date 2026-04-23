@@ -1,0 +1,82 @@
+{
+  "id": "E12",
+  "title": "扑灭最后一簇",
+  "act": 5,
+  "chapter": "余烬反扑",
+  "location": "中央指令塔最深处",
+  "concept_intro": "BOSS:综合所有",
+  "security_concept": {
+    "name": "综合防御",
+    "analogy": "所有招数一起用,才能守住。",
+    "defense": "看第二眼、清第二遍、问为什么。"
+  },
+  "available_commands": ["direction", "virus", "gift", "backend", "password"],
+  "intro_dialog": [
+    { "speaker": "小天",   "text": "最后一片余烬!" },
+    { "speaker": "平基",   "text": "地上全是病毒,还有礼物!" },
+    { "speaker": "藤蔓妹妹", "text": "先把路清干净。" },
+    { "speaker": "奥伦",   "text": "礼物要先检查!" },
+    { "speaker": "小天",   "text": "最后有一道真门。" }
+  ],
+  "map": {
+    "size": [12, 7],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 12, "h": 1 },
+      { "x": 0, "y": 6, "w": 12, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 7 },
+      { "x": 11, "y": 0, "w": 1, "h": 7 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [1, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [10, 5], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 3], "facing": "right", "tier": 2 },
+    { "id": "v1", "type": "virus_tile", "pos": [2, 3] },
+    { "id": "v2", "type": "virus_tile", "pos": [3, 3] },
+    { "id": "g_red",  "type": "gift_box", "pos": [5, 2], "color": "red",  "is_trojan": false, "content_label": "钥匙" },
+    { "id": "g_blue", "type": "gift_box", "pos": [5, 4], "color": "blue", "is_trojan": true  },
+    { "id": "fake_door", "type": "fake_check_door", "pos": [6, 3], "label": "请输入密码" },
+    { "id": "rule",    "type": "info_stone", "pos": [7, 4], "hint_text": "规则:字母 -1" },
+    { "id": "ciph",    "type": "info_stone", "pos": [7, 2], "hint_text": "密文:DBEF" },
+    { "id": "deploy_btn", "type": "deploy_button", "pos": [8, 3], "target_id": "real_door" },
+    { "id": "real_door",  "type": "safe_box", "pos": [10, 3], "correct_password": "CADE", "password_kind": "letter", "initial_hidden": true },
+    { "id": "goal",       "type": "goal_zone", "pos": [10, 3], "goal": true, "label": "光明" }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上", "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下", "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左", "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右", "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "clean",      "category": "virus",     "label": "清病毒", "icon": "clean_virus", "action": "clean_virus" },
+    { "id": "inspect",    "category": "gift",      "label": "检查礼物", "icon": "inspect_gift", "action": "inspect_gift" },
+    { "id": "open",       "category": "gift",      "label": "拆礼物",   "icon": "open_gift",    "action": "open_gift" },
+    { "id": "deploy",     "category": "backend",   "label": "部署真门", "icon": "deploy_backend", "action": "deploy_backend" },
+    { "id": "enter_pwd",  "category": "password",  "label": "输字母", "icon": "keypad_letter", "action": "enter_password" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 14,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "先清 2 个病毒,再过礼物区。" },
+    { "level": 2, "text": "检查蓝的是木马,别拆;拆红的。" },
+    { "level": 3, "text": "清病毒 → 走到红礼物旁 → 检查 → 拆 → 穿假门 → 部署 → 输 CADE。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "小天",   "text": "最后一簇余烬熄灭啦!" },
+    { "speaker": "婉婉",   "text": "我们做到了!" },
+    { "speaker": "平基",   "text": "这次用了**全部**招数!" },
+    { "speaker": "藤蔓妹妹", "text": "清病毒、查礼物、穿假门、解密。" },
+    { "speaker": "奥伦",   "text": "全都用上了!" },
+    { "speaker": "小天",   "text": "记住今天这些招数。" },
+    { "speaker": "小天",   "text": "**看第二眼、清第二遍、问为什么**。" },
+    { "speaker": "婉婉",   "text": "我会保护所有人的电脑!" }
+  ],
+  "rewards": {
+    "unlock_next": null,
+    "badge": "act5_finale",
+    "first_time_dialog_card": "boss_finale"
+  }
+}

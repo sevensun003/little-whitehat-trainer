@@ -1,0 +1,72 @@
+{
+  "id": "E7",
+  "title": "前端的贴纸",
+  "act": 5,
+  "chapter": "余烬反扑",
+  "location": "星野站走廊",
+  "concept_intro": "前后端分离",
+  "security_concept": {
+    "name": "前后端校验",
+    "analogy": "门上画的锁是骗眼睛的,真锁在后面。",
+    "defense": "前端 + 后端都要校验,缺一不可。"
+  },
+  "available_commands": ["direction", "backend", "password"],
+  "intro_dialog": [
+    { "speaker": "电脑先生", "text": "前面有一扇门。" },
+    { "speaker": "电脑先生", "text": "上面写着「请输入密码」。" },
+    { "speaker": "小天",     "text": "你走过去试试?" },
+    { "speaker": "小天",     "text": "说不定根本没挡住。" }
+  ],
+  "map": {
+    "size": [11, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 11, "h": 1 },
+      { "x": 0, "y": 4, "w": 11, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 10, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [1, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [1, 3], "size": [1, 1] },
+      { "type": "desk",  "pos": [6, 1], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player",  "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "diannao", "type": "diannao", "pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "fake_door", "type": "fake_check_door", "pos": [4, 2], "label": "请输入密码" },
+    { "id": "pwd_stone", "type": "info_stone", "pos": [5, 3], "hint_text": "真密码:2024" },
+    { "id": "deploy_btn", "type": "deploy_button", "pos": [6, 2], "target_id": "real_door" },
+    { "id": "real_door",  "type": "safe_box", "pos": [8, 2], "correct_password": "2024", "password_kind": "number", "initial_hidden": true },
+    { "id": "goal",       "type": "goal_zone", "pos": [9, 2], "goal": true, "label": "终点" }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上", "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下", "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左", "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右", "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "deploy",     "category": "backend",   "label": "部署真门", "icon": "deploy_backend", "action": "deploy_backend" },
+    { "id": "enter_pwd",  "category": "password",  "label": "输密码", "icon": "keypad", "action": "enter_password" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 6,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "先穿过假门,走到按钮边。" },
+    { "level": 2, "text": "按「部署真门」,再输 2024。" },
+    { "level": 3, "text": "右 5 → 部署 → 右 2 → 输 2024 → 右 1。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "小天",     "text": "真门挡住了!" },
+    { "speaker": "小天",     "text": "这叫「**前后端校验分离**」。" },
+    { "speaker": "小天",     "text": "前端的门,是画给眼睛看的。" },
+    { "speaker": "小天",     "text": "坏人一绕就过。" },
+    { "speaker": "小天",     "text": "后端的门,才真正拦人。" },
+    { "speaker": "平基",     "text": "两头都要检查!" }
+  ],
+  "rewards": {
+    "unlock_next": "E8",
+    "first_time_dialog_card": "frontend_backend"
+  }
+}

@@ -15,8 +15,8 @@
   </style>
 </head>
 <body>
-  <h1>🧪 冒烟测试 · M1 阶段</h1>
-  <p>打开此页会自动运行基础检查,验证 M1 骨架是否完整。</p>
+  <h1>🧪 冒烟测试 · v2026.04.23a(含第五幕)</h1>
+  <p>打开此页会自动运行基础检查,验证 M1 骨架 + 第五幕完整性。</p>
   <button onclick="runAll()">▶ 运行所有测试</button>
   <div id="results"></div>
 
@@ -463,6 +463,152 @@ const tests = [
         if (!code.includes(kw)) throw new Error(`缺阻挡:${kw}`);
       }
       return '三类新门阻挡就位';
+    }
+  },
+  // ========== 第五幕冒烟测试(v2026.04.23a) ==========
+  {
+    name: "E1-E12 所有关卡 JSON 可加载",
+    fn: async () => {
+      for (let i = 1; i <= 12; i++) {
+        const r = await fetch(`../levels/E${i}.json`);
+        if (!r.ok) throw new Error(`E${i} 加载失败`);
+        const d = await r.json();
+        if (d.id !== `E${i}`) throw new Error(`E${i}.id 错`);
+        if (!d.entities) throw new Error(`E${i} 缺 entities`);
+        if (!d.hints || d.hints.length < 3) throw new Error(`E${i} 提示不足 3 级`);
+        if (!d.on_clear_dialog || d.on_clear_dialog.length < 2) throw new Error(`E${i} 通关对话不足`);
+      }
+      return '12 个 E 关卡结构完整';
+    }
+  },
+  {
+    name: "E 关卡所有对话 ≤ 20 字/句",
+    fn: async () => {
+      for (let i = 1; i <= 12; i++) {
+        const r = await fetch(`../levels/E${i}.json`);
+        const d = await r.json();
+        const all = [...(d.intro_dialog||[]), ...(d.on_clear_dialog||[])];
+        for (const line of all) {
+          const pure = (line.text || '').replace(/\*\*/g, '');
+          if (pure.length > 20) throw new Error(`E${i} 超长:${pure}`);
+        }
+      }
+      return '所有 E 关卡对话行长合规';
+    }
+  },
+  {
+    name: "引擎包含第五幕新动作/实体关键字",
+    fn: async () => {
+      const r = await fetch('../game.js');
+      const code = await r.text();
+      const kws = [
+        "choose_reply", "clean_virus", "inspect_gift", "open_gift",
+        "deploy_backend", "fake_check_door", "virus_tile", "gift_box",
+        "reply_guard", "loop_npc", "deploy_button",
+        "showLetterKeypad", "showReplyChoiceModal",
+        "armHintButtonLock", "HINT_UNLOCK_MS",
+        "all_virus_cleaned", "collect_safe_gifts", "required_order",
+        "password_kind", "initial_hidden"
+      ];
+      for (const k of kws) {
+        if (!code.includes(k)) throw new Error(`引擎缺关键字:${k}`);
+      }
+      return `第五幕 ${kws.length} 个关键字就位`;
+    }
+  },
+  {
+    name: "index.html 含 hint-bubble DOM + 初始 display:none 的 btn-hint",
+    fn: async () => {
+      const r = await fetch('../index.html');
+      const html = await r.text();
+      if (!html.includes('id="hint-bubble"')) throw new Error('缺 hint-bubble');
+      if (!/id="btn-hint"[^>]*style="display:none/.test(html)) throw new Error('btn-hint 初始未隐藏');
+      return '全局提示锁 UI 就位';
+    }
+  },
+  {
+    name: "E3 reply_guard 有 3 个 replies,只有 1 个 correct",
+    fn: async () => {
+      const r = await fetch('../levels/E3.json');
+      const d = await r.json();
+      const g = d.entities.find(e => e.type === 'reply_guard');
+      if (!g) throw new Error('E3 缺 reply_guard');
+      if (!g.replies || g.replies.length !== 3) throw new Error('E3 应有 3 个回答');
+      const correctCount = g.replies.filter(r => r.correct).length;
+      if (correctCount !== 1) throw new Error(`E3 应恰有 1 个正确答案,实际 ${correctCount}`);
+      return 'E3 社工 3 选 1 结构正确';
+    }
+  },
+  {
+    name: "E6 密码是字母,E2 密码是数字",
+    fn: async () => {
+      const e6 = await (await fetch('../levels/E6.json')).json();
+      const e2 = await (await fetch('../levels/E2.json')).json();
+      const e6Safe = e6.entities.find(e => e.type === 'safe_box');
+      const e2Safe = e2.entities.find(e => e.type === 'safe_box');
+      if (e6Safe.password_kind !== 'letter') throw new Error('E6 应为字母密码');
+      if (!/^[A-Z]+$/.test(e6Safe.correct_password)) throw new Error('E6 密码应全大写字母');
+      if (e2Safe.password_kind !== 'number') throw new Error('E2 应为数字密码');
+      return 'E2/E6 密码类型正确';
+    }
+  },
+  {
+    name: "E7 有 fake_check_door + deploy_button + initial_hidden safe_box",
+    fn: async () => {
+      const d = await (await fetch('../levels/E7.json')).json();
+      const types = new Set(d.entities.map(e => e.type));
+      if (!types.has('fake_check_door')) throw new Error('E7 缺 fake_check_door');
+      if (!types.has('deploy_button')) throw new Error('E7 缺 deploy_button');
+      const safe = d.entities.find(e => e.type === 'safe_box');
+      if (!safe || !safe.initial_hidden) throw new Error('E7 safe_box 应 initial_hidden');
+      return 'E7 前后端实体完整';
+    }
+  },
+  {
+    name: "E8 所有病毒格在 success_condition.entity_ids 里",
+    fn: async () => {
+      const d = await (await fetch('../levels/E8.json')).json();
+      const viruses = d.entities.filter(e => e.type === 'virus_tile').map(e => e.id);
+      const required = d.success_condition.entity_ids || [];
+      for (const v of viruses) {
+        if (!required.includes(v)) throw new Error(`病毒 ${v} 未在胜利条件里`);
+      }
+      return `E8 ${viruses.length} 个病毒都要清`;
+    }
+  },
+  {
+    name: "E9 有 ≥1 个 is_trojan 和 ≥2 个非 trojan 礼物",
+    fn: async () => {
+      const d = await (await fetch('../levels/E9.json')).json();
+      const gifts = d.entities.filter(e => e.type === 'gift_box');
+      const trojans = gifts.filter(g => g.is_trojan);
+      const safe = gifts.filter(g => !g.is_trojan);
+      if (trojans.length < 1) throw new Error('E9 应至少有 1 个木马');
+      if (safe.length < 2) throw new Error('E9 应至少有 2 个真礼物');
+      return `E9 ${trojans.length} 木马 / ${safe.length} 真礼物`;
+    }
+  },
+  {
+    name: "E5 / E10 开启 inject_mode 且有 injectable 指令",
+    fn: async () => {
+      for (const id of ['E5', 'E10']) {
+        const d = await (await fetch(`../levels/${id}.json`)).json();
+        if (!d.inject_mode) throw new Error(`${id} 未开 inject_mode`);
+        const injectable = (d.available_command_cards || []).find(c => c.injectable);
+        if (!injectable) throw new Error(`${id} 缺 injectable 卡`);
+      }
+      return 'E5/E10 注入模式配置正确';
+    }
+  },
+  {
+    name: "E12 BOSS 关包含 5 类 E 关核心元素",
+    fn: async () => {
+      const d = await (await fetch('../levels/E12.json')).json();
+      const types = new Set(d.entities.map(e => e.type));
+      for (const t of ['virus_tile', 'gift_box', 'fake_check_door', 'deploy_button', 'safe_box']) {
+        if (!types.has(t)) throw new Error(`E12 缺 ${t}`);
+      }
+      return 'E12 大满贯';
     }
   }
 ];

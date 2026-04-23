@@ -54,9 +54,20 @@ function speak(text) {
   window.speechSynthesis.speak(u);
 }
 
+// 清理所有循环计时器(防止 loop_npc 在 scene.restart 后遗留定时器)
+function _clearLoopTimers() {
+  if (!G.entities) return;
+  Object.values(G.entities).forEach(en => {
+    if (en && en._loopTimer) {
+      clearInterval(en._loopTimer);
+      en._loopTimer = null;
+    }
+  });
+}
+
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.22c`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23a`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -84,6 +95,10 @@ async function loadLevel(levelId) {
   G.commandQueue = [];
   G.hintLevel = 0;
   G._hintShown = new Set();   // 新关卡重置已弹出的线索记录
+  G.giftsOpened = 0;
+  G.trojanTriggered = 0;
+  G.buttonPressed = false;
+  G._pendingInject = null;
   if (typeof _editTarget !== 'undefined') _editTarget = null;
 
   // 支持预填队列(概念关用来展示"被篡改的队列"等初始状态)
@@ -104,7 +119,11 @@ async function loadLevel(levelId) {
   renderCommandCards(data.available_command_cards);
   renderQueue();
 
+  // 每关开局:提示按钮进入 3 分钟锁
+  armHintButtonLock();
+
   if (G.phaserScene) {
+    _clearLoopTimers();
     G.phaserScene.scene.restart({ levelData: data });
   }
 }
@@ -331,7 +350,10 @@ function renderCommandCards(cards) {
     social: '社交',
     time: '时间',
     guess: '询问',
-    password: '密码'
+    password: '密码',
+    virus: '清理',
+    gift: '礼物',
+    backend: '后端'
   };
 
   for (const cat in groups) {
@@ -355,7 +377,9 @@ function renderCommandCards(cards) {
         social_engineer: '🕴️', hourglass: '⏳',
         send_noise: '📢', press_button: '🔘',
         ask_hint: '❓', break_mirror: '🔨',
-        keypad: '🔢', cable_cut: '✂️', inspect_gift: '🎁'
+        keypad: '🔢', cable_cut: '✂️', inspect_gift: '🎁',
+        keypad_letter: '🔤', choose_reply: '💬', clean_virus: '🧹',
+        open_gift: '📦', deploy_backend: '🛠️'
       };
       div.innerHTML = `<span class="icon">${iconMap[card.icon] || '●'}</span> ${card.label}`;
       div.onclick = () => onCardClick(card);
@@ -376,6 +400,16 @@ function onCardClick(card) {
   if (G.isRunning) return;
   // 不允许在容器里再放容器(低龄友好:避免嵌套复杂度)
   if (_editTarget && card.is_container) {
+    return;
+  }
+  // E5 注入关:injectable 卡片不直接 push,而是进入"选位置"模式
+  if (card.injectable && G.currentLevel?.inject_mode) {
+    if (G.commandQueue.some(c => c.id === card.id)) {
+      // 已经插过了;先删除再允许重插
+      G.commandQueue = G.commandQueue.filter(c => c.id !== card.id);
+    }
+    G._pendingInject = card;
+    renderQueue();
     return;
   }
   if (card.steps_input) {
@@ -460,6 +494,35 @@ function renderQueue() {
   const list = document.getElementById('queue-list');
   list.innerHTML = '';
 
+  // E5 注入模式:待插入的卡和每两个指令之间的 "➕" 槽
+  const inject = G._pendingInject;
+
+  // 构建插入槽
+  const makeSlot = (pos) => {
+    const slot = document.createElement('div');
+    slot.style.cssText = `
+      min-width: 24px; height: 48px;
+      border: 2px dashed #E67E22; border-radius: 8px;
+      background: #FFF3E0;
+      display:flex; align-items:center; justify-content:center;
+      font-size: 18px; color:#E67E22; font-weight:bold;
+      cursor:pointer; flex-shrink: 0;
+    `;
+    slot.textContent = '➕';
+    slot.title = '在这里插入';
+    slot.onclick = () => {
+      G.commandQueue.splice(pos, 0, { ...inject, steps: 1 });
+      G._pendingInject = null;
+      renderQueue();
+    };
+    return slot;
+  };
+
+  // 如果是 inject_mode 且有待插卡,首位也放一个槽
+  if (G.currentLevel?.inject_mode && inject) {
+    list.appendChild(makeSlot(0));
+  }
+
   // 主队列渲染
   G.commandQueue.forEach((item, idx) => {
     const div = document.createElement('div');
@@ -501,7 +564,9 @@ function renderQueue() {
         social_engineer: '🕴️', hourglass: '⏳',
         send_noise: '📢', press_button: '🔘',
         ask_hint: '❓', break_mirror: '🔨',
-        keypad: '🔢', cable_cut: '✂️', inspect_gift: '🎁'
+        keypad: '🔢', cable_cut: '✂️', inspect_gift: '🎁',
+        keypad_letter: '🔤', choose_reply: '💬', clean_virus: '🧹',
+        open_gift: '📦', deploy_backend: '🛠️'
       };
       const iconStr = iconMap[item.icon] ? iconMap[item.icon] + ' ' : '';
       div.innerHTML = `
@@ -519,6 +584,11 @@ function renderQueue() {
       updateEditBanner();
     };
     list.appendChild(div);
+
+    // 注入模式:每个指令后也放一个插入槽
+    if (G.currentLevel?.inject_mode && inject) {
+      list.appendChild(makeSlot(idx + 1));
+    }
   });
 
   // 如果正在编辑某个容器,把容器内部的指令也显示一行
@@ -652,6 +722,43 @@ document.getElementById('btn-dialog-speak').onclick = () => {
   speak(t);
 };
 
+// ========== 提示按钮三分钟锁 ==========
+// 全局:每关开局 3 分钟内隐藏提示按钮;3 分钟后自动出现,并在首次出现时弹气泡
+const HINT_UNLOCK_MS = 3 * 60 * 1000;
+let _hintUnlockTimer = null;
+let _hintBubbleShown = false;
+
+function armHintButtonLock() {
+  const btn = document.getElementById('btn-hint');
+  const bubble = document.getElementById('hint-bubble');
+  if (!btn) return;
+  // 每关开始:隐藏按钮,清掉之前的定时器
+  btn.style.display = 'none';
+  btn.classList.remove('new-hint');
+  if (bubble) bubble.style.display = 'none';
+  if (_hintUnlockTimer) { clearTimeout(_hintUnlockTimer); _hintUnlockTimer = null; }
+
+  _hintUnlockTimer = setTimeout(() => {
+    // 模考中:提示按钮一直藏着,不要被这个定时器拉出来
+    if (G.contest) return;
+    btn.style.display = '';
+    btn.classList.add('new-hint');
+    // 首次解锁才弹一次气泡;后续关卡不再弹,只闪一下
+    if (!_hintBubbleShown && bubble) {
+      _hintBubbleShown = true;
+      // 定位到按钮下方
+      const rect = btn.getBoundingClientRect();
+      bubble.style.left = Math.max(10, rect.left + rect.width/2 - 110) + 'px';
+      bubble.style.top = (rect.bottom + 8) + 'px';
+      bubble.style.display = 'block';
+      // 8 秒后自动消失
+      setTimeout(() => { if (bubble) bubble.style.display = 'none'; }, 8000);
+    }
+    // 2.4 秒后取消闪烁高亮
+    setTimeout(() => btn.classList.remove('new-hint'), 2400);
+  }, HINT_UNLOCK_MS);
+}
+
 // ========== 提示系统(三级) ==========
 document.getElementById('btn-hint').onclick = () => {
   if (!G.currentLevel || !G.currentLevel.hints) return;
@@ -667,10 +774,14 @@ document.getElementById('btn-reset').onclick = () => {
   if (G.isRunning) return;
   G.commandQueue = [];
   _editTarget = null;
+  G.giftsOpened = 0;
+  G.trojanTriggered = 0;
+  G.buttonPressed = false;
   applyPresetQueue();  // ⭐ 概念关重试后要恢复预填队列,否则 C1 等关卡会变空
   renderQueue();
   updateEditBanner();
   if (G.phaserScene) {
+    _clearLoopTimers();
     G.phaserScene.scene.restart({ levelData: G.currentLevel });
   }
 };
@@ -720,6 +831,16 @@ async function executeCommands(commands, scene) {
       await scene.breakMirrorAction();
     } else if (cmd.action === 'enter_password') {
       await scene.enterPasswordAction();
+    } else if (cmd.action === 'choose_reply') {
+      await scene.chooseReplyAction();
+    } else if (cmd.action === 'clean_virus') {
+      await scene.cleanVirusAction();
+    } else if (cmd.action === 'inspect_gift') {
+      await scene.inspectGiftAction();
+    } else if (cmd.action === 'open_gift') {
+      await scene.openGiftAction();
+    } else if (cmd.action === 'deploy_backend') {
+      await scene.deployBackendAction();
     } else if (cmd.action === 'repeat') {
       // 容器指令:展开执行 N 次
       const times = cmd.times || 1;
@@ -778,6 +899,22 @@ async function runQueue() {
       const total = (cond.entity_ids || []).length;
       const done = (cond.entity_ids || []).filter(id => G.entities[id]?.watered).length;
       hint = done === 0 ? '还没浇花呢!' : `浇了 ${done}/${total},还差几盆~`;
+    } else if (cond?.type === 'all_virus_cleaned') {
+      const total = (cond.entity_ids || []).length;
+      const done = (cond.entity_ids || []).filter(id => G.entities[id]?.cleaned).length;
+      if (done < total) {
+        hint = done === 0 ? '🦠 还没清病毒呢!' : `清了 ${done}/${total},还有病毒!`;
+      } else {
+        hint = '病毒都清了,到终点就赢!';
+      }
+    } else if (cond?.type === 'collect_safe_gifts') {
+      if ((G.trojanTriggered || 0) > 0) {
+        hint = '中了木马!先检查再拆哦~';
+      } else {
+        const got = G.giftsOpened || 0;
+        const need = cond.required_count || 2;
+        hint = got < need ? `才拆了 ${got}/${need} 个好礼物~` : '到终点去吧!';
+      }
     } else if (cond?.type === 'execute_safe_queue') {
       const preset = G.currentLevel.preset_queue || [];
       const malIds = new Set(preset.filter(c => c.malicious).map(c => c.id));
@@ -886,6 +1023,150 @@ function showPasswordKeypad(digitCount = 4) {
       overlay.remove();
       resolve(input);
     };
+  });
+}
+
+// ========== 字母键盘 UI(E6 凯撒字母版)==========
+function showLetterKeypad(length = 3) {
+  return new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position:fixed; inset:0; background:rgba(0,0,0,0.55);
+      display:flex; align-items:center; justify-content:center;
+      z-index:250;
+    `;
+    const box = document.createElement('div');
+    box.style.cssText = `
+      background: linear-gradient(180deg, #FFFACD, #FFE4B5);
+      border: 6px solid #D4AC0D; border-radius: 24px;
+      padding: 20px 22px; max-width: 420px;
+      box-shadow: 0 8px 0 rgba(0,0,0,0.2); text-align:center;
+    `;
+    let input = '';
+    const renderDisplay = () => {
+      const slots = [];
+      for (let i = 0; i < length; i++) {
+        slots.push(input[i] != null
+          ? `<span style="color:#6B4423;font-weight:bold;">${input[i]}</span>`
+          : '○');
+      }
+      return slots.join(' ');
+    };
+
+    box.innerHTML = `
+      <div style="font-size:20px; font-weight:bold; color:#6B4423; margin-bottom:8px;">
+        🔤 输入字母
+      </div>
+      <div id="lkp-display" style="font-size:30px; font-family:monospace; color:#999; background:#FFF; border:3px solid #D4AC0D; border-radius:12px; padding:10px; margin-bottom:14px; letter-spacing:8px;">
+        ${renderDisplay()}
+      </div>
+      <div id="lkp-btns" style="display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:10px;"></div>
+      <div style="display:flex; gap:8px; justify-content:center;">
+        <button id="lkp-back" style="padding:8px 12px; border:3px solid #6B4423; border-radius:10px; background:#FFE4B5; font-weight:bold; cursor:pointer;">← 删除</button>
+        <button id="lkp-clear" style="padding:8px 12px; border:3px solid #6B4423; border-radius:10px; background:#FFE4B5; font-weight:bold; cursor:pointer;">清空</button>
+        <button id="lkp-cancel" style="padding:8px 12px; border:3px solid #6B4423; border-radius:10px; background:#FFF; font-weight:bold; cursor:pointer;">取消</button>
+        <button id="lkp-ok" style="padding:8px 16px; border:3px solid #339933; border-radius:10px; background:#66CC66; color:#FFF; font-weight:bold; cursor:pointer;">确定 ▶</button>
+      </div>
+    `;
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
+
+    const btns = document.getElementById('lkp-btns');
+    const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    LETTERS.forEach(L => {
+      const b = document.createElement('button');
+      b.textContent = L;
+      b.style.cssText = `
+        padding:8px 0; font-size:14px; font-weight:bold;
+        border:2px solid #6B4423; border-radius:8px;
+        background:#FFF; color:#6B4423; cursor:pointer;
+      `;
+      b.onclick = () => {
+        if (input.length < length) {
+          input += L;
+          document.getElementById('lkp-display').innerHTML = renderDisplay();
+        }
+      };
+      btns.appendChild(b);
+    });
+
+    document.getElementById('lkp-back').onclick = () => {
+      input = input.slice(0, -1);
+      document.getElementById('lkp-display').innerHTML = renderDisplay();
+    };
+    document.getElementById('lkp-clear').onclick = () => {
+      input = '';
+      document.getElementById('lkp-display').innerHTML = renderDisplay();
+    };
+    document.getElementById('lkp-cancel').onclick = () => {
+      overlay.remove();
+      resolve(null);
+    };
+    document.getElementById('lkp-ok').onclick = () => {
+      if (input.length !== length) {
+        const d = document.getElementById('lkp-display');
+        d.style.color = '#E74C3C';
+        setTimeout(() => d.style.color = '', 500);
+        return;
+      }
+      overlay.remove();
+      resolve(input);
+    };
+  });
+}
+
+// ========== 社工 3 选 1 对话框(E3 用)==========
+function showReplyChoiceModal(prompt, replies) {
+  return new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position:fixed; inset:0; background:rgba(0,0,0,0.55);
+      display:flex; align-items:center; justify-content:center;
+      z-index:250;
+    `;
+    const box = document.createElement('div');
+    box.style.cssText = `
+      background: #FFF;
+      border: 5px solid #6B4423; border-radius: 20px;
+      padding: 20px; max-width: 420px; min-width: 300px;
+      box-shadow: 0 8px 0 rgba(107, 68, 35, 0.3);
+    `;
+    const title = document.createElement('div');
+    title.textContent = '🧔 守卫问:' + prompt;
+    title.style.cssText = 'font-size:18px;font-weight:bold;color:#6B4423;margin-bottom:14px;';
+    box.appendChild(title);
+
+    replies.forEach((r, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = `${'ABC'[i]}. ${r.text}`;
+      btn.style.cssText = `
+        display:block; width:100%; margin:8px 0;
+        padding:12px 14px; border:3px solid #6B4423; border-radius:12px;
+        background:#FFFACD; color:#6B4423;
+        font-size:15px; font-weight:bold; text-align:left;
+        cursor:pointer;
+      `;
+      btn.onmouseover = () => { btn.style.background = '#FFF8DC'; };
+      btn.onmouseout = () => { btn.style.background = '#FFFACD'; };
+      btn.onclick = () => {
+        overlay.remove();
+        resolve(i);
+      };
+      box.appendChild(btn);
+    });
+
+    const cancel = document.createElement('button');
+    cancel.textContent = '取消';
+    cancel.style.cssText = `
+      margin-top:8px; padding:8px 14px;
+      border:2px solid #999; border-radius:10px; background:#FFF;
+      color:#666; cursor:pointer;
+    `;
+    cancel.onclick = () => { overlay.remove(); resolve(null); };
+    box.appendChild(cancel);
+
+    overlay.appendChild(box);
+    document.body.appendChild(overlay);
   });
 }
 
@@ -1039,6 +1320,19 @@ class MainScene extends Phaser.Scene {
                        'pinki','tengman','oren','blake','garnold','diannao','npc'];
     entityList.filter(e => NPC_TYPES.includes(e.type)).forEach(e => {
       const sprite = this.createNPC(e);
+      // 第五幕起:带 hint_text 且不跟随 / 非循环的 NPC,在头顶持续显示线索
+      let label = null;
+      if (e.hint_text && e.role !== 'follower' && !e.loop_steps) {
+        const lx = G.mapOriginX + e.pos[0] * G.tileSize + G.tileSize / 2;
+        const ly = G.mapOriginY + e.pos[1] * G.tileSize - 2;
+        label = this.add.text(lx, ly, e.hint_text, {
+          fontSize: '12px', color: '#6B4423',
+          backgroundColor: '#FFFACD',
+          padding: { x: 5, y: 2 },
+          wordWrap: { width: 120, useAdvancedWrap: true },
+          align: 'center'
+        }).setOrigin(0.5, 1).setDepth(18);
+      }
       G.entities[e.id] = {
         type: e.type,
         gridX: e.pos[0], gridY: e.pos[1],
@@ -1049,7 +1343,8 @@ class MainScene extends Phaser.Scene {
         noise_threshold: e.noise_threshold || 3, // DoS 需要噪音数
         block_message: e.block_message || null,  // 撞到时的定制消息
         hint_text: e.hint_text || null,   // 用 ask_hint 时会念出这句(D1 用)
-        bypassed: false
+        bypassed: false,
+        _label: label
       };
     });
 
@@ -1167,14 +1462,28 @@ class MainScene extends Phaser.Scene {
       };
     });
 
-    // 处理 info_stone(C8:踩上去显示提示)
+    // 处理 info_stone(C8:踩上去显示提示 · 第五幕起 hint_text 持续显示在石头上方)
     entityList.filter(e => e.type === 'info_stone').forEach(e => {
       const sprite = this.createInfoStone(e);
+      // 持续显示的浮动标签(只要 hint_text 非空就贴)
+      let label = null;
+      if (e.hint_text) {
+        const lx = G.mapOriginX + e.pos[0] * G.tileSize + G.tileSize / 2;
+        const ly = G.mapOriginY + e.pos[1] * G.tileSize - 2;
+        label = this.add.text(lx, ly, e.hint_text, {
+          fontSize: '12px', color: '#6B4423',
+          backgroundColor: '#FFFACD',
+          padding: { x: 5, y: 2 },
+          wordWrap: { width: 120, useAdvancedWrap: true },
+          align: 'center'
+        }).setOrigin(0.5, 1).setDepth(18);
+      }
       G.entities[e.id] = {
         type: 'info_stone',
         gridX: e.pos[0], gridY: e.pos[1],
         sprite,
-        hint_text: e.hint_text || ''
+        hint_text: e.hint_text || '',
+        _label: label
       };
     });
 
@@ -1191,21 +1500,106 @@ class MainScene extends Phaser.Scene {
       };
     });
 
-    // 处理 safe_box(D1 弱口令关:输对 4 位密码才解锁)
+    // 处理 safe_box(D1 弱口令关:输对密码才解锁;E7 支持 initial_hidden,部署后才显示)
     entityList.filter(e => e.type === 'safe_box').forEach(e => {
       const { sprite, redraw } = this.createSafeBox(e);
+      const hidden = !!e.initial_hidden;
+      if (hidden) sprite.setVisible(false);
       G.entities[e.id] = {
         type: 'safe_box',
         gridX: e.pos[0], gridY: e.pos[1],
         sprite, redraw,
         correct_password: e.correct_password || '0000',
+        password_kind: e.password_kind || 'number', // 'number' | 'letter'
         unlocked: !!e.unlocked,
         attempts: 0,
-        unlock_reward: e.unlock_reward || null   // 解锁后的成就事件(如"打开后弹对话")
+        hidden, // E7:未部署前隐藏,也不拦路
+        unlock_reward: e.unlock_reward || null
       };
     });
 
-    // 处理 mirror(C3:装饰镜子,也可做光束反射器)
+    // ========== 第五幕新实体 ==========
+
+    // E7:前端假门(视觉是门,不登记为墙,可直接穿过,穿过触发"识破"动画)
+    entityList.filter(e => e.type === 'fake_check_door').forEach(e => {
+      const { sprite, reveal } = this.createFakeCheckDoor(e);
+      G.entities[e.id] = {
+        type: 'fake_check_door',
+        gridX: e.pos[0], gridY: e.pos[1],
+        sprite, reveal,
+        revealed: false,
+        label: e.label || '请输入密码'
+      };
+    });
+
+    // E7:部署按钮(按下去让目标 safe_box 从 hidden 变显示)
+    entityList.filter(e => e.type === 'deploy_button').forEach(e => {
+      const sprite = this.createDeployButton(e);
+      G.entities[e.id] = {
+        type: 'deploy_button',
+        gridX: e.pos[0], gridY: e.pos[1],
+        sprite,
+        pressed: false,
+        target_id: e.target_id || null   // 指向要部署的 safe_box 的 id
+      };
+    });
+
+    // E8/E12:病毒格子
+    entityList.filter(e => e.type === 'virus_tile').forEach(e => {
+      const { sprite, redraw } = this.createVirusTile(e);
+      G.entities[e.id] = {
+        type: 'virus_tile',
+        gridX: e.pos[0], gridY: e.pos[1],
+        sprite, redraw,
+        cleaned: false
+      };
+    });
+
+    // E9/E12:礼物盒(可能是真礼物也可能是木马)
+    entityList.filter(e => e.type === 'gift_box').forEach(e => {
+      const { sprite, redraw } = this.createGiftBox(e);
+      G.entities[e.id] = {
+        type: 'gift_box',
+        gridX: e.pos[0], gridY: e.pos[1],
+        sprite, redraw,
+        color: e.color || 'red',
+        is_trojan: !!e.is_trojan,
+        content_label: e.content_label || '一本书',
+        inspected: false,
+        opened: false
+      };
+    });
+
+    // E3:带 3 选 1 对话的守卫
+    entityList.filter(e => e.type === 'reply_guard').forEach(e => {
+      const sprite = this.createReplyGuard(e);
+      G.entities[e.id] = {
+        type: 'reply_guard',
+        gridX: e.pos[0], gridY: e.pos[1],
+        sprite,
+        replies: e.replies || [],       // [{text, correct, feedback}]
+        prompt: e.prompt || '你是谁?',
+        bypassed: false,
+        aside_pos: e.aside_pos || [e.pos[0], e.pos[1] + 1],
+        block_message: e.block_message || '站住!'
+      };
+    });
+
+    // E4/E11:循环 NPC(每 N 秒走一轮预设路径)
+    entityList.filter(e => e.type === 'loop_npc').forEach(e => {
+      const sprite = this.createLoopNpc(e);
+      G.entities[e.id] = {
+        type: 'loop_npc',
+        gridX: e.pos[0], gridY: e.pos[1],
+        sprite,
+        loop_steps: e.loop_steps || [],  // ['right','right','say:123','right']
+        loop_period_ms: e.loop_period_ms || 5000,
+        hint_text: e.hint_text || null,
+        _loopTimer: null
+      };
+      // 启动循环
+      this._startLoopAnim(G.entities[e.id]);
+    });
     entityList.filter(e => e.type === 'mirror').forEach(e => {
       const sprite = this.createMirror(e);
       G.entities[e.id] = {
@@ -2196,13 +2590,24 @@ class MainScene extends Phaser.Scene {
                            'brud','simon','tunner','wenda','dashu',
                            'pinki','tengman','oren','blake','garnold','diannao','npc'];
         const blocker = Object.values(G.entities).find(en =>
-          NPC_TYPES.includes(en.type) &&
+          (NPC_TYPES.includes(en.type) || en.type === 'reply_guard' || en.type === 'loop_npc') &&
           en.role !== 'follower' &&
           !en.bypassed &&
           en.gridX === nx && en.gridY === ny
         );
         if (blocker) {
           G.lastBlockMessage = blocker.block_message || null;
+          resolve(false); return;
+        }
+      }
+      // E8/E12:病毒格子未清理,拦路
+      if (G.entities) {
+        const virus = Object.values(G.entities).find(en =>
+          en.type === 'virus_tile' && !en.cleaned &&
+          en.gridX === nx && en.gridY === ny
+        );
+        if (virus) {
+          G.lastBlockMessage = '这里有病毒,先清理!';
           resolve(false); return;
         }
       }
@@ -2239,10 +2644,10 @@ class MainScene extends Phaser.Scene {
           resolve(false); return;
         }
       }
-      // safe_box(D1 用):未解锁时不可通过
+      // safe_box(D1 用):未解锁时不可通过;但 hidden=true(E7 未部署)不拦
       if (G.entities) {
         const safe = Object.values(G.entities).find(en =>
-          en.type === 'safe_box' && !en.unlocked &&
+          en.type === 'safe_box' && !en.unlocked && !en.hidden &&
           en.gridX === nx && en.gridY === ny
         );
         if (safe) {
@@ -2304,7 +2709,21 @@ class MainScene extends Phaser.Scene {
             }
           });
           // 自动提示:路过石头/NPC 会自动弹出它的线索(再等泡泡播完再继续)
-          this.autoShowNearbyHints().then(() => resolve(true));
+          // E7:路过前端假门时,触发"贴纸被揭"视觉 + 气泡
+          const fakeDoor = Object.values(G.entities || {}).find(en =>
+            en.type === 'fake_check_door' && !en.revealed &&
+            en.gridX === nx && en.gridY === ny
+          );
+          const afterHint = async () => {
+            if (fakeDoor) {
+              fakeDoor.revealed = true;
+              if (fakeDoor.reveal) fakeDoor.reveal();
+              await this.showBubble(G.player, '咦?没挡住!');
+            }
+            await this.autoShowNearbyHints();
+            resolve(true);
+          };
+          afterHint();
         }
       });
     });
@@ -2342,7 +2761,8 @@ class MainScene extends Phaser.Scene {
   // 放下
   async dropAction() {
     if (!G.carriedItem) {
-      await this.showBubble(G.player, '手里没东西呀!');
+      // E5 注入关:手里空也允许 drop(比喻上就是"放下不存在的盒子")
+      await this.showBubble(G.player, '咚!(放下了)');
       return true;
     }
     const id = G.carriedItem;
@@ -2480,6 +2900,34 @@ class MainScene extends Phaser.Scene {
         return f && f.watered;
       });
     }
+    // E8/E12:所有指定病毒格清理完 + 玩家到达目标
+    if (cond.type === 'all_virus_cleaned') {
+      const allClean = (cond.entity_ids || []).every(id => {
+        const v = G.entities[id];
+        return v && v.cleaned;
+      });
+      if (!allClean) return false;
+      if (cond.reach_goal_id) {
+        const goal = G.currentLevel.entities.find(e => e.id === cond.reach_goal_id);
+        if (!goal) return false;
+        if (G.player.gridX !== goal.pos[0] || G.player.gridY !== goal.pos[1]) return false;
+      }
+      return true;
+    }
+    // E9:拆满 N 个真礼物,且**没中木马**;再到达终点
+    if (cond.type === 'collect_safe_gifts') {
+      const need = cond.required_count || 2;
+      const got = G.giftsOpened || 0;
+      const trojanHit = G.trojanTriggered || 0;
+      if (got < need) return false;
+      if (trojanHit > 0) return false;
+      if (cond.reach_goal_id) {
+        const goal = G.currentLevel.entities.find(e => e.id === cond.reach_goal_id);
+        if (!goal) return false;
+        if (G.player.gridX !== goal.pos[0] || G.player.gridY !== goal.pos[1]) return false;
+      }
+      return true;
+    }
     if (cond.type === 'execute_safe_queue') {
       // 1) 队列里不能包含被标记 malicious 的指令
       const presetQueue = G.currentLevel.preset_queue || [];
@@ -2495,6 +2943,15 @@ class MainScene extends Phaser.Scene {
       const mustKeep = cond.must_keep_actions || [];
       for (const need of mustKeep) {
         if (!actsInQ.includes(need)) return false;
+      }
+      // 2b) 严格序列校验(E5 注入位置关):队列里必须按 required_order 的 action 顺序出现
+      if (cond.required_order && Array.isArray(cond.required_order)) {
+        const seq = cond.required_order.slice();
+        let i = 0;
+        for (const act of actsInQ) {
+          if (i < seq.length && act === seq[i]) i++;
+        }
+        if (i !== seq.length) return false;
       }
       // 3) 最后到达目标格
       if (cond.reach_goal_id) {
@@ -2983,6 +3440,241 @@ class MainScene extends Phaser.Scene {
     return container;
   }
 
+  // ========== 第五幕:新实体绘制 ==========
+
+  // E7:前端假门(视觉是锁门,但不拦路;穿过时"贴纸被揭"显示 ❌)
+  createFakeCheckDoor(e) {
+    const gx = e.pos[0], gy = e.pos[1];
+    const px = G.mapOriginX + gx * G.tileSize;
+    const py = G.mapOriginY + gy * G.tileSize;
+    const container = this.add.container(px, py);
+    container.setDepth(3);
+
+    const g = this.add.graphics();
+    g.lineStyle(3, 0x2C3E50, 1);
+    // 门板:浅蓝色,看起来正经
+    g.fillStyle(0xAED6F1, 1);
+    g.fillRoundedRect(4, 2, G.tileSize - 8, G.tileSize - 4, 4);
+    g.strokeRoundedRect(4, 2, G.tileSize - 8, G.tileSize - 4, 4);
+    // "✔" 假闪灯
+    g.fillStyle(0x27AE60, 1);
+    g.fillCircle(G.tileSize - 10, 10, 4);
+    container.add(g);
+
+    // 文字:"🔒 密码"
+    const label = this.add.text(G.tileSize / 2, G.tileSize / 2, '🔒\n密码', {
+      fontSize: '11px', color: '#2C3E50', align: 'center', fontStyle: 'bold'
+    }).setOrigin(0.5);
+    container.add(label);
+
+    // reveal():穿过后把 ✔ 变成 ❌,表明这是假的
+    const reveal = () => {
+      g.fillStyle(0xE74C3C, 1);
+      g.fillCircle(G.tileSize - 10, 10, 4);
+      label.setText('❌\n假门');
+      label.setColor('#C0392B');
+    };
+    return { sprite: container, reveal };
+  }
+
+  // E7:部署按钮(🛠)
+  createDeployButton(e) {
+    const gx = e.pos[0], gy = e.pos[1];
+    const px = G.mapOriginX + gx * G.tileSize + G.tileSize / 2;
+    const py = G.mapOriginY + gy * G.tileSize + G.tileSize / 2;
+    const container = this.add.container(px, py);
+    container.setDepth(4);
+
+    const g = this.add.graphics();
+    g.lineStyle(2, 0x2C3E50, 1);
+    g.fillStyle(0xF39C12, 1);
+    g.fillCircle(0, 0, 14);
+    g.strokeCircle(0, 0, 14);
+    const icon = this.add.text(0, 0, '🛠', { fontSize: '16px' }).setOrigin(0.5);
+    container.add([g, icon]);
+    return container;
+  }
+
+  // E8/E12:病毒格子(绿色闪烁,清理后变普通地板)
+  createVirusTile(e) {
+    const gx = e.pos[0], gy = e.pos[1];
+    const px = G.mapOriginX + gx * G.tileSize;
+    const py = G.mapOriginY + gy * G.tileSize;
+    const container = this.add.container(px, py);
+    container.setDepth(3);
+
+    const g = this.add.graphics();
+    let icon = null;
+
+    const redraw = (isCleaned) => {
+      g.clear();
+      if (icon) { icon.destroy(); icon = null; }
+      if (isCleaned) {
+        // 清除后:变透明(看地板)
+        container.setVisible(false);
+        return;
+      }
+      // 绿色粘液
+      g.fillStyle(0x2ECC71, 0.85);
+      g.fillRoundedRect(4, 4, G.tileSize - 8, G.tileSize - 8, 8);
+      g.lineStyle(3, 0x27AE60, 1);
+      g.strokeRoundedRect(4, 4, G.tileSize - 8, G.tileSize - 8, 8);
+      icon = this.add.text(G.tileSize / 2, G.tileSize / 2, '🦠', {
+        fontSize: '22px'
+      }).setOrigin(0.5);
+      container.add(icon);
+    };
+    container.add(g);
+    redraw(false);
+
+    // 脉冲动画
+    this.tweens.add({
+      targets: container, alpha: 0.7,
+      yoyo: true, repeat: -1, duration: 600, ease: 'Sine.easeInOut'
+    });
+    return { sprite: container, redraw };
+  }
+
+  // E9/E12:礼物盒
+  createGiftBox(e) {
+    const gx = e.pos[0], gy = e.pos[1];
+    const px = G.mapOriginX + gx * G.tileSize + G.tileSize / 2;
+    const py = G.mapOriginY + gy * G.tileSize + G.tileSize / 2;
+    const container = this.add.container(px, py);
+    container.setDepth(4);
+
+    const COLOR_MAP = {
+      red: 0xE74C3C, blue: 0x3498DB, green: 0x2ECC71,
+      yellow: 0xF1C40F, purple: 0x9B59B6, pink: 0xFF6B9D
+    };
+    let status = null;  // 检查后头顶的 ✔ / ⚠
+
+    const g = this.add.graphics();
+    const redraw = (st) => {
+      g.clear();
+      if (status) { status.destroy(); status = null; }
+      const main = COLOR_MAP[e.color] || 0xE74C3C;
+      // 盒身
+      g.lineStyle(2, 0x2C3E50, 1);
+      g.fillStyle(main, 1);
+      g.fillRoundedRect(-14, -8, 28, 20, 3);
+      g.strokeRoundedRect(-14, -8, 28, 20, 3);
+      // 丝带
+      g.fillStyle(0xFFD700, 1);
+      g.fillRect(-14, -2, 28, 4);
+      g.fillRect(-2, -8, 4, 20);
+      // 蝴蝶结
+      g.fillStyle(0xFFD700, 1);
+      g.fillTriangle(-8, -12, 0, -8, -8, -4);
+      g.fillTriangle(8, -12, 0, -8, 8, -4);
+
+      // 顶部状态
+      if (st === 'safe') {
+        status = this.add.text(0, -20, '✔', { fontSize: '14px', color: '#27AE60', fontStyle: 'bold' }).setOrigin(0.5);
+      } else if (st === 'trojan') {
+        status = this.add.text(0, -20, '⚠', { fontSize: '14px', color: '#E74C3C', fontStyle: 'bold' }).setOrigin(0.5);
+      }
+      if (status) container.add(status);
+    };
+    container.add(g);
+    redraw(null);
+
+    return { sprite: container, redraw };
+  }
+
+  // E3:带 3 选 1 对话的守卫(视觉和普通 npc 类似,但加了"?"图标)
+  createReplyGuard(e) {
+    const gx = e.pos[0], gy = e.pos[1];
+    const px = G.mapOriginX + gx * G.tileSize + G.tileSize / 2;
+    const py = G.mapOriginY + gy * G.tileSize + G.tileSize / 2;
+    const container = this.add.container(px, py);
+    container.setDepth(5);
+
+    const g = this.add.graphics();
+    // 身体:深蓝
+    g.lineStyle(3, 0x2C3E50, 1);
+    g.fillStyle(0x34495E, 1);
+    g.fillRoundedRect(-14, -6, 28, 22, 5);
+    g.strokeRoundedRect(-14, -6, 28, 22, 5);
+    // 头
+    g.fillStyle(0xECF0F1, 1);
+    g.fillCircle(0, -14, 10);
+    g.strokeCircle(0, -14, 10);
+    // 眼睛
+    g.fillStyle(0x2C3E50, 1);
+    g.fillCircle(-4, -14, 1.5);
+    g.fillCircle(4, -14, 1.5);
+    // 大胡子
+    g.fillStyle(0x5D4037, 1);
+    g.fillRect(-6, -10, 12, 3);
+
+    container.add(g);
+    // 问号气泡
+    const q = this.add.text(14, -20, '?', {
+      fontSize: '16px', color: '#E67E22', fontStyle: 'bold',
+      backgroundColor: '#FFFACD', padding: { x: 3, y: 1 }
+    }).setOrigin(0.5);
+    container.add(q);
+    return container;
+  }
+
+  // E4:循环 NPC(视觉是快递员:黄身子 + 红帽子)
+  createLoopNpc(e) {
+    const gx = e.pos[0], gy = e.pos[1];
+    const px = G.mapOriginX + gx * G.tileSize + G.tileSize / 2;
+    const py = G.mapOriginY + gy * G.tileSize + G.tileSize / 2;
+    const container = this.add.container(px, py);
+    container.setDepth(5);
+
+    const g = this.add.graphics();
+    g.lineStyle(3, 0x2C3E50, 1);
+    // 身体:黄
+    g.fillStyle(0xF39C12, 1);
+    g.fillRoundedRect(-13, -6, 26, 22, 5);
+    g.strokeRoundedRect(-13, -6, 26, 22, 5);
+    // 头:白
+    g.fillStyle(0xFDF6E3, 1);
+    g.fillCircle(0, -14, 10);
+    g.strokeCircle(0, -14, 10);
+    // 红帽子
+    g.fillStyle(0xE74C3C, 1);
+    g.fillRect(-10, -22, 20, 5);
+    g.strokeRect(-10, -22, 20, 5);
+    // 眼睛
+    g.fillStyle(0x2C3E50, 1);
+    g.fillCircle(-4, -13, 1.5);
+    g.fillCircle(4, -13, 1.5);
+    container.add(g);
+
+    // 头顶 "循环中" 指示
+    const loop = this.add.text(0, -30, '🔁', { fontSize: '12px' }).setOrigin(0.5);
+    container.add(loop);
+    return container;
+  }
+
+  // E4:启动循环 NPC 的自动动画(简化版:仅做视觉循环,不真正移动格子)
+  _startLoopAnim(entity) {
+    if (!entity || !entity.sprite) return;
+    // 节奏:每 loop_period_ms 显示一次 "say" 气泡,和原位轻微抖动
+    const tick = () => {
+      if (!entity.sprite || entity.sprite.scene !== this) return;
+      // 轻微"跳"一下,表示在巡逻
+      this.tweens.add({
+        targets: entity.sprite,
+        y: entity.sprite.y - 6,
+        yoyo: true, duration: 180, repeat: 0
+      });
+      // 说台词(取 loop_steps 里的 say:xxx)
+      const sayStep = (entity.loop_steps || []).find(s => typeof s === 'string' && s.startsWith('say:'));
+      if (sayStep) {
+        const text = sayStep.slice(4);
+        this.showBubble(entity.sprite, text, 1400);
+      }
+    };
+    tick();
+    entity._loopTimer = setInterval(tick, entity.loop_period_ms || 5000);
+  }
+
   // ========== 新概念关:动作方法 ==========
 
   // C4:社工 - 让附近带 role='guard' 的 NPC 让开
@@ -3141,11 +3833,11 @@ class MainScene extends Phaser.Scene {
     await this.showBubble(G.player, '附近没人回答~');
   }
 
-  // D1:在 4 位数密码盘里输入密码,与附近保险箱对比
+  // D1:在 4 位数密码盘里输入密码,与附近保险箱对比;E6:字母版
   async enterPasswordAction() {
     const px = G.player.gridX, py = G.player.gridY;
     const safe = Object.values(G.entities || {}).find(en =>
-      en.type === 'safe_box' && !en.unlocked &&
+      en.type === 'safe_box' && !en.unlocked && !en.hidden &&
       Math.abs(en.gridX - px) + Math.abs(en.gridY - py) <= 1
     );
     if (!safe) {
@@ -3153,19 +3845,210 @@ class MainScene extends Phaser.Scene {
       return;
     }
     const tries = (safe.correct_password || '').length;
-    const input = await showPasswordKeypad(tries || 4);
+    const kind = safe.password_kind || 'number';
+    const input = kind === 'letter'
+      ? await showLetterKeypad(tries || 3)
+      : await showPasswordKeypad(tries || 4);
     if (input == null) {
       // 取消
       return;
     }
     safe.attempts += 1;
-    if (input === safe.correct_password) {
+    // 字母版不区分大小写
+    const match = kind === 'letter'
+      ? input.toUpperCase() === (safe.correct_password || '').toUpperCase()
+      : input === safe.correct_password;
+    if (match) {
       safe.unlocked = true;
       if (safe.redraw) safe.redraw(true);
       await this.showBubble(safe.sprite, '咔!开了!');
     } else {
       await this.showBubble(G.player,
         `密码不对~再想想(第${safe.attempts}次)`);
+    }
+  }
+
+  // ========== 第五幕:新动作方法 ==========
+
+  // E3:社工辨识 —— 附近 reply_guard,弹出 3 选 1 对话框
+  async chooseReplyAction() {
+    const px = G.player.gridX, py = G.player.gridY;
+    const guard = Object.values(G.entities || {}).find(en =>
+      en.type === 'reply_guard' && !en.bypassed &&
+      Math.abs(en.gridX - px) + Math.abs(en.gridY - py) <= 1
+    );
+    if (!guard) {
+      await this.showBubble(G.player, '附近没有守卫~');
+      return;
+    }
+    const picked = await showReplyChoiceModal(guard.prompt, guard.replies);
+    if (picked == null) return; // 取消
+    const chosen = guard.replies[picked];
+    await this.showBubble(G.player, chosen.text);
+    await new Promise(r => setTimeout(r, 300));
+    if (chosen.correct) {
+      // 守卫让开
+      const aside = guard.aside_pos;
+      const tx = G.mapOriginX + aside[0] * G.tileSize + G.tileSize / 2;
+      const ty = G.mapOriginY + aside[1] * G.tileSize + G.tileSize / 2;
+      await new Promise(resolve => {
+        this.tweens.add({
+          targets: guard.sprite, x: tx, y: ty, duration: 400,
+          onComplete: () => {
+            guard.gridX = aside[0]; guard.gridY = aside[1];
+            guard.bypassed = true; resolve();
+          }
+        });
+      });
+      await this.showBubble(guard.sprite, chosen.feedback || '请进~');
+    } else {
+      // 说错话:守卫训一句,婉婉被"退回"起点
+      await this.showBubble(guard.sprite, chosen.feedback || '胡说八道!');
+      await new Promise(r => setTimeout(r, 400));
+      const start = G.currentLevel.entities.find(en => en.id === 'player');
+      if (start) {
+        const sx = G.mapOriginX + start.start_pos[0] * G.tileSize + G.tileSize / 2;
+        const sy = G.mapOriginY + start.start_pos[1] * G.tileSize + G.tileSize / 2;
+        await new Promise(resolve => {
+          this.tweens.add({
+            targets: G.player, x: sx, y: sy, duration: 500,
+            onComplete: () => {
+              G.player.gridX = start.start_pos[0];
+              G.player.gridY = start.start_pos[1];
+              resolve();
+            }
+          });
+        });
+      }
+      await this.showBubble(G.player, '哎!重来...');
+    }
+  }
+
+  // E8:清病毒(附近 virus_tile)
+  async cleanVirusAction() {
+    const px = G.player.gridX, py = G.player.gridY;
+    const virus = Object.values(G.entities || {}).find(en =>
+      en.type === 'virus_tile' && !en.cleaned &&
+      Math.abs(en.gridX - px) + Math.abs(en.gridY - py) <= 1
+    );
+    if (!virus) {
+      await this.showBubble(G.player, '附近没有病毒~');
+      return;
+    }
+    // 喷雾动画
+    const spray = this.add.text(G.player.x, G.player.y - 30, '💨', {
+      fontSize: '22px'
+    }).setOrigin(0.5).setDepth(30);
+    this.tweens.add({
+      targets: spray, alpha: 0, y: G.player.y - 60,
+      duration: 500, onComplete: () => spray.destroy()
+    });
+    virus.cleaned = true;
+    if (virus.redraw) virus.redraw(true);
+    // 清干净的 ✨
+    const star = this.add.text(virus.sprite.x + G.tileSize/2, virus.sprite.y + G.tileSize/2, '✨', {
+      fontSize: '24px'
+    }).setOrigin(0.5).setDepth(30);
+    this.tweens.add({
+      targets: star, alpha: 0, scale: 1.8, duration: 600,
+      onComplete: () => star.destroy()
+    });
+    await new Promise(r => setTimeout(r, 500));
+    await this.showBubble(G.player, '病毒清掉啦!');
+  }
+
+  // E9:检查礼物(附近 gift_box)
+  async inspectGiftAction() {
+    const px = G.player.gridX, py = G.player.gridY;
+    const gift = Object.values(G.entities || {}).find(en =>
+      en.type === 'gift_box' && !en.inspected && !en.opened &&
+      Math.abs(en.gridX - px) + Math.abs(en.gridY - py) <= 1
+    );
+    if (!gift) {
+      await this.showBubble(G.player, '附近没有礼物~');
+      return;
+    }
+    gift.inspected = true;
+    if (gift.redraw) gift.redraw(gift.is_trojan ? 'trojan' : 'safe');
+    if (gift.is_trojan) {
+      await this.showBubble(gift.sprite, `⚠ 里面是病毒!别拆!`);
+    } else {
+      await this.showBubble(gift.sprite, `✔ 里面是${gift.content_label}。`);
+    }
+  }
+
+  // E9:拆礼物;不检查直接拆 or 拆到木马 → 惩罚
+  async openGiftAction() {
+    const px = G.player.gridX, py = G.player.gridY;
+    const gift = Object.values(G.entities || {}).find(en =>
+      en.type === 'gift_box' && !en.opened &&
+      Math.abs(en.gridX - px) + Math.abs(en.gridY - py) <= 1
+    );
+    if (!gift) {
+      await this.showBubble(G.player, '附近没有礼物~');
+      return;
+    }
+    gift.opened = true;
+    if (gift.is_trojan) {
+      // 中木马:冒一堆 🦠,回起点
+      for (let i = 0; i < 6; i++) {
+        const v = this.add.text(gift.sprite.x, gift.sprite.y, '🦠', {
+          fontSize: '18px'
+        }).setOrigin(0.5).setDepth(30);
+        this.tweens.add({
+          targets: v,
+          x: v.x + (Math.random()-0.5)*80, y: v.y + (Math.random()-0.5)*80,
+          alpha: 0, duration: 800,
+          onComplete: () => v.destroy()
+        });
+      }
+      await this.showBubble(gift.sprite, '哎呀!中木马啦!');
+      await new Promise(r => setTimeout(r, 600));
+      const start = G.currentLevel.entities.find(en => en.id === 'player');
+      if (start) {
+        const sx = G.mapOriginX + start.start_pos[0] * G.tileSize + G.tileSize / 2;
+        const sy = G.mapOriginY + start.start_pos[1] * G.tileSize + G.tileSize / 2;
+        G.player.gridX = start.start_pos[0];
+        G.player.gridY = start.start_pos[1];
+        G.player.x = sx; G.player.y = sy;
+      }
+      G.trojanTriggered = (G.trojanTriggered || 0) + 1;
+    } else {
+      // 好礼物
+      await this.showBubble(gift.sprite, `🎉 ${gift.content_label}!`);
+      G.giftsOpened = (G.giftsOpened || 0) + 1;
+      // 视觉:盒盖飞起
+      this.tweens.add({
+        targets: gift.sprite, y: gift.sprite.y - 10, alpha: 0.6,
+        duration: 300, yoyo: true
+      });
+    }
+  }
+
+  // E7:部署后端真门(把指定 safe_box 从 hidden 显示出来)
+  async deployBackendAction() {
+    const px = G.player.gridX, py = G.player.gridY;
+    const btn = Object.values(G.entities || {}).find(en =>
+      en.type === 'deploy_button' && !en.pressed &&
+      Math.abs(en.gridX - px) + Math.abs(en.gridY - py) <= 1
+    );
+    if (!btn) {
+      await this.showBubble(G.player, '附近没有部署按钮~');
+      return;
+    }
+    btn.pressed = true;
+    await this.showBubble(btn.sprite, '嗡——');
+    const target = btn.target_id ? G.entities[btn.target_id] : null;
+    if (target && target.type === 'safe_box' && target.hidden) {
+      target.hidden = false;
+      if (target.sprite) {
+        target.sprite.setAlpha(0);
+        target.sprite.setVisible(true);
+        this.tweens.add({
+          targets: target.sprite, alpha: 1, duration: 600
+        });
+      }
+      await this.showBubble(G.player, '真门升起来啦!');
     }
   }
 

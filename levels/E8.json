@@ -1,0 +1,73 @@
+{
+  "id": "E8",
+  "title": "会传染的小怪",
+  "act": 5,
+  "chapter": "余烬反扑",
+  "location": "星野站数据房",
+  "concept_intro": "病毒清理",
+  "security_concept": {
+    "name": "病毒",
+    "analogy": "病毒会传染,清一个不够,要全清。",
+    "defense": "杀毒要全盘扫描,别漏一个。"
+  },
+  "available_commands": ["direction", "virus"],
+  "intro_dialog": [
+    { "speaker": "加诺德", "text": "婉婉!地上有坏东西!" },
+    { "speaker": "加诺德", "text": "我走过去就被粘住了!" },
+    { "speaker": "小天",   "text": "是病毒!我们要清理。" },
+    { "speaker": "小天",   "text": "一个一个清,一个都不能漏。" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [1, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [8, 1], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player",   "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "garnold",  "type": "garnold", "pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "v1", "type": "virus_tile", "pos": [3, 2] },
+    { "id": "v2", "type": "virus_tile", "pos": [5, 2] },
+    { "id": "v3", "type": "virus_tile", "pos": [7, 2] },
+    { "id": "goal", "type": "goal_zone", "pos": [8, 2], "goal": true, "label": "安全区" }
+  ],
+  "available_command_cards": [
+    { "id": "move_up",    "category": "direction", "label": "向上", "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
+    { "id": "move_down",  "category": "direction", "label": "向下", "icon": "arrow_down",  "action": "move", "dir": "down",  "steps_input": true },
+    { "id": "move_left",  "category": "direction", "label": "向左", "icon": "arrow_left",  "action": "move", "dir": "left",  "steps_input": true },
+    { "id": "move_right", "category": "direction", "label": "向右", "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "clean",      "category": "virus",     "label": "清病毒", "icon": "clean_virus", "action": "clean_virus" }
+  ],
+  "success_condition": {
+    "type": "all_virus_cleaned",
+    "entity_ids": ["v1", "v2", "v3"],
+    "reach_goal_id": "goal"
+  },
+  "optimal_steps": 10,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "先走到病毒旁,再清理。" },
+    { "level": 2, "text": "每个病毒都要清,不能漏!" },
+    { "level": 3, "text": "右 1 → 清 → 右 2 → 清 → 右 2 → 清 → 右 1。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "加诺德", "text": "谢谢!我能动了!" },
+    { "speaker": "小天",   "text": "这叫「**病毒清理**」。" },
+    { "speaker": "小天",   "text": "电脑里的病毒会传染。" },
+    { "speaker": "小天",   "text": "清一个不够,要全部清。" },
+    { "speaker": "小天",   "text": "不然又会长出来。" },
+    { "speaker": "平基",   "text": "病毒真的要一个一个抓!" }
+  ],
+  "rewards": {
+    "unlock_next": "E9",
+    "first_time_dialog_card": "virus_cleanup"
+  }
+}

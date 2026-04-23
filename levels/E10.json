@@ -1,0 +1,78 @@
+{
+  "id": "E10",
+  "title": "双重关卡",
+  "act": 5,
+  "chapter": "余烬反扑",
+  "location": "星野站档案室",
+  "concept_intro": "综合:前后端 + 注入",
+  "security_concept": {
+    "name": "多层攻击",
+    "analogy": "坏人常常同时用好几招。",
+    "defense": "白帽也要会组合招数。"
+  },
+  "inject_mode": true,
+  "available_commands": ["function", "backend", "password"],
+  "preset_queue": [
+    { "id": "p1", "action": "move",  "dir": "right", "steps": 3, "label": "向右 3 步", "icon": "arrow_right" },
+    { "id": "p2", "action": "deploy_backend", "label": "部署真门", "icon": "deploy_backend" },
+    { "id": "p3", "action": "move",  "dir": "right", "steps": 2, "label": "向右 2 步", "icon": "arrow_right" },
+    { "id": "p4", "action": "move",  "dir": "right", "steps": 2, "label": "向右 2 步", "icon": "arrow_right" }
+  ],
+  "intro_dialog": [
+    { "speaker": "电脑先生", "text": "婉婉!数据被困在档案里。" },
+    { "speaker": "电脑先生", "text": "这次有两层门。" },
+    { "speaker": "小天",     "text": "前端的假门,还有后端的真门。" },
+    { "speaker": "小天",     "text": "还要插一条「输密码」。" },
+    { "speaker": "小天",     "text": "插在「部署」之后!" }
+  ],
+  "map": {
+    "size": [11, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 11, "h": 1 },
+      { "x": 0, "y": 4, "w": 11, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 10, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [1, 1], "size": [1, 1] },
+      { "type": "desk",  "pos": [5, 1], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player",   "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "diannao",  "type": "diannao","pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "fake_door", "type": "fake_check_door", "pos": [2, 2], "label": "请输密码" },
+    { "id": "pwd_stone", "type": "info_stone", "pos": [4, 3], "hint_text": "密码:7777" },
+    { "id": "deploy_btn", "type": "deploy_button", "pos": [4, 2], "target_id": "real_door" },
+    { "id": "real_door",  "type": "safe_box", "pos": [7, 2], "correct_password": "7777", "password_kind": "number", "initial_hidden": true },
+    { "id": "goal", "type": "goal_zone", "pos": [9, 2], "goal": true, "label": "档案库" }
+  ],
+  "available_command_cards": [
+    { "id": "inject_pwd", "category": "password", "label": "输密码 7777", "icon": "keypad", "action": "enter_password", "injectable": true }
+  ],
+  "success_condition": {
+    "type": "execute_safe_queue",
+    "must_keep_actions": ["move", "deploy_backend", "enter_password"],
+    "required_order": ["move", "deploy_backend", "enter_password", "move"],
+    "reach_goal_id": "goal"
+  },
+  "optimal_steps": 4,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "点「输密码」后,找队列中间的 ➕。" },
+    { "level": 2, "text": "插在「部署真门」之后。" },
+    { "level": 3, "text": "右 3 → 部署 → **插输密码** → 右 2 → 右 2。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "电脑先生", "text": "数据解救成功!" },
+    { "speaker": "小天",     "text": "这关考了**两个招数**。" },
+    { "speaker": "小天",     "text": "真正的攻击,常常几招叠加。" },
+    { "speaker": "小天",     "text": "白帽,就要一层一层破解。" }
+  ],
+  "manual_tip": "🧩 综合关<br><br>点「输密码 7777」<br>再点队列中<br><strong>部署之后的 ➕</strong><br>插进去<br><br>按 ▶ 执行",
+  "rewards": {
+    "unlock_next": "E11",
+    "first_time_dialog_card": "combo_frontend_inject"
+  }
+}
