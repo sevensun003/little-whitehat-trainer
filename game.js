@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23d`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23e`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1260,22 +1260,36 @@ class MainScene extends Phaser.Scene {
 
     const [cols, rows] = this.levelData.map.size;
 
-    // 计算地图居中 + tile 尺寸自适应
-    // 手机屏幕窄,允许更大的格子填满地图区域(降低上下/左右空白)
+    // 计算 tile 尺寸:
+    // 窄屏(手机)追求大 —— 允许地图超出屏幕,靠 camera 跟随玩家
+    // 宽屏(桌面)保持原先的"能装下就装下"
     const availW = this.scale.width;
     const availH = this.scale.height;
     const maxTileW = Math.floor(availW / cols);
     const maxTileH = Math.floor(availH / rows);
-    // 窄屏(手机)允许最大 88px;桌面 64px 仍然够大(避免过度拉伸)
     const isNarrow = availW < 700;
-    const cap = isNarrow ? 88 : 64;
-    G.tileSize = Math.min(maxTileW, maxTileH, cap);
-    G.mapOriginX = (availW - cols * G.tileSize) / 2;
-    // 窄屏:地图顶到上方(只保留 6px 上边距),把空白留在下方(像"地面+天空")
-    // 宽屏:保持居中
-    G.mapOriginY = isNarrow
-      ? 6
-      : (availH - rows * G.tileSize) / 2;
+
+    if (isNarrow) {
+      // 手机:以"短边刚好装下"为下限,但上限拉到 110,再取两者较大 ——
+      // 这样地图总有一边铺满屏幕,另一边用摄像机滚动
+      const tightFit = Math.min(maxTileW, maxTileH);
+      const looseFit = Math.max(maxTileW, maxTileH);
+      G.tileSize = Math.max(tightFit, Math.min(looseFit, 110));
+    } else {
+      G.tileSize = Math.min(maxTileW, maxTileH, 64);
+    }
+
+    const mapPixW = cols * G.tileSize;
+    const mapPixH = rows * G.tileSize;
+    G.mapOriginX = Math.max(0, (availW - mapPixW) / 2);
+    G.mapOriginY = Math.max(0, (availH - mapPixH) / 2);
+
+    // 若地图超出屏幕,启用摄像机跟随玩家
+    if (this.cameras && this.cameras.main) {
+      const worldW = Math.max(availW, mapPixW + G.mapOriginX * 2);
+      const worldH = Math.max(availH, mapPixH + G.mapOriginY * 2);
+      this.cameras.main.setBounds(0, 0, worldW, worldH);
+    }
 
     // ---- 登记墙壁(供 movePlayer 碰撞检测)----
     G.walls = new Set();
@@ -1624,6 +1638,14 @@ class MainScene extends Phaser.Scene {
     const player = entityList.find(e => e.id === 'player');
     if (player) {
       G.player = this.createWanwanSprite(player.start_pos[0], player.start_pos[1]);
+      // 窄屏:地图可能超屏,让摄像机跟随婉婉,平滑过渡
+      if (isNarrow && this.cameras && this.cameras.main) {
+        const mapPixW = cols * G.tileSize;
+        const mapPixH = rows * G.tileSize;
+        if (mapPixW > availW || mapPixH > availH) {
+          this.cameras.main.startFollow(G.player, true, 0.15, 0.15);
+        }
+      }
     }
 
     // ---- 开场对话 ----
