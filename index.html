@@ -279,7 +279,7 @@
     }
 
     /* ============================================================
-       手机 / 平板竖屏布局(v20260424a · 字体 3x)
+       手机 / 平板竖屏布局(v20260424b · 字体 3x)
        目标屏幕:980 × 2400
        ============================================================ */
     @media (max-width: 1100px), (orientation: portrait) {
@@ -386,17 +386,22 @@
       }
       .cmd-card .icon { font-size: 40px; line-height: 1; }
 
-      /* —— 第 2 层 · 地图 —— */
+      /* —— 第 2 层 · 地图:手机端 canvas 由 Phaser 决定大小,#game 横向滚动 —— */
       #game {
         min-height: 0;
         min-width: 0;
         background: #E8F4F8;
         position: relative;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
       }
       #game-canvas {
         min-height: 0;
-        width: 100%;
-        height: 100%;
+        /* 宽高不设,由 Phaser 的 canvas 元素撑开 */
+      }
+      #game-canvas > canvas {
+        display: block;
       }
 
       /* —— 第 3 层 · 指令队列 —— */
@@ -474,7 +479,7 @@
     <div class="level-info">
       <span id="level-title">关卡加载中…</span>
       <span class="concept" id="level-concept"></span>
-      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v20260424a</span>
+      <span id="version-tag" style="color:#999; font-size:11px; margin-left:8px;">v20260424b</span>
     </div>
     <div class="controls">
       <button class="btn" onclick="window.location.href='levels.html'">🗺️ 地图</button>
@@ -540,6 +545,6 @@
 </div>
 
 <!-- 游戏主逻辑 -->
-<script src="game.js?v=20260424a"></script>
+<script src="game.js?v=20260424b"></script>
 </body>
 </html>

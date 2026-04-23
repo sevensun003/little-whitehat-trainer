@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=20260424a`);
+  const res = await fetch(`levels/${levelId}.json?v=20260424b`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1265,9 +1265,27 @@ class MainScene extends Phaser.Scene {
     const availH = this.scale.height;
     const maxTileW = Math.floor(availW / cols);
     const maxTileH = Math.floor(availH / rows);
-    G.tileSize = Math.min(maxTileW, maxTileH, 64);
-    G.mapOriginX = (availW - cols * G.tileSize) / 2;
-    G.mapOriginY = (availH - rows * G.tileSize) / 2;
+    // 手机/平板竖屏:允许格子大到 160,地图会溢出屏幕,用户横滑查看
+    const isNarrow = window.innerWidth < 1100;
+    const cap = isNarrow ? 160 : 64;
+    G.tileSize = Math.min(Math.max(maxTileW, maxTileH), cap);
+
+    const mapPixW = cols * G.tileSize;
+    const mapPixH = rows * G.tileSize;
+
+    // 窄屏:把 Phaser 世界 resize 成地图实际大小,canvas 会跟着变大
+    // 这样地图 100% 铺满 canvas,用户通过 #game 外层 overflow-x 横滑查看
+    if (isNarrow && this.scale) {
+      this.scale.resize(mapPixW, mapPixH);
+    }
+
+    // 再读一遍 availW/H(resize 后更新)
+    const finalW = isNarrow ? mapPixW : availW;
+    const finalH = isNarrow ? mapPixH : availH;
+
+    // 地图居中(窄屏因为 canvas = 地图大小,居中 = 0)
+    G.mapOriginX = Math.max(0, (finalW - mapPixW) / 2);
+    G.mapOriginY = Math.max(0, (finalH - mapPixH) / 2);
 
     // ---- 登记墙壁(供 movePlayer 碰撞检测)----
     G.walls = new Set();
@@ -4149,8 +4167,13 @@ class MainScene extends Phaser.Scene {
 
 window.addEventListener('DOMContentLoaded', async () => {
   const gameDiv = document.getElementById('game-canvas');
-  const w = gameDiv.clientWidth;
-  const h = gameDiv.clientHeight;
+  const isNarrow = window.innerWidth < 1100;
+
+  // 等一帧让 grid 布局稳定
+  await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+  const w = isNarrow ? 1600 : gameDiv.clientWidth;    // 窄屏给一个"足够大的初始值",关卡加载后会按需 resize
+  const h = isNarrow ? 1600 : gameDiv.clientHeight;
 
   new Phaser.Game({
     type: Phaser.AUTO,
@@ -4159,8 +4182,10 @@ window.addEventListener('DOMContentLoaded', async () => {
     backgroundColor: '#E8F4F8',
     scene: MainScene,
     scale: {
-      mode: Phaser.Scale.RESIZE,
-      autoCenter: Phaser.Scale.CENTER_BOTH
+      // 窄屏:NONE 模式,Phaser 世界尺寸 = 关卡实际地图大小
+      // 宽屏:RESIZE,跟 parent 自适应
+      mode: isNarrow ? Phaser.Scale.NONE : Phaser.Scale.RESIZE,
+      autoCenter: Phaser.Scale.NO_CENTER
     }
   });
 
