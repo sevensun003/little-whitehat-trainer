@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23n`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23o`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1284,7 +1284,9 @@ class MainScene extends Phaser.Scene {
     const mapPixW = cols * G.tileSize;
     const mapPixH = rows * G.tileSize;
     G.mapOriginX = Math.max(0, (availW - mapPixW) / 2);
-    G.mapOriginY = Math.max(0, (availH - mapPixH) / 2);
+    // 窄屏:地图顶到上方(仅 12px 边距),不再居中 —— 消除上方大片空白
+    // 宽屏:居中
+    G.mapOriginY = isNarrow ? 12 : Math.max(0, (availH - mapPixH) / 2);
 
     // 若地图超出屏幕,启用摄像机跟随玩家
     if (this.cameras && this.cameras.main) {
@@ -4241,22 +4243,26 @@ window.addEventListener('DOMContentLoaded', async () => {
   // 等两帧,让 grid 布局(尤其 dvh)稳定下来再测量
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 
-  // 手机/平板窄屏:canvas CSS 已固定 700px,Phaser 内部世界也设成 700px
   const isNarrow = window.innerWidth < 1100;
   const gameOuter = document.getElementById('game');
-  // 重要:高度读外层 #game 的实际可见高(grid 1fr 分配给地图的真实高度)
-  // 不读 #game-canvas,因为它是 height:100% 且被 flex 撑开,读回来不稳定
+  // 窄屏:Phaser 高度不再读容器,而是限制到一个固定的合理值 —— 避免 canvas 过高导致地图居中偏下
+  //  - 700(最大 720)刚好装下 10 列 × 70px / 7 行 × 80 的主流地图 + 上下装饰
+  //  - 下方露出的 #game 父级(草地绿)自然延伸到第 4 行 spacer,视觉连贯
   const gameHeight = isNarrow
-    ? (gameOuter ? gameOuter.clientHeight : window.innerHeight * 0.4)
+    ? Math.min(720, Math.max(540, gameOuter ? gameOuter.clientHeight : 600))
     : (gameDiv.clientHeight || window.innerHeight * 0.55);
+  // 但如果 #game 实际可用高度比 720 小,还是用实际的,避免超出 grid 区
+  const finalHeight = isNarrow && gameOuter && gameOuter.clientHeight > 0
+    ? Math.min(gameHeight, gameOuter.clientHeight - 8)
+    : gameHeight;
   const gameWidth = isNarrow ? 700 : (gameDiv.clientWidth || window.innerWidth);
 
   new Phaser.Game({
     type: Phaser.AUTO,
     width: gameWidth,
-    height: gameHeight,
+    height: finalHeight,
     parent: 'game-canvas',
-    backgroundColor: '#E8F4F8',
+    backgroundColor: '#7CB342',   // 草地绿(若地图有空白露出,和下方草地融合)
     scene: MainScene,
     scale: {
       mode: isNarrow ? Phaser.Scale.NONE : Phaser.Scale.RESIZE,
@@ -4278,10 +4284,10 @@ window.addEventListener('DOMContentLoaded', async () => {
         _clearLoopTimers();
         const nowNarrow = window.innerWidth < 1100;
         if (nowNarrow && G.phaserScene.scale) {
-          // 高度用外层 #game 的可见高,不用 #game-canvas
           const outer = document.getElementById('game');
-          const curH = outer ? outer.clientHeight : (window.innerHeight * 0.4);
-          G.phaserScene.scale.resize(700, curH);
+          const outerH = outer ? outer.clientHeight : 600;
+          const newH = Math.min(720, Math.max(540, outerH - 8));
+          G.phaserScene.scale.resize(700, newH);
         }
         G.phaserScene.scene.restart({ levelData: G.currentLevel });
       }
