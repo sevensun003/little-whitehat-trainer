@@ -67,7 +67,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=2026.04.23o`);
+  const res = await fetch(`levels/${levelId}.json?v=2026.04.23p`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1272,11 +1272,9 @@ class MainScene extends Phaser.Scene {
     const isNarrow = window.innerWidth < 1100;
 
     if (isNarrow) {
-      // 手机:格子上限 80,避免地图被 cap 撑得太大超过 canvas
-      // canvas 宽固定 700 -> 10 列 70 / 12 列 58,大多数情况短边就自然匹配
-      const tightFit = Math.min(maxTileW, maxTileH);
-      const looseFit = Math.max(maxTileW, maxTileH);
-      G.tileSize = Math.max(tightFit, Math.min(looseFit, 80));
+      // 手机:简单干脆 —— tileSize 取两个方向都能装下的那个值(短边装下)
+      // 不再追求"宁愿溢出也要大",因为 canvas 宽是固定 700,横向溢出就会被裁
+      G.tileSize = Math.min(maxTileW, maxTileH);
     } else {
       G.tileSize = Math.min(maxTileW, maxTileH, 64);
     }
