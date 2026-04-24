@@ -1,0 +1,84 @@
+{
+  "id": "F7",
+  "title": "聪明的门卫",
+  "act": 6,
+  "chapter": "新秩序",
+  "location": "星野站门口",
+  "concept_intro": "条件判断 · 看身份",
+  "security_concept": {
+    "name": "条件判断 · 进阶",
+    "analogy": "门卫看人:老师 / 陌生人 / 同学,不同对待。",
+    "defense": "看清是谁,再决定怎么做。"
+  },
+  "available_commands": ["direction", "function", "wait"],
+  "conditions": { "visitor": "stranger" },
+  "preset_queue": [
+    {
+      "action": "branch",
+      "var": "visitor",
+      "label": "👀 看是谁来了",
+      "pen_meta": [
+        { "case": "teacher",   "label": "👩‍🏫 老师", "color": "#A5D6A7" },
+        { "case": "classmate", "label": "👦 同学",   "color": "#FFE082" },
+        { "case": "stranger",  "label": "🕴️ 陌生人", "color": "#EF9A9A" }
+      ],
+      "pens": { "teacher": [], "classmate": [], "stranger": [] }
+    }
+  ],
+  "intro_dialog": [
+    { "speaker": "加诺德", "text": "我是新门卫!" },
+    { "speaker": "加诺德", "text": "今天来了个**陌生人**。" },
+    { "speaker": "小天",   "text": "门卫要看是谁。" },
+    { "speaker": "小天",   "text": "老师 → 开门让进。" },
+    { "speaker": "小天",   "text": "同学 → 打个招呼。" },
+    { "speaker": "小天",   "text": "陌生人 → 不给开门。" },
+    { "speaker": "小天",   "text": "三个栏都要填好。" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [1, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [8, 3], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "garnold","type": "garnold","pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "sign",   "type": "info_stone", "pos": [3, 3], "hint_text": "🕴️ 来的是陌生人" },
+    { "id": "goal",   "type": "goal_zone", "pos": [3, 2], "goal": true, "label": "门卫位" }
+  ],
+  "available_command_cards": [
+    { "id": "open_door", "category": "function", "label": "开门让进", "icon": "deploy_backend", "action": "press_button" },
+    { "id": "say_hi",    "category": "function", "label": "打招呼",   "icon": "choose_reply",   "action": "drop" },
+    { "id": "block",     "category": "function", "label": "不开门",   "icon": "hand_drop",      "action": "wait", "seconds": 1 }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 3,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "石头说陌生人来了。" },
+    { "level": 2, "text": "陌生人栏放「不开门」就好。" },
+    { "level": 3, "text": "老师→开门 / 同学→打招呼 / 陌生人→不开门。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "加诺德", "text": "门卫的活我会了!" },
+    { "speaker": "小天",   "text": "这就是「**进阶条件判断**」。" },
+    { "speaker": "小天",   "text": "不是只有 2 个选项。" },
+    { "speaker": "小天",   "text": "可以**多个分支**。" },
+    { "speaker": "小天",   "text": "每个情况都要想到。" },
+    { "speaker": "婉婉",   "text": "电脑也是这么思考的!" }
+  ],
+  "manual_tip": "🚪 这一关<br><br><strong>3 个分畜栏</strong><br>每个都要填!<br><br>看石头说今天来谁<br>把对应栏的指令<br>放对",
+  "rewards": {
+    "unlock_next": null,
+    "badge": "act6_finale",
+    "first_time_dialog_card": "conditional_advanced"
+  }
+}
