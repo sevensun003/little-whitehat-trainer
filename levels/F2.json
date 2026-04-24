@@ -23,7 +23,7 @@
       ],
       "pens": { "sunny": [], "rainy": [] }
     },
-    { "action": "move", "dir": "right", "steps": 5, "label": "向右走", "icon": "arrow_right" }
+    { "action": "move", "dir": "right", "steps": 6, "label": "向右走", "icon": "arrow_right" }
   ],
   "intro_dialog": [
     { "speaker": "藤蔓妹妹", "text": "婉婉,准备出门!" },

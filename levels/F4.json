@@ -1,0 +1,75 @@
+{
+  "id": "F4",
+  "title": "假的链接",
+  "act": 6,
+  "chapter": "新秩序",
+  "location": "电脑先生家",
+  "concept_intro": "钓鱼网站",
+  "security_concept": {
+    "name": "钓鱼链接",
+    "analogy": "看起来像真的,其实是骗人的网站。",
+    "defense": "看清网址,陌生链接不点。"
+  },
+  "available_commands": [],
+  "preset_queue": [
+    {
+      "action": "phishing_check",
+      "question": "哪些是骗人的链接?(把假的全点出来)",
+      "ai_msgs": [
+        { "text": "🌐 baidu.com  (真)",            "wrong": false },
+        { "text": "🌐 baidu-login.xyz",             "wrong": true },
+        { "text": "🌐 bank-of-china.com.fake-cn.io","wrong": true },
+        { "text": "🌐 google.com",                  "wrong": false },
+        { "text": "🌐 gov.cn-update-now.tk",        "wrong": true }
+      ]
+    },
+    { "action": "move", "dir": "right", "steps": 5, "label": "走出门", "icon": "arrow_right" }
+  ],
+  "intro_dialog": [
+    { "speaker": "电脑先生", "text": "婉婉!帮我看看!" },
+    { "speaker": "电脑先生", "text": "邮件里 5 个链接。" },
+    { "speaker": "电脑先生", "text": "有些是骗人的!" },
+    { "speaker": "小天",     "text": "看网址,**真假**不一样。" },
+    { "speaker": "小天",     "text": "把假的全点出来。" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "desk", "pos": [3, 1], "size": [1, 1] },
+      { "type": "plant","pos": [8, 3], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "diannao","type": "diannao","pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "goal",   "type": "goal_zone", "pos": [6, 2], "goal": true, "label": "出门" }
+  ],
+  "available_command_cards": [],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 1,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "看网址末尾,真网站结尾是 .com / .cn 等熟悉的。" },
+    { "level": 2, "text": ".xyz / .tk 这种结尾,加上奇怪的前缀,常常是假的。" },
+    { "level": 3, "text": "假的 3 个:baidu-login.xyz / fake-cn.io / cn-update-now.tk。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "电脑先生", "text": "好险!没点假链接!" },
+    { "speaker": "小天",     "text": "这叫「**钓鱼网站**」。" },
+    { "speaker": "小天",     "text": "假网站长得像真的。" },
+    { "speaker": "小天",     "text": "点了就上当。" },
+    { "speaker": "小天",     "text": "看清网址,陌生的别点。" }
+  ],
+  "manual_tip": "🔗 这一关<br><br>5 个链接里<br>有<strong>3 个是假的</strong><br><br>把假的<strong>点红</strong><br>再按✓提交",
+  "rewards": {
+    "unlock_next": "F6",
+    "first_time_dialog_card": "phishing_links"
+  }
+}

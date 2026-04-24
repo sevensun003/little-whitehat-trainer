@@ -74,7 +74,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=20260424i`);
+  const res = await fetch(`levels/${levelId}.json?v=20260424j`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -982,6 +982,32 @@ async function executeCommands(commands, scene) {
       } else {
         await scene.showBubble(G.player, `分栏'${value}'是空的,跳过`, 900);
       }
+    } else if (cmd.action === 'chat_ai_check') {
+      // 第六幕 F3:打开 AI 聊天框,要求识别幻觉
+      //  cmd.question  —— 用户问的问题
+      //  cmd.ai_msgs   —— [{text, wrong:true|false}]
+      const result = await new Promise(resolve => {
+        showAIChatModal(cmd.question || '?', cmd.ai_msgs || [], (hitAll) => resolve(hitAll));
+      });
+      if (!result) {
+        await scene.showBubble(G.player, '⚠️ 还没全找出来,再来!', 1500);
+        G._aiChatFailed = true;
+        return true;
+      } else {
+        await scene.showBubble(G.player, '✓ 识破了 AI 的假话!', 1300);
+        G._aiChatPassed = true;
+      }
+    } else if (cmd.action === 'phishing_check') {
+      // 第六幕 F4:钓鱼链接 —— 复用 AI chat 模态,玩家要点出"假链接"
+      const result = await new Promise(resolve => {
+        showAIChatModal(cmd.question || '哪些是骗人的链接?', cmd.ai_msgs || [], (hitAll) => resolve(hitAll));
+      });
+      if (!result) {
+        await scene.showBubble(G.player, '⚠️ 这些假链接没全识破!', 1500);
+        return true;
+      } else {
+        await scene.showBubble(G.player, '✓ 假的全找到了!', 1300);
+      }
     }
   }
   return false;
@@ -1064,7 +1090,7 @@ async function runQueue() {
 }
 
 // ========== 密码盘 UI(D1 用)==========
-function showPasswordKeypad(digitCount = 4) {
+function showPasswordKeypad(digitCount = 4, title = '🔢 输入密码') {
   return new Promise(resolve => {
     const overlay = document.createElement('div');
     overlay.style.cssText = `
@@ -1092,7 +1118,7 @@ function showPasswordKeypad(digitCount = 4) {
 
     box.innerHTML = `
       <div style="font-size:20px; font-weight:bold; color:#6B4423; margin-bottom:8px;">
-        🔢 输入密码
+        ${title}
       </div>
       <div id="kp-display" style="font-size:36px; font-family:monospace; color:#999; background:#FFF; border:3px solid #D4AC0D; border-radius:12px; padding:10px; margin-bottom:14px; letter-spacing:10px;">
         ${renderDisplay()}
@@ -1738,7 +1764,10 @@ class MainScene extends Phaser.Scene {
         unlocked: !!e.unlocked,
         attempts: 0,
         hidden, // E7:未部署前隐藏,也不拦路
-        unlock_reward: e.unlock_reward || null
+        unlock_reward: e.unlock_reward || null,
+        // 第六幕 F6:二次验证(可选)
+        requires_otp: !!e.requires_otp,
+        correct_otp: e.correct_otp || null
       };
     });
 
@@ -4182,18 +4211,30 @@ class MainScene extends Phaser.Scene {
       return;
     }
     safe.attempts += 1;
-    // 字母版不区分大小写
     const match = kind === 'letter'
       ? input.toUpperCase() === (safe.correct_password || '').toUpperCase()
       : input === safe.correct_password;
-    if (match) {
-      safe.unlocked = true;
-      if (safe.redraw) safe.redraw(true);
-      await this.showBubble(safe.sprite, '咔!开了!');
-    } else {
+    if (!match) {
       await this.showBubble(G.player,
         `密码不对~再想想(第${safe.attempts}次)`);
+      return;
     }
+    // 第六幕 F6:如果开启了 requires_otp,要再输一次性码(2FA)
+    if (safe.requires_otp && safe.correct_otp) {
+      await this.showBubble(safe.sprite, '✓ 密码对!\n📱 一次性码已发到手机。', 1800);
+      const otp = await showPasswordKeypad((safe.correct_otp || '').length || 4, '请输手机短信里的一次性码');
+      if (otp == null) {
+        await this.showBubble(G.player, '取消了,保险箱还锁着');
+        return;
+      }
+      if (otp !== safe.correct_otp) {
+        await this.showBubble(G.player, '一次性码不对!锁住了。');
+        return;
+      }
+    }
+    safe.unlocked = true;
+    if (safe.redraw) safe.redraw(true);
+    await this.showBubble(safe.sprite, '咔!开了!');
   }
 
   // ========== 第五幕:新动作方法 ==========

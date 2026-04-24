@@ -1,0 +1,66 @@
+{
+  "id": "F6",
+  "title": "两道锁",
+  "act": 6,
+  "chapter": "新秩序",
+  "location": "格雷的银行",
+  "concept_intro": "二次验证",
+  "security_concept": {
+    "name": "二次验证",
+    "analogy": "钥匙 + 短信码,坏人偷一个不够。",
+    "defense": "重要账号都开二次验证。"
+  },
+  "available_commands": ["direction", "password"],
+  "intro_dialog": [
+    { "speaker": "格雷", "text": "婉婉,这是新保险箱。" },
+    { "speaker": "格雷", "text": "上了**两道锁**。" },
+    { "speaker": "格雷", "text": "密码 **2024**。" },
+    { "speaker": "格雷", "text": "对了之后还会要短信码。" },
+    { "speaker": "小天", "text": "短信码:**8888**(看你手机)" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "desk", "pos": [3, 1], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "gray",   "type": "gray",   "pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "safe",   "type": "safe_box", "pos": [7, 2],
+      "correct_password": "2024", "password_kind": "number",
+      "requires_otp": true, "correct_otp": "8888" },
+    { "id": "goal",   "type": "goal_zone", "pos": [7, 2], "goal": true, "label": "保险箱" }
+  ],
+  "available_command_cards": [
+    { "id": "move_right", "category": "direction", "label": "向右", "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "enter_pwd",  "category": "password",  "label": "输密码", "icon": "two_fa",     "action": "enter_password" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 2,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "右 5 步走到保险箱。" },
+    { "level": 2, "text": "输 2024,再输短信码 8888。" },
+    { "level": 3, "text": "右 5 → 输密码 → 第二步输短信码。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "格雷", "text": "两道锁都对!" },
+    { "speaker": "小天", "text": "这叫「**二次验证**」。" },
+    { "speaker": "小天", "text": "一道密码不够。" },
+    { "speaker": "小天", "text": "再加一个一次性码。" },
+    { "speaker": "小天", "text": "坏人偷一个,还过不了。" },
+    { "speaker": "格雷", "text": "重要账号都要开!" }
+  ],
+  "rewards": {
+    "unlock_next": "F7",
+    "first_time_dialog_card": "two_factor_auth"
+  }
+}
