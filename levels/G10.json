@@ -1,0 +1,77 @@
+{
+  "id": "G10",
+  "title": "改成绿灯",
+  "act": 7,
+  "chapter": "看不见的钥匙",
+  "location": "回到红绿灯路口",
+  "concept_intro": "条件可以改",
+  "security_concept": {
+    "name": "条件变化",
+    "analogy": "红灯不会一直红 —— 等等就变绿。",
+    "defense": "条件变了,做的事也要跟着变。"
+  },
+  "available_commands": ["direction", "function"],
+  "conditions": { "light": "red" },
+  "preset_queue": [
+    { "action": "set_condition", "var": "light", "value": "green", "label": "等灯变绿", "icon": "hourglass" },
+    {
+      "action": "branch",
+      "var": "light",
+      "label": "🚦 看灯",
+      "pen_meta": [
+        { "case": "green", "label": "🟢 绿灯走", "color": "#A5D6A7" },
+        { "case": "red",   "label": "🔴 红灯停", "color": "#EF9A9A" }
+      ],
+      "pens": { "green": [], "red": [] }
+    }
+  ],
+  "intro_dialog": [
+    { "speaker": "小天", "text": "回到红绿灯。" },
+    { "speaker": "小天", "text": "现在是**红灯**!" },
+    { "speaker": "小天", "text": "等等,灯会变绿。" },
+    { "speaker": "小天", "text": "队列里有「等灯变绿」。" },
+    { "speaker": "小天", "text": "等之后再看分畜栏。" },
+    { "speaker": "小天", "text": "把指令放进绿灯栏!" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [8, 3], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "rule",   "type": "info_stone", "pos": [4, 3], "hint_text": ["🔴 现在红灯", "等灯变绿,再走"] },
+    { "id": "goal",   "type": "goal_zone", "pos": [7, 2], "goal": true, "label": "终点" }
+  ],
+  "available_command_cards": [
+    { "id": "move_right", "category": "direction", "label": "向右", "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "wait_1",     "category": "function",  "label": "停一下", "icon": "hourglass",   "action": "wait", "seconds": 1 }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 2,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "等灯变绿 → 然后走 6 步。" },
+    { "level": 2, "text": "把「向右 6 步」放进绿栏。" },
+    { "level": 3, "text": "红栏放「停一下」(其实跑不到了)。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "小天", "text": "灯变绿就走!" },
+    { "speaker": "小天", "text": "条件**会变**。" },
+    { "speaker": "小天", "text": "电脑也是一样。" },
+    { "speaker": "小天", "text": "状态变了,做的事也要变。" }
+  ],
+  "manual_tip": "🚦 这一关<br><br>队列里有<br><strong>「等灯变绿」</strong><br>会自动改条件<br><br>把「向右 6」<br>放进 <strong>绿灯栏</strong><br><br>红栏随便放",
+  "rewards": {
+    "unlock_next": "G11",
+    "first_time_dialog_card": "condition_change"
+  }
+}

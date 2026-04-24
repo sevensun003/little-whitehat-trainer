@@ -1,0 +1,85 @@
+{
+  "id": "G11",
+  "title": "加密的快递",
+  "act": 7,
+  "chapter": "看不见的钥匙",
+  "location": "克拉克的图书馆",
+  "concept_intro": "三件套连用",
+  "security_concept": {
+    "name": "三件套综合",
+    "analogy": "投邮筒 → 盖印章 → 看封条,缺一不可。",
+    "defense": "重要东西,**所有检查**都做。"
+  },
+  "available_commands": ["direction", "function"],
+  "preset_queue": [
+    { "id": "p1", "action": "move", "dir": "right", "steps": 3, "label": "走到邮筒", "icon": "arrow_right" },
+    { "id": "p2", "action": "drop_in_mailbox", "label": "投信", "icon": "click_link" },
+    {
+      "id": "p3",
+      "action": "chat_ai_check",
+      "question": "🦋 我的印是蝴蝶。哪些印是**仿的**?",
+      "ai_msgs": [
+        { "text": "🦋 蝴蝶印 (我的)",  "wrong": false },
+        { "text": "🦊 狐狸印 (仿的)",  "wrong": true },
+        { "text": "🐝 蜜蜂印 (仿的)",  "wrong": true }
+      ]
+    },
+    {
+      "id": "p4",
+      "action": "pick_seal_box",
+      "question": "📦 哪些信**封条破了**?",
+      "ai_msgs": [
+        { "text": "信 1 · 封好 ━━━━━",   "wrong": false },
+        { "text": "信 2 · 封 撕过 ✂",     "wrong": true }
+      ]
+    },
+    { "id": "p5", "action": "move", "dir": "right", "steps": 3, "label": "送出去", "icon": "arrow_right" }
+  ],
+  "intro_dialog": [
+    { "speaker": "克拉克", "text": "婉婉,这次很重要!" },
+    { "speaker": "克拉克", "text": "**三件套**全用上!" },
+    { "speaker": "小天",   "text": "1. 投邮筒 (邮筒)" },
+    { "speaker": "小天",   "text": "2. 认印章 (印章)" },
+    { "speaker": "小天",   "text": "3. 看封条 (封条)" },
+    { "speaker": "小天",   "text": "都对才能送出。" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "bookshelf", "pos": [3, 1], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "blake",  "type": "blake",  "pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "mailbox","type": "mailbox","pos": [4, 2] },
+    { "id": "goal",   "type": "goal_zone", "pos": [7, 2], "goal": true, "label": "送达" }
+  ],
+  "available_command_cards": [],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 1,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "队列已经预填好,只要按 ▶。" },
+    { "level": 2, "text": "邮筒 → 印章选仿的 → 封条选破的。" },
+    { "level": 3, "text": "印章关:点 🦊 + 🐝。封条关:点 ✂。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "克拉克", "text": "三件套都过关!" },
+    { "speaker": "小天",   "text": "邮筒、印章、封条 —— 都用上了。" },
+    { "speaker": "小天",   "text": "电脑里就是这样保护数据。" },
+    { "speaker": "小天",   "text": "**安全又快速**。" },
+    { "speaker": "婉婉",   "text": "看不见的钥匙,真厉害!" }
+  ],
+  "rewards": {
+    "unlock_next": "G12",
+    "first_time_dialog_card": "act7_combo"
+  }
+}

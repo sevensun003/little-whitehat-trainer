@@ -74,7 +74,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=20260424n`);
+  const res = await fetch(`levels/${levelId}.json?v=20260424o`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1849,7 +1849,11 @@ class MainScene extends Phaser.Scene {
         type: 'virus_tile',
         gridX: e.pos[0], gridY: e.pos[1],
         sprite, redraw,
-        cleaned: false
+        cleaned: false,
+        // 第七幕 G9:会移动的病毒(每隔 step_interval 步靠近玩家一格)
+        mobile: !!e.mobile,
+        step_interval: e.step_interval || 2,
+        _moveCounter: 0
       };
     });
 
@@ -3022,6 +3026,8 @@ class MainScene extends Phaser.Scene {
               await this.showBubble(G.player, '咦?没挡住!');
             }
             await this.autoShowNearbyHints();
+            // 第七幕 G9:让"会移动的病毒"也走一步
+            this._tickMobileViruses();
             resolve(true);
           };
           afterHint();
@@ -4104,6 +4110,44 @@ class MainScene extends Phaser.Scene {
       entity._loopTimer = null;
     };
     doStep();
+  }
+
+  // 第七幕 G9:让所有"会移动的病毒"朝玩家方向走一格
+  _tickMobileViruses() {
+    if (!G.player) return;
+    const px = G.player.gridX, py = G.player.gridY;
+    Object.values(G.entities || {}).forEach(en => {
+      if (en.type !== 'virus_tile' || !en.mobile || en.cleaned) return;
+      en._moveCounter = (en._moveCounter || 0) + 1;
+      if (en._moveCounter < (en.step_interval || 2)) return;
+      en._moveCounter = 0;
+      // 朝玩家方向走一格(取曼哈顿距离最大的轴)
+      const dx = px - en.gridX;
+      const dy = py - en.gridY;
+      let nx = en.gridX, ny = en.gridY;
+      if (Math.abs(dx) >= Math.abs(dy) && dx !== 0) {
+        nx += dx > 0 ? 1 : -1;
+      } else if (dy !== 0) {
+        ny += dy > 0 ? 1 : -1;
+      }
+      // 别走到墙、玩家、其他病毒上
+      if (G.walls && G.walls.has(`${nx},${ny}`)) return;
+      const collide = Object.values(G.entities).some(e2 =>
+        e2 !== en && e2.type === 'virus_tile' && !e2.cleaned &&
+        e2.gridX === nx && e2.gridY === ny
+      );
+      if (collide) return;
+      // 若走到玩家头上,触发感染气泡(关卡判定靠 cleanVirus)
+      en.gridX = nx; en.gridY = ny;
+      const tx = G.mapOriginX + nx * G.tileSize + G.tileSize / 2;
+      const ty = G.mapOriginY + ny * G.tileSize + G.tileSize / 2;
+      this.tweens.add({
+        targets: en.sprite, x: tx, y: ty, duration: 250
+      });
+      if (nx === px && ny === py) {
+        this.showBubble(G.player, '⚠️ 病毒爬上来了!');
+      }
+    });
   }
 
   // ========== 新概念关:动作方法 ==========

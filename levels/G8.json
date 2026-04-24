@@ -1,0 +1,74 @@
+{
+  "id": "G8",
+  "title": "多嘴的小猫",
+  "act": 7,
+  "chapter": "看不见的钥匙",
+  "location": "藤蔓妹妹的花园",
+  "concept_intro": "什么能告诉陌生人,什么不能",
+  "security_concept": {
+    "name": "隐私",
+    "analogy": "陌生人问'你家在哪',不能告诉。",
+    "defense": "电话/家庭/学校/密码 这些都是秘密。"
+  },
+  "available_commands": [],
+  "preset_queue": [
+    {
+      "action": "chat_ai_check",
+      "question": "陌生人在网上问你 4 件事。哪些**不能告诉**?",
+      "ai_msgs": [
+        { "text": "🤖 你最喜欢的卡通是什么?",      "wrong": false },
+        { "text": "🤖 你家的地址是什么?",          "wrong": true },
+        { "text": "🤖 你今天玩了什么游戏?",        "wrong": false },
+        { "text": "🤖 你爸爸的手机号是多少?",      "wrong": true },
+        { "text": "🤖 你的银行卡密码是几位数?",    "wrong": true }
+      ]
+    },
+    { "action": "move", "dir": "right", "steps": 4, "label": "回家", "icon": "arrow_right" }
+  ],
+  "intro_dialog": [
+    { "speaker": "藤蔓妹妹", "text": "婉婉,有人在网上聊我!" },
+    { "speaker": "藤蔓妹妹", "text": "他问了我 4 个问题。" },
+    { "speaker": "小天",     "text": "哪些**不能告诉陌生人**?" },
+    { "speaker": "小天",     "text": "家里地址、电话、密码 = **秘密**。" },
+    { "speaker": "小天",     "text": "把不能说的全点出来!" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [3, 1], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "tengman","type": "tengman","pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "goal",   "type": "goal_zone", "pos": [5, 2], "goal": true, "label": "回家" }
+  ],
+  "available_command_cards": [],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 1,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "卡通 / 玩了什么游戏 = 没关系。" },
+    { "level": 2, "text": "地址 / 电话 / 密码 = **绝不能说**。" },
+    { "level": 3, "text": "第 2、4、5 个不能说。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "藤蔓妹妹", "text": "我差点说出去!" },
+    { "speaker": "小天",     "text": "陌生人问就要**警惕**。" },
+    { "speaker": "小天",     "text": "地址 / 电话 / 密码:**秘密**。" },
+    { "speaker": "小天",     "text": "卡通 / 游戏:无所谓。" },
+    { "speaker": "小天",     "text": "网上的人,看不到脸。" },
+    { "speaker": "婉婉",     "text": "不知道是谁,什么都别说!" }
+  ],
+  "rewards": {
+    "unlock_next": "G9",
+    "first_time_dialog_card": "privacy_basics"
+  }
+}

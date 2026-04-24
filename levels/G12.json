@@ -1,0 +1,71 @@
+{
+  "id": "G12",
+  "title": "钥匙之战",
+  "act": 7,
+  "chapter": "看不见的钥匙",
+  "location": "中央钥匙室",
+  "concept_intro": "BOSS · 全部用上",
+  "security_concept": {
+    "name": "综合防御",
+    "analogy": "印 + 封 + 钥匙 + 二次锁,一起用最稳。",
+    "defense": "**所有招数都要会用**。"
+  },
+  "available_commands": ["direction", "virus", "password"],
+  "intro_dialog": [
+    { "speaker": "小天", "text": "BOSS 想偷钥匙!" },
+    { "speaker": "小天", "text": "路上有移动病毒。" },
+    { "speaker": "小天", "text": "门口有印章和封条要看。" },
+    { "speaker": "小天", "text": "保险箱有**两道锁**。" },
+    { "speaker": "小天", "text": "密码 1024,短信码 7777。" },
+    { "speaker": "小天", "text": "全部招数都用上!" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [8, 3], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "blake",  "type": "blake",  "pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "v1",   "type": "virus_tile", "pos": [4, 2], "mobile": true, "step_interval": 3 },
+    { "id": "rule", "type": "info_stone", "pos": [3, 3], "hint_text": ["📦 看封条 + 看印", "🦋 我的印 / ━━━ 好封"] },
+    { "id": "safe", "type": "safe_box", "pos": [7, 2],
+      "correct_password": "1024", "password_kind": "number",
+      "requires_otp": true, "correct_otp": "7777" },
+    { "id": "goal", "type": "goal_zone", "pos": [7, 2], "goal": true, "label": "钥匙保险箱" }
+  ],
+  "available_command_cards": [
+    { "id": "move_right", "category": "direction", "label": "向右", "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "clean",      "category": "virus",     "label": "清病毒", "icon": "clean_virus", "action": "clean_virus" },
+    { "id": "enter_pwd",  "category": "password",  "label": "输密码 + 短信码", "icon": "two_fa", "action": "enter_password" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 5,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "右 3 步先到病毒旁,清掉。" },
+    { "level": 2, "text": "再右 3 步到保险箱,输密码。" },
+    { "level": 3, "text": "右 3 → 清 → 右 3 → 输 1024 → 输 7777 → 到!" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "小天", "text": "钥匙保住了!" },
+    { "speaker": "婉婉", "text": "我做到了!" },
+    { "speaker": "小天", "text": "**所有招数**都派上了用场!" },
+    { "speaker": "小天", "text": "病毒清掉、密码 + 短信码 都用上。" },
+    { "speaker": "小天", "text": "记住:**多个招数一起**最稳。" },
+    { "speaker": "克拉克","text": "你已经是真正的白帽小队队长了!" }
+  ],
+  "rewards": {
+    "unlock_next": null,
+    "badge": "act7_finale",
+    "first_time_dialog_card": "act7_boss_clear"
+  }
+}
