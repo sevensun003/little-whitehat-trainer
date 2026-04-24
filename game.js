@@ -58,8 +58,15 @@ function speak(text) {
 function _clearLoopTimers() {
   if (!G.entities) return;
   Object.values(G.entities).forEach(en => {
-    if (en && en._loopTimer) {
+    if (!en) return;
+    // courier 等新式循环:用 _cancelLoop 取消(会设 _cancelled 标记,阻断后续 tween/setTimeout)
+    if (typeof en._cancelLoop === 'function') {
+      try { en._cancelLoop(); } catch (e) { /* ignore */ }
+    }
+    // 老式 setInterval / setTimeout 兜底
+    if (en._loopTimer) {
       clearInterval(en._loopTimer);
+      clearTimeout(en._loopTimer);
       en._loopTimer = null;
     }
   });
@@ -67,7 +74,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=20260424d`);
+  const res = await fetch(`levels/${levelId}.json?v=20260424e`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1612,6 +1619,9 @@ class MainScene extends Phaser.Scene {
         sprite,
         loop_steps: e.loop_steps || [],  // ['right','right','say:123','right']
         loop_period_ms: e.loop_period_ms || 5000,
+        loop_kind: e.loop_kind || null,            // 'courier' 等
+        waypoints: e.waypoints || null,             // 快递员路径
+        step_ms: e.step_ms || 450,                  // 每步毫秒
         hint_text: e.hint_text || null,
         _loopTimer: null
       };
@@ -3055,7 +3065,26 @@ class MainScene extends Phaser.Scene {
     g.lineStyle(2, 0x2C3E50, 1);
 
     const variant = e.sprite || 'card';
-    if (variant === 'red_apple') {
+    // E4:三色快递盒子(red/yellow/blue gift_box),颜色是唯一区分
+    if (variant === 'red_gift_box' || variant === 'yellow_gift_box' || variant === 'blue_gift_box') {
+      const boxColor = variant === 'red_gift_box' ? 0xE74C3C
+                     : variant === 'yellow_gift_box' ? 0xF1C40F
+                     : 0x3498DB;
+      const ribbonColor = variant === 'yellow_gift_box' ? 0xE67E22 : 0xFFFFFF;
+      // 盒体
+      g.fillStyle(boxColor, 1);
+      g.fillRect(-11, -6, 22, 14);
+      g.strokeRect(-11, -6, 22, 14);
+      // 十字丝带
+      g.fillStyle(ribbonColor, 1);
+      g.fillRect(-11, -1, 22, 3);   // 横
+      g.fillRect(-1, -6, 3, 14);    // 竖
+      // 蝴蝶结
+      g.fillStyle(ribbonColor, 1);
+      g.fillTriangle(-6, -9, 0, -6, -3, -5);
+      g.fillTriangle(6, -9, 0, -6, 3, -5);
+      g.fillCircle(0, -7, 1.5);
+    } else if (variant === 'red_apple') {
       // 红苹果(C2 冒充红钥匙)
       g.fillStyle(0xE74C3C, 1);
       g.fillCircle(0, 1, 8);
@@ -3674,16 +3703,21 @@ class MainScene extends Phaser.Scene {
   // E4:启动循环 NPC 的自动动画(简化版:仅做视觉循环,不真正移动格子)
   _startLoopAnim(entity) {
     if (!entity || !entity.sprite) return;
-    // 节奏:每 loop_period_ms 显示一次 "say" 气泡,和原位轻微抖动
+
+    // 快递员循环(E4):真实走路 · 捡东西 · 走门口 · 输密码 · 走出口 · 消失 · 重生
+    if (entity.loop_kind === 'courier' && entity.waypoints && entity.waypoints.length) {
+      this._runCourierLoop(entity);
+      return;
+    }
+
+    // 默认:原地抖动 + 气泡
     const tick = () => {
       if (!entity.sprite || entity.sprite.scene !== this) return;
-      // 轻微"跳"一下,表示在巡逻
       this.tweens.add({
         targets: entity.sprite,
         y: entity.sprite.y - 6,
         yoyo: true, duration: 180, repeat: 0
       });
-      // 说台词(取 loop_steps 里的 say:xxx)
       const sayStep = (entity.loop_steps || []).find(s => typeof s === 'string' && s.startsWith('say:'));
       if (sayStep) {
         const text = sayStep.slice(4);
@@ -3692,6 +3726,82 @@ class MainScene extends Phaser.Scene {
     };
     tick();
     entity._loopTimer = setInterval(tick, entity.loop_period_ms || 5000);
+  }
+
+  // 快递员路径循环:按 waypoints 走每一格,到特定点触发动作
+  // waypoints 格式:[ {x,y}, {x,y,action:'pickup',bubble:'📦'}, {x,y,action:'bubble',bubble:'按 1...2...3'},
+  //                  {x,y,action:'disappear'}, {x:startX,y:startY,action:'respawn'} ]
+  _runCourierLoop(entity) {
+    const stepMs = entity.step_ms || 450;
+    const startX = entity.gridX, startY = entity.gridY;
+    let idx = 0;
+    entity._cancelled = false;
+
+    const doStep = () => {
+      if (entity._cancelled) return;
+      if (!entity.sprite || entity.sprite.scene !== this) return;
+      const wp = entity.waypoints[idx];
+      idx = (idx + 1) % entity.waypoints.length;
+
+      const tx = G.mapOriginX + wp.x * G.tileSize + G.tileSize / 2;
+      const ty = G.mapOriginY + wp.y * G.tileSize + G.tileSize / 2;
+
+      const action = wp.action;
+
+      if (action === 'respawn') {
+        entity.sprite.setPosition(tx, ty);
+        entity.gridX = wp.x; entity.gridY = wp.y;
+        entity.sprite.setAlpha(0);
+        this.tweens.add({
+          targets: entity.sprite, alpha: 1, duration: 300,
+          onComplete: () => {
+            if (entity._cancelled) return;
+            entity._loopTimer = setTimeout(doStep, 400);
+          }
+        });
+        return;
+      }
+
+      this.tweens.add({
+        targets: entity.sprite,
+        x: tx, y: ty,
+        duration: stepMs,
+        onComplete: () => {
+          if (entity._cancelled) return;
+          entity.gridX = wp.x; entity.gridY = wp.y;
+
+          if (action === 'pickup') {
+            this.showBubble(entity.sprite, wp.bubble || '📦', 900);
+            this.tweens.add({
+              targets: entity.sprite, y: entity.sprite.y - 8,
+              yoyo: true, duration: 200
+            });
+            entity._loopTimer = setTimeout(doStep, 900);
+          } else if (action === 'bubble') {
+            this.showBubble(entity.sprite, wp.bubble || '...', 1100);
+            entity._loopTimer = setTimeout(doStep, 1100);
+          } else if (action === 'disappear') {
+            this.tweens.add({
+              targets: entity.sprite, alpha: 0, duration: 400,
+              onComplete: () => {
+                if (entity._cancelled) return;
+                entity._loopTimer = setTimeout(doStep, 600);
+              }
+            });
+          } else {
+            entity._loopTimer = setTimeout(doStep, 80);
+          }
+        }
+      });
+    };
+
+    // 取消闭环:scene.restart 时调用,后续 setTimeout / tween 都会自动退出
+    entity._cancelLoop = () => {
+      entity._cancelled = true;
+      if (entity._loopTimer) clearTimeout(entity._loopTimer);
+      entity._loopTimer = null;
+    };
+    doStep();
   }
 
   // ========== 新概念关:动作方法 ==========

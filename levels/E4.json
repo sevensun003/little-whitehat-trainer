@@ -13,9 +13,9 @@
   "available_commands": ["direction", "credential", "password"],
   "intro_dialog": [
     { "speaker": "小天", "text": "看那个快递员!" },
-    { "speaker": "小天", "text": "他一直这样,绕圈圈。" },
-    { "speaker": "小天", "text": "拿红色,走到门口,按 123。" },
-    { "speaker": "小天", "text": "我们也照做一次!" }
+    { "speaker": "小天", "text": "他每次都走一样的路。" },
+    { "speaker": "小天", "text": "看好他怎么做的。" },
+    { "speaker": "小天", "text": "我们照着做一遍。" }
   ],
   "map": {
     "size": [10, 7],
@@ -33,20 +33,32 @@
   },
   "entities": [
     { "id": "player", "type": "wanwan", "start_pos": [1, 3], "facing": "right", "tier": 2 },
+    { "id": "red_gift",    "type": "credential", "pos": [3, 2], "sprite": "red_gift_box",    "credential_type": "red_key" },
+    { "id": "yellow_gift", "type": "credential", "pos": [3, 3], "sprite": "yellow_gift_box", "credential_type": "yellow_key" },
+    { "id": "blue_gift",   "type": "credential", "pos": [3, 4], "sprite": "blue_gift_box",   "credential_type": "blue_key" },
+    { "id": "safe",  "type": "safe_box",        "pos": [7, 3], "correct_password": "123", "password_kind": "number" },
+    { "id": "door",  "type": "credential_door", "pos": [8, 3], "requires_credential": "red_key", "goal": true },
     {
       "id": "jevin",
       "type": "loop_npc",
       "pos": [1, 5],
-      "loop_steps": ["say:先拿红盒,再输 123"],
-      "loop_period_ms": 5000,
-      "hint_text": "快递员循环:红 + 123"
-    },
-    { "id": "red_gift",    "type": "credential", "pos": [3, 2], "sprite": "red_apple", "credential_type": "red_key" },
-    { "id": "yellow_gift", "type": "credential", "pos": [3, 4], "sprite": "red_apple", "credential_type": "yellow_key" },
-    { "id": "blue_gift",   "type": "credential", "pos": [3, 5], "sprite": "red_apple", "credential_type": "blue_key" },
-    { "id": "rule_stone",  "type": "info_stone", "pos": [5, 2], "hint_text": "密码:123" },
-    { "id": "safe",  "type": "safe_box",        "pos": [7, 3], "correct_password": "123", "password_kind": "number" },
-    { "id": "door",  "type": "credential_door", "pos": [8, 3], "requires_credential": "red_key", "goal": true }
+      "loop_kind": "courier",
+      "step_ms": 380,
+      "waypoints": [
+        { "x": 2, "y": 5 },
+        { "x": 3, "y": 5 },
+        { "x": 3, "y": 4 },
+        { "x": 3, "y": 3 },
+        { "x": 3, "y": 2, "action": "pickup", "bubble": "📦 红!" },
+        { "x": 3, "y": 3 },
+        { "x": 4, "y": 3 },
+        { "x": 5, "y": 3 },
+        { "x": 6, "y": 3 },
+        { "x": 7, "y": 3, "action": "bubble", "bubble": "1..2..3" },
+        { "x": 8, "y": 3, "action": "disappear" },
+        { "x": 1, "y": 5, "action": "respawn" }
+      ]
+    }
   ],
   "available_command_cards": [
     { "id": "move_up",    "category": "direction", "label": "向上", "icon": "arrow_up",    "action": "move", "dir": "up",    "steps_input": true },
@@ -60,9 +72,9 @@
   "optimal_steps": 7,
   "max_hint_level": 3,
   "hints": [
-    { "level": 1, "text": "照快递员做:红色 + 123。" },
-    { "level": 2, "text": "先拿红色那个,再走到门口输密码。" },
-    { "level": 3, "text": "上 1 → 右 2 → 拿 → 右 4 → 输 123 → 右 1。" }
+    { "level": 1, "text": "看快递员捡的是什么颜色。" },
+    { "level": 2, "text": "他在保险箱旁念的几个数字就是密码。" },
+    { "level": 3, "text": "拿红盒 → 右走到保险箱 → 输 123 → 再走到门。" }
   ],
   "on_clear_dialog": [
     { "speaker": "小天", "text": "门开啦!" },
