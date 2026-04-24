@@ -13,15 +13,14 @@
   "inject_mode": true,
   "available_commands": ["function"],
   "preset_queue": [
-    { "id": "p1", "action": "move",  "dir": "right", "steps": 4, "label": "走到门口", "icon": "arrow_right" },
-    { "id": "p2", "action": "press_button", "label": "按门铃", "icon": "hand_knock" },
-    { "id": "p3", "action": "move",  "dir": "right", "steps": 2, "label": "离开", "icon": "arrow_right" }
+    { "id": "p1", "action": "move",  "dir": "right", "steps": 4, "label": "走到家门口", "icon": "arrow_right" },
+    { "id": "p2", "action": "press_button", "label": "按门铃", "icon": "hand_knock" }
   ],
   "intro_dialog": [
     { "speaker": "小天",   "text": "婉婉,帮忙送封信!" },
     { "speaker": "小天",   "text": "队列里少了一步。" },
     { "speaker": "小天",   "text": "「**放下信**」,要插在哪?" },
-    { "speaker": "小天",   "text": "要先到门口,放下信,再按门铃。" },
+    { "speaker": "小天",   "text": "先到门口,放下信,再按门铃。" },
     { "speaker": "小天",   "text": "顺序错了,信就没送到。" }
   ],
   "map": {
@@ -34,7 +33,6 @@
       { "x": 9, "y": 0, "w": 1, "h": 5 }
     ],
     "objects": [
-      { "type": "plant", "pos": [6, 2], "size": [1, 1] },
       { "type": "plant", "pos": [8, 3], "size": [1, 1] }
     ]
   },
@@ -42,7 +40,7 @@
     { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
     { "id": "rule",   "type": "info_stone", "pos": [3, 3], "hint_text": "先到门口,放下信,再按门铃。" },
     { "id": "bell",   "type": "button", "pos": [5, 3], "label": "🔔 门铃" },
-    { "id": "house",  "type": "goal_zone", "pos": [7, 2], "goal": true, "label": "收信人家" }
+    { "id": "house",  "type": "goal_zone", "pos": [5, 2], "goal": true, "label": "🏠 收信人家" }
   ],
   "available_command_cards": [
     { "id": "inject_drop", "category": "function", "label": "放下信", "icon": "hand_drop", "action": "drop", "injectable": true }
@@ -50,15 +48,15 @@
   "success_condition": {
     "type": "execute_safe_queue",
     "must_keep_actions": ["move", "drop", "press_button"],
-    "required_order": ["move", "drop", "press_button", "move"],
+    "required_order": ["move", "drop", "press_button"],
     "reach_goal_id": "house"
   },
-  "optimal_steps": 4,
+  "optimal_steps": 3,
   "max_hint_level": 3,
   "hints": [
     { "level": 1, "text": "点「放下信」,再点队列中间的 ➕。" },
     { "level": 2, "text": "到门口之后,按门铃之前,放下信。" },
-    { "level": 3, "text": "插在「走到门口」和「按门铃」之间。" }
+    { "level": 3, "text": "插在「走到家门口」和「按门铃」之间。" }
   ],
   "on_clear_dialog": [
     { "speaker": "小天", "text": "信送到啦!" },
