@@ -2,6 +2,11 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <!-- v20260424k -->
   <title>白帽小队训练营 · 关卡选择</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
@@ -370,7 +375,8 @@ function loadProgress() {
   } catch { return {}; }
 }
 
-/* 判断关卡是否解锁:第一关默认解锁;每幕第一关单独解锁;其余要求前一关通关 */
+/* 判断关卡是否解锁:第一关默认解锁;每幕第一关单独解锁;其余要求前一关通关
+   第六幕开发期:所有 F 关都默认解锁,方便测试 */
 function isUnlocked(levelId, progress) {
   const allIds = LEVELS.flatMap(c => c.items.map(i => i.id));
   const idx = allIds.indexOf(levelId);
@@ -378,6 +384,8 @@ function isUnlocked(levelId, progress) {
   // 每幕第一关:默认解锁(方便跳幕试玩,开发/老玩家都受益)
   const actFirstIds = LEVELS.map(c => c.items[0].id);
   if (actFirstIds.includes(levelId)) return true;
+  // 第六幕(F 系列)所有关都默认解锁(开发期方便测试)
+  if (levelId.startsWith('F')) return true;
   const prevId = allIds[idx - 1];
   return !!progress[prevId]?.cleared;
 }
