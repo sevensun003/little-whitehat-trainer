@@ -16,7 +16,7 @@
     { "id": "p1", "action": "move",  "dir": "right", "steps": 3, "label": "向右 3 步", "icon": "arrow_right" },
     { "id": "p2", "action": "deploy_backend", "label": "部署真门", "icon": "deploy_backend" },
     { "id": "p3", "action": "move",  "dir": "right", "steps": 2, "label": "向右 2 步", "icon": "arrow_right" },
-    { "id": "p4", "action": "move",  "dir": "right", "steps": 2, "label": "向右 2 步", "icon": "arrow_right" }
+    { "id": "p4", "action": "move",  "dir": "right", "steps": 3, "label": "向右 3 步", "icon": "arrow_right" }
   ],
   "intro_dialog": [
     { "speaker": "电脑先生", "text": "婉婉!数据被困在档案里。" },
@@ -62,7 +62,7 @@
   "hints": [
     { "level": 1, "text": "点「输密码」后,找队列中间的 ➕。" },
     { "level": 2, "text": "插在「部署真门」之后。" },
-    { "level": 3, "text": "右 3 → 部署 → **插输密码** → 右 2 → 右 2。" }
+    { "level": 3, "text": "右 3 → 部署 → **插输密码** → 右 2 → 右 3。" }
   ],
   "on_clear_dialog": [
     { "speaker": "电脑先生", "text": "数据解救成功!" },
