@@ -1,0 +1,75 @@
+{
+  "id": "G3",
+  "title": "没破封的盒子",
+  "act": 7,
+  "chapter": "看不见的钥匙",
+  "location": "平基的工厂",
+  "concept_intro": "封条破了,有人动过",
+  "security_concept": {
+    "name": "封条 / 完整性",
+    "analogy": "盒子有封条,撕开过就看出来。",
+    "defense": "破了封的别用 —— 里面可能换过。"
+  },
+  "available_commands": [],
+  "preset_queue": [
+    {
+      "action": "pick_seal_box",
+      "question": "🔍 4 个盒子,哪些**封条破了**?(全点出来)",
+      "ai_msgs": [
+        { "text": "📦 1 号盒 · 封条完好 ━━━━━",       "wrong": false },
+        { "text": "📦 2 号盒 · 封条 撕开过 ━ ✂ ━",    "wrong": true },
+        { "text": "📦 3 号盒 · 封条完好 ━━━━━",       "wrong": false },
+        { "text": "📦 4 号盒 · 封条 被换过 ━ ⚠ ━",    "wrong": true }
+      ]
+    },
+    { "action": "move", "dir": "right", "steps": 5, "label": "拿安全盒子走", "icon": "arrow_right" }
+  ],
+  "intro_dialog": [
+    { "speaker": "平基", "text": "婉婉,4 个盒子。" },
+    { "speaker": "平基", "text": "里面是重要零件。" },
+    { "speaker": "平基", "text": "盒子都贴了**封条**。" },
+    { "speaker": "小天", "text": "封条破的 = 有人动过!" },
+    { "speaker": "小天", "text": "把破封的全点出来。" },
+    { "speaker": "小天", "text": "破封的别用了。" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "desk", "pos": [3, 1], "size": [1, 1] },
+      { "type": "desk", "pos": [5, 1], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "pinki",  "type": "pinki",  "pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "goal",   "type": "goal_zone", "pos": [6, 2], "goal": true, "label": "出口" }
+  ],
+  "available_command_cards": [],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 1,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "看封条上的符号:✂ 是撕过,⚠ 是被换。" },
+    { "level": 2, "text": "完好的封条是连续的 ━━━━━。" },
+    { "level": 3, "text": "2 号、4 号都破了,选这两个。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "平基", "text": "好眼力!没用上坏的!" },
+    { "speaker": "小天", "text": "这叫「**封条**」。" },
+    { "speaker": "小天", "text": "看封条破没破。" },
+    { "speaker": "小天", "text": "破了 = 有人偷动过。" },
+    { "speaker": "小天", "text": "电脑数据也一样。" },
+    { "speaker": "平基", "text": "封好的才能用!" }
+  ],
+  "rewards": {
+    "unlock_next": "G4",
+    "first_time_dialog_card": "integrity_seal"
+  }
+}

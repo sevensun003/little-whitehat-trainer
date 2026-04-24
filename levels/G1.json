@@ -1,0 +1,67 @@
+{
+  "id": "G1",
+  "title": "大邮筒",
+  "act": 7,
+  "chapter": "看不见的钥匙",
+  "location": "樱桃镇广场",
+  "concept_intro": "大家都能投,只有钥匙能开",
+  "security_concept": {
+    "name": "公钥邮筒",
+    "analogy": "邮筒人人能投信,只有邮局的钥匙能拿出来。",
+    "defense": "你的'邮筒'可以告诉所有人,你的'钥匙'要藏好。"
+  },
+  "available_commands": ["direction", "function"],
+  "intro_dialog": [
+    { "speaker": "温达", "text": "孙女,我要寄信给老朋友。" },
+    { "speaker": "温达", "text": "走那么远不安全。" },
+    { "speaker": "小天", "text": "投进**大邮筒**就行!" },
+    { "speaker": "小天", "text": "邮筒人人能投。" },
+    { "speaker": "小天", "text": "但**只有邮局**能开。" },
+    { "speaker": "小天", "text": "信谁也偷不走。" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [1, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [8, 3], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "wenda",  "type": "wenda",  "pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "mailbox","type": "mailbox","pos": [4, 2] },
+    { "id": "rule",   "type": "info_stone", "pos": [4, 3], "hint_text": "📬 投到邮筒里" },
+    { "id": "goal",   "type": "goal_zone", "pos": [7, 2], "goal": true, "label": "回家" }
+  ],
+  "available_command_cards": [
+    { "id": "move_right", "category": "direction", "label": "向右",  "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "drop_mail",  "category": "function",  "label": "投信",  "icon": "click_link", "action": "drop_in_mailbox" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 3,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "走到邮筒旁边,再投信。" },
+    { "level": 2, "text": "右 3 步 → 投信 → 右 3 步。" },
+    { "level": 3, "text": "投完信往家走就好。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "温达", "text": "信安全送出去了!" },
+    { "speaker": "小天", "text": "这就叫「**邮筒**」。" },
+    { "speaker": "小天", "text": "你告诉所有人:'投这里'。" },
+    { "speaker": "小天", "text": "但**钥匙**只有你有。" },
+    { "speaker": "小天", "text": "电脑里也是这样。" },
+    { "speaker": "小天", "text": "安全又方便。" }
+  ],
+  "rewards": {
+    "unlock_next": "G2",
+    "first_time_dialog_card": "public_key_metaphor"
+  }
+}

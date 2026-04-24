@@ -74,7 +74,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=20260424l`);
+  const res = await fetch(`levels/${levelId}.json?v=20260424m`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1008,6 +1008,40 @@ async function executeCommands(commands, scene) {
       } else {
         await scene.showBubble(G.player, '✓ 假的全找到了!', 1300);
       }
+    } else if (cmd.action === 'drop_in_mailbox') {
+      // 第七幕 G1:把信投到邮筒(复用 dropAction 的视觉,需要附近有 mailbox)
+      const px = G.player.gridX, py = G.player.gridY;
+      const box = Object.values(G.entities || {}).find(en =>
+        en.type === 'mailbox' &&
+        Math.abs(en.gridX - px) + Math.abs(en.gridY - py) <= 1
+      );
+      if (!box) {
+        await scene.showBubble(G.player, '附近没有邮筒~');
+        return true;
+      }
+      box.has_letter = true;
+      await scene.showBubble(G.player, '📮 信投进去了!', 1200);
+    } else if (cmd.action === 'pick_seal_box') {
+      // 第七幕 G3/G4:从一组盒子里选未破封的(复用 AI chat modal)
+      const result = await new Promise(resolve => {
+        showAIChatModal(
+          cmd.question || '哪些盒子被动过?(把破封的全点出来)',
+          cmd.ai_msgs || [],
+          (hitAll) => resolve(hitAll)
+        );
+      });
+      if (!result) {
+        await scene.showBubble(G.player, '⚠️ 漏看了破封的!', 1500);
+        return true;
+      } else {
+        await scene.showBubble(G.player, '✓ 都看清了,封条没破的才安全!', 1300);
+      }
+    } else if (cmd.action === 'set_condition') {
+      // 第七幕 G10:运行时修改条件变量(可以用来"改红绿灯")
+      G.conditions = G.conditions || {};
+      const old = G.conditions[cmd.var];
+      G.conditions[cmd.var] = cmd.value;
+      await scene.showBubble(G.player, `🔧 把 ${cmd.var} 从 ${old || '?'} 改成 ${cmd.value}`, 1300);
     }
   }
   return false;
@@ -1747,6 +1781,17 @@ class MainScene extends Phaser.Scene {
         pressed: false,
         effect: e.effect || null,          // 'open_gate' | 'give_money'
         target_id: e.target_id || null
+      };
+    });
+
+    // 第七幕 G1:邮筒(投信用)
+    entityList.filter(e => e.type === 'mailbox').forEach(e => {
+      const sprite = this.createMailbox(e);
+      G.entities[e.id] = {
+        type: 'mailbox',
+        gridX: e.pos[0], gridY: e.pos[1],
+        sprite,
+        has_letter: false
       };
     });
 
@@ -3640,6 +3685,35 @@ class MainScene extends Phaser.Scene {
     g.fillCircle(0, 4, 5);
     g.strokeCircle(0, 4, 5);
     container.add(g);
+    return container;
+  }
+
+  // 第七幕 G1:邮筒(红色,圆顶,投信口)
+  createMailbox(e) {
+    const gx = e.pos[0], gy = e.pos[1];
+    const px = G.mapOriginX + gx * G.tileSize + G.tileSize / 2;
+    const py = G.mapOriginY + gy * G.tileSize + G.tileSize / 2;
+    const container = this.add.container(px, py);
+    container.setDepth(4);
+
+    const g = this.add.graphics();
+    g.lineStyle(2, 0x6B0000, 1);
+    // 圆顶
+    g.fillStyle(0xC0392B, 1);
+    g.fillCircle(0, -10, 12);
+    // 主体
+    g.fillRect(-12, -10, 24, 20);
+    g.strokeRect(-12, -10, 24, 20);
+    // 投信口(黑色长条)
+    g.fillStyle(0x1A1A1A, 1);
+    g.fillRect(-8, -5, 16, 3);
+    // 底座
+    g.fillStyle(0x6B4423, 1);
+    g.fillRect(-14, 10, 28, 4);
+    container.add(g);
+    // 标 "邮筒" 字
+    const lbl = this.add.text(0, 16, '📬', { fontSize: '14px' }).setOrigin(0.5, 0);
+    container.add(lbl);
     return container;
   }
 

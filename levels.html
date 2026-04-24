@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <!-- v20260424l -->
+  <!-- v20260424m -->
   <title>白帽小队训练营 · 关卡选择</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
@@ -352,6 +352,11 @@ const LEVELS = [
     { id: 'F6', title: '两道锁',       concept: '二次验证' },
     { id: 'F7', title: '聪明的门卫',   concept: '条件 · 进阶' },
   ]},
+  { chapter: '第七幕 · 看不见的钥匙', icon: '🗝️', items: [
+    { id: 'G1', title: '大邮筒',       concept: '邮筒 (公钥)' },
+    { id: 'G2', title: '我的印章',     concept: '印章 (签名)' },
+    { id: 'G3', title: '没破封的盒子', concept: '封条 (完整性)' },
+  ]},
 ];
 
 /* 图标分配(按关卡类型) */
@@ -366,7 +371,8 @@ const ICONS = {
   Y1:'🏦', Y2:'🔓', Y3:'🌟', M4:'⏱️',
   E1:'🎒', E2:'🔐', E3:'🧔', E4:'🔁', E5:'🧩', E6:'📜',
   E7:'🚪', E8:'🦠', E9:'🎁', E10:'⚔️', E11:'👤', E12:'🔥',
-  F1:'🚦', F2:'☔', F3:'🤖', F4:'🔗', F6:'🔐', F7:'🚪'
+  F1:'🚦', F2:'☔', F3:'🤖', F4:'🔗', F6:'🔐', F7:'🚪',
+  G1:'📬', G2:'🦋', G3:'📦'
 };
 
 /* 读取进度 */
@@ -385,8 +391,8 @@ function isUnlocked(levelId, progress) {
   // 每幕第一关:默认解锁(方便跳幕试玩,开发/老玩家都受益)
   const actFirstIds = LEVELS.map(c => c.items[0].id);
   if (actFirstIds.includes(levelId)) return true;
-  // 第六幕(F 系列)所有关都默认解锁(开发期方便测试)
-  if (levelId.startsWith('F')) return true;
+  // 第六幕(F 系列)和第七幕(G 系列)所有关都默认解锁(开发期方便测试)
+  if (levelId.startsWith('F') || levelId.startsWith('G')) return true;
   const prevId = allIds[idx - 1];
   return !!progress[prevId]?.cleared;
 }

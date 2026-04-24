@@ -1,0 +1,72 @@
+{
+  "id": "G2",
+  "title": "我的印章",
+  "act": 7,
+  "chapter": "看不见的钥匙",
+  "location": "格雷的银行",
+  "concept_intro": "我的印,别人仿不出",
+  "security_concept": {
+    "name": "印章签名",
+    "analogy": "你的印章只有你能盖,别人仿不像。",
+    "defense": "看到印章,就知道是你寄的。"
+  },
+  "available_commands": [],
+  "preset_queue": [
+    {
+      "action": "chat_ai_check",
+      "question": "我的真印章长这样:🦋  下面 4 个里,哪些是仿的?",
+      "ai_msgs": [
+        { "text": "🦋 蝴蝶印 (我的)",  "wrong": false },
+        { "text": "🦊 狐狸印 (仿的)",  "wrong": true },
+        { "text": "🐝 蜜蜂印 (仿的)",  "wrong": true },
+        { "text": "🦋 蝴蝶印 (颜色不对)", "wrong": true }
+      ]
+    },
+    { "action": "move", "dir": "right", "steps": 5, "label": "送给老朋友", "icon": "arrow_right" }
+  ],
+  "intro_dialog": [
+    { "speaker": "格雷", "text": "婉婉,这有我的印章。" },
+    { "speaker": "格雷", "text": "🦋 蝴蝶,**只有我的**。" },
+    { "speaker": "格雷", "text": "坏人想仿,看出马脚。" },
+    { "speaker": "小天", "text": "认准我的真印!" },
+    { "speaker": "小天", "text": "其他都是仿的。" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "desk", "pos": [3, 1], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "gray",   "type": "gray",   "pos": [7, 2], "facing": "left", "tier": 2 },
+    { "id": "goal",   "type": "goal_zone", "pos": [6, 2], "goal": true, "label": "找格雷" }
+  ],
+  "available_command_cards": [],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 1,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "格雷说他的印是 🦋 蝴蝶。" },
+    { "level": 2, "text": "其他动物或不同色的,都是仿的。" },
+    { "level": 3, "text": "把后 3 个仿的全点红就对了。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "格雷", "text": "你眼好!" },
+    { "speaker": "小天", "text": "这就叫「**印章**」。" },
+    { "speaker": "小天", "text": "看到印章就知道是真人。" },
+    { "speaker": "小天", "text": "电脑里也有'印章'。" },
+    { "speaker": "小天", "text": "看到对的印,就放心。" }
+  ],
+  "rewards": {
+    "unlock_next": "G3",
+    "first_time_dialog_card": "signature_metaphor"
+  }
+}
