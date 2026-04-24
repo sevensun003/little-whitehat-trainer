@@ -74,7 +74,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=20260424h`);
+  const res = await fetch(`levels/${levelId}.json?v=20260424i`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -106,6 +106,8 @@ async function loadLevel(levelId) {
   G.trojanTriggered = 0;
   G.buttonPressed = false;
   G._pendingInject = null;
+  // 第六幕:条件变量 —— 关卡可指定 'conditions': { light: 'green', weather: 'rainy' }
+  G.conditions = Object.assign({}, data.conditions || {});
   if (typeof _editTarget !== 'undefined') _editTarget = null;
 
   // 支持预填队列(概念关用来展示"被篡改的队列"等初始状态)
@@ -386,7 +388,8 @@ function renderCommandCards(cards) {
         ask_hint: '❓', break_mirror: '🔨',
         keypad: '🔢', cable_cut: '✂️', inspect_gift: '🎁',
         keypad_letter: '🔤', choose_reply: '💬', clean_virus: '🧹',
-        open_gift: '📦', deploy_backend: '🛠️'
+        open_gift: '📦', deploy_backend: '🛠️',
+        umbrella: '☂️', sun_hat: '👒', chat_ai: '🤖', click_link: '🔗', two_fa: '🔐'
       };
       div.innerHTML = `<span class="icon">${iconMap[card.icon] || '●'}</span> ${card.label}`;
       div.onclick = () => onCardClick(card);
@@ -555,6 +558,94 @@ function renderQueue() {
         renderQueue();
         updateEditBanner();
       };
+    } else if (item.action === 'branch') {
+      // 第六幕:分畜栏容器 —— 横向两(或多)个 pen,每个 pen 独立可拖入
+      item.pens = item.pens || {};
+      item.pen_meta = item.pen_meta || [];   // [{case:'green', label:'🟢 绿灯', color:'#A5D6A7'}]
+      const varName = item.var || '?';
+      div.style.background = '#FFF8E1';
+      div.style.border = '3px solid #D4AC0D';
+      div.style.padding = '8px 10px';
+      div.style.flexDirection = 'column';
+      div.style.alignItems = 'stretch';
+      div.style.gap = '6px';
+      div.style.display = 'flex';
+      div.style.minWidth = '260px';
+
+      const header = document.createElement('div');
+      header.style.cssText = 'display:flex; justify-content:space-between; align-items:center; font-weight:bold; color:#6B4423;';
+      header.innerHTML = `
+        <span>${idx + 1}. 🔀 如果 <em style="color:#D4AC0D">${varName}</em></span>
+        <span class="remove" title="删除" style="cursor:pointer; color:#E74C3C; font-size:20px;">×</span>
+      `;
+      header.querySelector('.remove').onclick = (e) => {
+        e.stopPropagation();
+        if (_editTarget && _editTarget._branch === item) _editTarget = null;
+        G.commandQueue.splice(idx, 1);
+        renderQueue();
+        updateEditBanner();
+      };
+      div.appendChild(header);
+
+      // 横向分畜栏
+      const pensRow = document.createElement('div');
+      pensRow.style.cssText = 'display:flex; gap:8px; flex-wrap:wrap;';
+      item.pen_meta.forEach(meta => {
+        const pen = document.createElement('div');
+        const isActivePen = _editTarget && _editTarget._branch === item && _editTarget._case === meta.case;
+        pen.style.cssText = `
+          flex: 1; min-width: 110px;
+          border: ${isActivePen ? '3px solid #D4AC0D' : '2px dashed ' + (meta.color || '#999')};
+          background: ${meta.color ? meta.color + '33' : '#FFF'};
+          border-radius: 8px; padding: 6px;
+          display: flex; flex-direction: column; gap: 4px;
+        `;
+        // pen header
+        const penHdr = document.createElement('div');
+        penHdr.style.cssText = 'display:flex; justify-content:space-between; align-items:center;';
+        penHdr.innerHTML = `
+          <span style="font-weight:bold; color:#6B4423; font-size:13px;">${meta.label}</span>
+          <span style="color:#3498DB; cursor:pointer; font-weight:bold; font-size:16px;" title="${isActivePen ? '完成' : '加指令'}">${isActivePen ? '✓' : '✎'}</span>
+        `;
+        penHdr.querySelector('span:last-child').onclick = (e) => {
+          e.stopPropagation();
+          if (isActivePen) {
+            _editTarget = null;
+          } else {
+            _editTarget = { _branch: item, _case: meta.case, body: item.pens[meta.case] || [] };
+            if (!item.pens[meta.case]) item.pens[meta.case] = _editTarget.body;
+          }
+          renderQueue();
+          updateEditBanner();
+        };
+        pen.appendChild(penHdr);
+        // pen content (cards dropped in)
+        const items = item.pens[meta.case] || [];
+        if (items.length === 0) {
+          const ph = document.createElement('div');
+          ph.style.cssText = 'color:#999; font-size:11px; padding:4px;';
+          ph.textContent = '(空)';
+          pen.appendChild(ph);
+        } else {
+          items.forEach((inner, innerIdx) => {
+            const chip = document.createElement('div');
+            chip.style.cssText = 'background:#FFF; border:1px solid #CCC; border-radius:4px; padding:2px 6px; font-size:12px; display:flex; justify-content:space-between;';
+            const st = (inner.action === 'move' && inner.steps > 1) ? ' ' + inner.steps + '步' : '';
+            chip.innerHTML = `
+              <span>${inner.label}${st}</span>
+              <span class="remove" style="cursor:pointer; color:#E74C3C; margin-left:6px;">×</span>
+            `;
+            chip.querySelector('.remove').onclick = (e) => {
+              e.stopPropagation();
+              items.splice(innerIdx, 1);
+              renderQueue();
+            };
+            pen.appendChild(chip);
+          });
+        }
+        pensRow.appendChild(pen);
+      });
+      div.appendChild(pensRow);
     } else {
       // 避免 label 已经含"步"时再重复追加
       const labelHasSteps = /\d+\s*步/.test(item.label || '');
@@ -573,7 +664,8 @@ function renderQueue() {
         ask_hint: '❓', break_mirror: '🔨',
         keypad: '🔢', cable_cut: '✂️', inspect_gift: '🎁',
         keypad_letter: '🔤', choose_reply: '💬', clean_virus: '🧹',
-        open_gift: '📦', deploy_backend: '🛠️'
+        open_gift: '📦', deploy_backend: '🛠️',
+        umbrella: '☂️', sun_hat: '👒', chat_ai: '🤖', click_link: '🔗', two_fa: '🔐'
       };
       const iconStr = iconMap[item.icon] ? iconMap[item.icon] + ' ' : '';
       div.innerHTML = `
@@ -582,14 +674,17 @@ function renderQueue() {
       `;
     }
 
-    div.querySelector('.remove').onclick = (e) => {
-      e.stopPropagation();
-      // 如果正在编辑的就是这个容器,先取消编辑
-      if (_editTarget === item) _editTarget = null;
-      G.commandQueue.splice(idx, 1);
-      renderQueue();
-      updateEditBanner();
-    };
+    // branch 已经自己绑了 header.remove,跳过下面通用的 remove 绑定
+    if (item.action !== 'branch') {
+      div.querySelector('.remove').onclick = (e) => {
+        e.stopPropagation();
+        // 如果正在编辑的就是这个容器,先取消编辑
+        if (_editTarget === item) _editTarget = null;
+        G.commandQueue.splice(idx, 1);
+        renderQueue();
+        updateEditBanner();
+      };
+    }
     list.appendChild(div);
 
     // 注入模式:每个指令后也放一个插入槽
@@ -598,8 +693,9 @@ function renderQueue() {
     }
   });
 
-  // 如果正在编辑某个容器,把容器内部的指令也显示一行
-  if (_editTarget) {
+  // 如果正在编辑"重复"容器,把容器内部的指令也显示在下方
+  // (branch 的 pen 已在行内渲染,不走这里)
+  if (_editTarget && !_editTarget._branch) {
     const container = document.createElement('div');
     container.style.cssText = 'flex-basis:100%; margin-top:6px; padding:6px; background:#FFF8DC; border:2px dashed #D4AC0D; border-radius:8px;';
     container.innerHTML = `<div style="font-size:12px; color:#8B5A3C; margin-bottom:4px;">📦 重复 ${_editTarget.times} 次的内容(点左侧卡片加入):</div>`;
@@ -660,7 +756,15 @@ function updateEditBanner() {
       banner.style.cssText = 'background:#FFE4B5; border:2px solid #D4AC0D; border-radius:6px; padding:6px; margin-bottom:6px; font-size:12px; color:#6B4423; text-align:center; font-weight:bold;';
       bar.insertBefore(banner, bar.firstChild);
     }
-    banner.textContent = `📝 正在编辑「重复 ${_editTarget.times} 次」`;
+    // 分畜栏(_branch + _case)vs 重复容器(times)
+    if (_editTarget._branch) {
+      const metaArr = _editTarget._branch.pen_meta || [];
+      const meta = metaArr.find(m => m.case === _editTarget._case);
+      const label = meta ? meta.label : _editTarget._case;
+      banner.textContent = `📝 正在往「${label}」栏里加指令`;
+    } else {
+      banner.textContent = `📝 正在编辑「重复 ${_editTarget.times} 次」`;
+    }
   } else {
     if (banner) banner.remove();
   }
@@ -859,6 +963,24 @@ async function executeCommands(commands, scene) {
       for (let i = 0; i < times; i++) {
         const aborted = await executeCommands(body, scene);
         if (aborted) return true;
+      }
+    } else if (cmd.action === 'branch') {
+      // 第六幕:条件分支(分畜栏)
+      //  cmd.var   —— 要读的条件变量名,如 'light' / 'weather' / 'visitor'
+      //  cmd.pens  —— { caseValue: [子命令数组], ... },例如 { green: [...], red: [...] }
+      //  cmd.default —— 找不到匹配的兜底分支名(可选)
+      const varName = cmd.var;
+      const pens = cmd.pens || {};
+      const value = (G.conditions || {})[varName];
+      const label = cmd.label || `如果${varName}`;
+      await scene.showBubble(G.player, `🔀 检查:${varName} = ${value || '?'}`, 1000);
+      let chosen = pens[value];
+      if (!chosen && cmd.default && pens[cmd.default]) chosen = pens[cmd.default];
+      if (Array.isArray(chosen) && chosen.length > 0) {
+        const aborted = await executeCommands(chosen, scene);
+        if (aborted) return true;
+      } else {
+        await scene.showBubble(G.player, `分栏'${value}'是空的,跳过`, 900);
       }
     }
   }
@@ -1175,6 +1297,93 @@ function showReplyChoiceModal(prompt, replies) {
     overlay.appendChild(box);
     document.body.appendChild(overlay);
   });
+}
+
+// 第六幕:AI 聊天框模态(F3 幻觉识别 / F4 钓鱼链接)
+//  question: 用户问的问题
+//  aiMsgs: [{text, wrong:true|false}]  —— 玩家要点所有 wrong 的句子
+//  onComplete(hitAll, clickedSet, correctSet)
+function showAIChatModal(question, aiMsgs, onComplete) {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position:fixed; inset:0; background:rgba(0,0,0,0.6);
+    display:flex; align-items:center; justify-content:center;
+    z-index:260; padding:10px;
+  `;
+  const box = document.createElement('div');
+  box.style.cssText = `
+    background:#F5F5F5; border:4px solid #6B4423; border-radius:18px;
+    padding:16px; max-width:480px; width:100%;
+    max-height:90dvh; display:flex; flex-direction:column;
+    box-shadow:0 8px 0 rgba(107,68,35,0.3);
+  `;
+  const hdr = document.createElement('div');
+  hdr.innerHTML = '🤖 <span style="color:#6B4423;font-weight:bold;">星耀 AI 助手</span>';
+  hdr.style.cssText = 'font-size:18px; padding-bottom:10px; border-bottom:2px solid #DDD; margin-bottom:10px;';
+  box.appendChild(hdr);
+
+  const chatArea = document.createElement('div');
+  chatArea.style.cssText = 'flex:1; overflow-y:auto; padding:6px; max-height:50vh;';
+  const uBubble = document.createElement('div');
+  uBubble.style.cssText = `
+    background:#90CAF9; color:#0D47A1; padding:10px 14px;
+    border-radius:14px 14px 4px 14px; margin:4px 0 12px auto;
+    max-width:80%; font-size:15px; font-weight:bold;
+    box-shadow:0 2px 0 rgba(0,0,0,0.1); text-align:left; width:fit-content;
+  `;
+  uBubble.textContent = '👤 ' + question;
+  chatArea.appendChild(uBubble);
+
+  const clickedSet = new Set();
+  aiMsgs.forEach((msg, i) => {
+    const ai = document.createElement('div');
+    ai.style.cssText = `
+      background:#FFF; color:#333; padding:10px 14px;
+      border:2px solid #DDD; border-radius:14px 14px 14px 4px;
+      margin:4px auto 4px 0; max-width:80%; width:fit-content;
+      font-size:15px; cursor:pointer; transition:all .2s;
+    `;
+    ai.textContent = '🤖 ' + msg.text;
+    ai.onclick = () => {
+      if (clickedSet.has(i)) {
+        clickedSet.delete(i);
+        ai.style.background = '#FFF';
+        ai.style.border = '2px solid #DDD';
+      } else {
+        clickedSet.add(i);
+        ai.style.background = '#FFEBEE';
+        ai.style.border = '3px solid #E74C3C';
+      }
+    };
+    chatArea.appendChild(ai);
+  });
+  box.appendChild(chatArea);
+
+  const hint = document.createElement('div');
+  hint.style.cssText = 'font-size:13px; color:#666; padding:8px 0; text-align:center;';
+  hint.textContent = '⚠️ 点出 AI 说错的句子(可点多条)';
+  box.appendChild(hint);
+
+  const submit = document.createElement('button');
+  submit.textContent = '✓ 提交';
+  submit.style.cssText = `
+    padding:12px 18px; margin-top:8px;
+    border:3px solid #27AE60; border-radius:12px;
+    background:#2ECC71; color:#FFF; font-size:16px; font-weight:bold;
+    cursor:pointer;
+  `;
+  submit.onclick = () => {
+    const correctSet = new Set();
+    aiMsgs.forEach((m, i) => { if (m.wrong) correctSet.add(i); });
+    const hitAll = clickedSet.size === correctSet.size &&
+                   [...clickedSet].every(i => correctSet.has(i));
+    overlay.remove();
+    onComplete(hitAll, clickedSet, correctSet);
+  };
+  box.appendChild(submit);
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
 }
 
 // ========== 通关弹窗 ==========

@@ -1,0 +1,78 @@
+{
+  "id": "F1",
+  "title": "红灯还是绿灯",
+  "act": 6,
+  "chapter": "新秩序",
+  "location": "星野站十字路口",
+  "concept_intro": "条件判断 · 看信号",
+  "security_concept": {
+    "name": "条件判断",
+    "analogy": "电脑不是死脑筋,要看情况做事。",
+    "defense": "先看信号,再决定怎么做。"
+  },
+  "available_commands": ["direction", "wait"],
+  "conditions": { "light": "green" },
+  "preset_queue": [
+    {
+      "action": "branch",
+      "var": "light",
+      "label": "🚦 看红绿灯",
+      "pen_meta": [
+        { "case": "green", "label": "🟢 绿灯就走", "color": "#A5D6A7" },
+        { "case": "red",   "label": "🔴 红灯就停", "color": "#EF9A9A" }
+      ],
+      "pens": { "green": [], "red": [] }
+    }
+  ],
+  "intro_dialog": [
+    { "speaker": "小天", "text": "今天学个新招!" },
+    { "speaker": "小天", "text": "看那个红绿灯。" },
+    { "speaker": "小天", "text": "「**如果**」绿灯,就走。" },
+    { "speaker": "小天", "text": "「**如果**」红灯,就停。" },
+    { "speaker": "小天", "text": "把指令放进两个栏里。" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [1, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [8, 3], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "oren",   "type": "oren",   "pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "light",  "type": "info_stone", "pos": [4, 3], "hint_text": "🟢 今天是绿灯" },
+    { "id": "goal",   "type": "goal_zone", "pos": [7, 2], "goal": true, "label": "🏠 家" }
+  ],
+  "available_command_cards": [
+    { "id": "move_right", "category": "direction", "label": "向右", "icon": "arrow_right", "action": "move", "dir": "right", "steps_input": true },
+    { "id": "wait_1",     "category": "wait",      "label": "停一下", "icon": "hourglass",    "action": "wait", "seconds": 1 }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 2,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "现在是绿灯,要走。" },
+    { "level": 2, "text": "点「向右」,选 6 步,放进绿栏。" },
+    { "level": 3, "text": "红栏里放「停一下」就好(这次不会被用)。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "小天", "text": "家到啦!" },
+    { "speaker": "小天", "text": "这叫「**条件判断**」。" },
+    { "speaker": "小天", "text": "电脑先看情况,再做事。" },
+    { "speaker": "小天", "text": "像人过马路,先看灯。" },
+    { "speaker": "奥伦", "text": "绿灯走,红灯停!" }
+  ],
+  "manual_tip": "🚦 这一关<br><br>看队列里的<br><strong>🔀 分畜栏</strong><br><br>点栏旁的 ✎<br>再点左边的指令卡<br>放进去<br><br>两个栏都要填!",
+  "rewards": {
+    "unlock_next": "F2",
+    "first_time_dialog_card": "conditional_signal"
+  }
+}

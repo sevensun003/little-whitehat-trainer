@@ -1,0 +1,78 @@
+{
+  "id": "F2",
+  "title": "雨天带伞",
+  "act": 6,
+  "chapter": "新秩序",
+  "location": "樱桃镇门口",
+  "concept_intro": "条件判断 · 看状态",
+  "security_concept": {
+    "name": "条件判断",
+    "analogy": "看天气决定带不带伞。",
+    "defense": "行动前,先看情况。"
+  },
+  "available_commands": ["direction", "gear"],
+  "conditions": { "weather": "rainy" },
+  "preset_queue": [
+    {
+      "action": "branch",
+      "var": "weather",
+      "label": "☁ 看天气",
+      "pen_meta": [
+        { "case": "sunny", "label": "☀ 晴天", "color": "#FFE082" },
+        { "case": "rainy", "label": "🌧 下雨", "color": "#90CAF9" }
+      ],
+      "pens": { "sunny": [], "rainy": [] }
+    },
+    { "action": "move", "dir": "right", "steps": 5, "label": "向右走", "icon": "arrow_right" }
+  ],
+  "intro_dialog": [
+    { "speaker": "藤蔓妹妹", "text": "婉婉,准备出门!" },
+    { "speaker": "藤蔓妹妹", "text": "外面怎么样?" },
+    { "speaker": "小天",     "text": "「**如果**」晴天,戴帽子。" },
+    { "speaker": "小天",     "text": "「**如果**」下雨,拿雨伞。" },
+    { "speaker": "小天",     "text": "看看石头上写啥了。" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [1, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [8, 3], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "tengman","type": "tengman","pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "sign",   "type": "info_stone", "pos": [3, 3], "hint_text": "🌧 今天下雨" },
+    { "id": "goal",   "type": "goal_zone", "pos": [7, 2], "goal": true, "label": "学校" }
+  ],
+  "available_command_cards": [
+    { "id": "take_umbrella", "category": "gear", "label": "拿伞", "icon": "umbrella",   "action": "drop" },
+    { "id": "take_hat",      "category": "gear", "label": "戴帽子", "icon": "sun_hat",  "action": "drop" }
+  ],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 2,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "看石头,今天什么天气?" },
+    { "level": 2, "text": "下雨了,把「拿伞」放进雨栏。" },
+    { "level": 3, "text": "晴栏放「戴帽子」。下雨栏放「拿伞」。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "藤蔓妹妹", "text": "多亏带了伞!" },
+    { "speaker": "小天",     "text": "看情况挑工具。" },
+    { "speaker": "小天",     "text": "电脑也一样。" },
+    { "speaker": "小天",     "text": "先**看**,再**做**。" }
+  ],
+  "manual_tip": "☔ 这一关<br><br>看石头上写的天气<br>给两个分畜栏都填对<br><br>点栏旁 ✎<br>再点左边的卡加入",
+  "rewards": {
+    "unlock_next": "F3",
+    "first_time_dialog_card": "conditional_state"
+  }
+}
