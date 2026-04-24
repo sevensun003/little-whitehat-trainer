@@ -40,10 +40,13 @@
       "loop_steps": ["say:DBU (密文,每次说)"],
       "loop_period_ms": 4000
     },
-    { "id": "s1", "type": "info_stone", "pos": [4, 3], "hint_text": "密文第1位:D" },
-    { "id": "s2", "type": "info_stone", "pos": [5, 3], "hint_text": "密文第2位:B" },
-    { "id": "s3", "type": "info_stone", "pos": [6, 3], "hint_text": "密文第3位:U" },
-    { "id": "rule", "type": "info_stone", "pos": [4, 2], "hint_text": "规则:字母 -1" },
+    { "id": "s1", "type": "info_stone", "pos": [4, 3], "hint_text": [
+      "密文:DBU",
+      "规则:字母 -1",
+      "D → C",
+      "B → ?",
+      "U → ?"
+    ] },
     { "id": "safe", "type": "safe_box", "pos": [8, 3], "correct_password": "CAT", "password_kind": "letter" },
     { "id": "goal", "type": "goal_zone", "pos": [8, 3], "goal": true, "label": "档案" }
   ],

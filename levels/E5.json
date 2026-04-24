@@ -3,7 +3,7 @@
   "title": "字里藏箭",
   "act": 5,
   "chapter": "余烬反扑",
-  "location": "指令塔地下档案库",
+  "location": "樱桃镇邮局",
   "concept_intro": "注入(位置)",
   "security_concept": {
     "name": "注入的位置问题",
@@ -13,16 +13,16 @@
   "inject_mode": true,
   "available_commands": ["function"],
   "preset_queue": [
-    { "id": "p1", "action": "move",  "dir": "right", "steps": 2, "label": "向右 2 步", "icon": "arrow_right" },
-    { "id": "p2", "action": "drop",  "label": "放下盒子", "icon": "hand_drop" },
-    { "id": "p3", "action": "move",  "dir": "right", "steps": 3, "label": "向右 3 步", "icon": "arrow_right" }
+    { "id": "p1", "action": "move",  "dir": "right", "steps": 4, "label": "走到门口", "icon": "arrow_right" },
+    { "id": "p2", "action": "press_button", "label": "按门铃", "icon": "hand_knock" },
+    { "id": "p3", "action": "move",  "dir": "right", "steps": 2, "label": "离开", "icon": "arrow_right" }
   ],
   "intro_dialog": [
-    { "speaker": "布鲁德", "text": "婉婉!帮我把小猫放进房间。" },
-    { "speaker": "布鲁德", "text": "盒子已经在你手里。" },
-    { "speaker": "小天",   "text": "但队列里少了一步。" },
-    { "speaker": "小天",   "text": "**打开盒子**,要插在哪?" },
-    { "speaker": "小天",   "text": "插错位置,小猫就会跑掉。" }
+    { "speaker": "小天",   "text": "婉婉,帮忙送封信!" },
+    { "speaker": "小天",   "text": "队列里少了一步。" },
+    { "speaker": "小天",   "text": "「**放下信**」,要插在哪?" },
+    { "speaker": "小天",   "text": "要先到门口,放下信,再按门铃。" },
+    { "speaker": "小天",   "text": "顺序错了,信就没送到。" }
   ],
   "map": {
     "size": [10, 5],
@@ -34,40 +34,40 @@
       { "x": 9, "y": 0, "w": 1, "h": 5 }
     ],
     "objects": [
-      { "type": "desk",  "pos": [3, 1], "size": [1, 1] },
+      { "type": "plant", "pos": [6, 2], "size": [1, 1] },
       { "type": "plant", "pos": [8, 3], "size": [1, 1] }
     ]
   },
   "entities": [
     { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
-    { "id": "brud",   "type": "brud",   "pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
-    { "id": "rule",   "type": "info_stone", "pos": [5, 3], "hint_text": "先放下,再开,再走。" },
-    { "id": "room",   "type": "goal_zone", "pos": [6, 2], "goal": true, "label": "小猫房间" }
+    { "id": "rule",   "type": "info_stone", "pos": [3, 3], "hint_text": "先到门口,放下信,再按门铃。" },
+    { "id": "bell",   "type": "button", "pos": [5, 3], "label": "🔔 门铃" },
+    { "id": "house",  "type": "goal_zone", "pos": [7, 2], "goal": true, "label": "收信人家" }
   ],
   "available_command_cards": [
-    { "id": "inject_open", "category": "function", "label": "打开盒子", "icon": "open_gift", "action": "open_gift", "injectable": true }
+    { "id": "inject_drop", "category": "function", "label": "放下信", "icon": "hand_drop", "action": "drop", "injectable": true }
   ],
   "success_condition": {
     "type": "execute_safe_queue",
-    "must_keep_actions": ["move", "drop", "open_gift"],
-    "required_order": ["move", "drop", "open_gift", "move"],
-    "reach_goal_id": "room"
+    "must_keep_actions": ["move", "drop", "press_button"],
+    "required_order": ["move", "drop", "press_button", "move"],
+    "reach_goal_id": "house"
   },
   "optimal_steps": 4,
   "max_hint_level": 3,
   "hints": [
-    { "level": 1, "text": "点「打开盒子」,再点队列中间的 ➕。" },
-    { "level": 2, "text": "先放下盒子,再打开,小猫才留在房间里。" },
-    { "level": 3, "text": "「放下盒子」和「向右 3 步」之间插入。" }
+    { "level": 1, "text": "点「放下信」,再点队列中间的 ➕。" },
+    { "level": 2, "text": "到门口之后,按门铃之前,放下信。" },
+    { "level": 3, "text": "插在「走到门口」和「按门铃」之间。" }
   ],
   "on_clear_dialog": [
-    { "speaker": "布鲁德", "text": "小猫在房间里啦!" },
-    { "speaker": "小天",   "text": "这叫「**注入位置**」。" },
-    { "speaker": "小天",   "text": "同样的指令,插错也出事。" },
-    { "speaker": "小天",   "text": "要一条一条看,顺序也要看。" },
-    { "speaker": "平基",   "text": "谁塞的、塞哪里,都要查!" }
+    { "speaker": "小天", "text": "信送到啦!" },
+    { "speaker": "小天", "text": "这叫「**注入位置**」。" },
+    { "speaker": "小天", "text": "同样的指令,插错也出事。" },
+    { "speaker": "小天", "text": "每一步都要看,**顺序**也要看。" },
+    { "speaker": "平基", "text": "谁塞的、塞哪里,都要查!" }
   ],
-  "manual_tip": "🧩 这一关<br>需要你<br><strong>点「打开盒子」</strong><br>然后点队列中间<br><strong>橘色的 ➕</strong><br>选择插入位置<br><br>位置选对再按 ▶",
+  "manual_tip": "🧩 这一关<br>需要你<br><strong>点「放下信」</strong><br>然后点队列中间<br><strong>橘色的 ➕</strong><br>选择插入位置<br><br>位置选对再按 ▶",
   "rewards": {
     "unlock_next": "E6",
     "first_time_dialog_card": "injection_position"

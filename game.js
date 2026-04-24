@@ -74,7 +74,7 @@ function _clearLoopTimers() {
 
 // ========== 关卡加载 ==========
 async function loadLevel(levelId) {
-  const res = await fetch(`levels/${levelId}.json?v=20260424e`);
+  const res = await fetch(`levels/${levelId}.json?v=20260424f`);
   if (!res.ok) throw new Error(`关卡 ${levelId} 加载失败`);
   const data = await res.json();
 
@@ -1345,17 +1345,11 @@ class MainScene extends Phaser.Scene {
       const sprite = this.createNPC(e);
       // 第五幕起:带 hint_text 且不跟随 / 非循环的 NPC,在头顶持续显示线索
       let label = null;
+      let labelCycler = null;
       if (e.hint_text && e.role !== 'follower' && !e.loop_steps) {
-        const lx = G.mapOriginX + e.pos[0] * G.tileSize + G.tileSize / 2;
-        const ly = G.mapOriginY + e.pos[1] * G.tileSize - 2;
-        label = this.add.text(lx, ly, e.hint_text, {
-          fontSize: '48px', color: '#6B4423',
-          backgroundColor: '#FFFACD',
-          padding: { x: 20, y: 10 },
-          wordWrap: { width: 480, useAdvancedWrap: true },
-          align: 'center',
-          fontStyle: 'bold'
-        }).setOrigin(0.5, 1).setDepth(18);
+        const res = this._makeHintLabel(e.pos[0], e.pos[1], e.hint_text);
+        label = res.label;
+        labelCycler = res.cancelFn;
       }
       G.entities[e.id] = {
         type: e.type,
@@ -1368,7 +1362,8 @@ class MainScene extends Phaser.Scene {
         block_message: e.block_message || null,  // 撞到时的定制消息
         hint_text: e.hint_text || null,   // 用 ask_hint 时会念出这句(D1 用)
         bypassed: false,
-        _label: label
+        _label: label,
+        _cancelLoop: labelCycler   // scene.restart 时会被 _clearLoopTimers 调用
       };
     });
 
@@ -1489,26 +1484,21 @@ class MainScene extends Phaser.Scene {
     // 处理 info_stone(C8:踩上去显示提示 · 第五幕起 hint_text 持续显示在石头上方)
     entityList.filter(e => e.type === 'info_stone').forEach(e => {
       const sprite = this.createInfoStone(e);
-      // 持续显示的浮动标签(只要 hint_text 非空就贴)
+      // 持续显示的浮动标签(支持字符串 / 数组轮播)
       let label = null;
+      let labelCycler = null;
       if (e.hint_text) {
-        const lx = G.mapOriginX + e.pos[0] * G.tileSize + G.tileSize / 2;
-        const ly = G.mapOriginY + e.pos[1] * G.tileSize - 2;
-        label = this.add.text(lx, ly, e.hint_text, {
-          fontSize: '48px', color: '#6B4423',
-          backgroundColor: '#FFFACD',
-          padding: { x: 20, y: 10 },
-          wordWrap: { width: 480, useAdvancedWrap: true },
-          align: 'center',
-          fontStyle: 'bold'
-        }).setOrigin(0.5, 1).setDepth(18);
+        const res = this._makeHintLabel(e.pos[0], e.pos[1], e.hint_text);
+        label = res.label;
+        labelCycler = res.cancelFn;
       }
       G.entities[e.id] = {
         type: 'info_stone',
         gridX: e.pos[0], gridY: e.pos[1],
         sprite,
-        hint_text: e.hint_text || '',
-        _label: label
+        hint_text: Array.isArray(e.hint_text) ? e.hint_text.join(' / ') : (e.hint_text || ''),
+        _label: label,
+        _cancelLoop: labelCycler
       };
     });
 
@@ -4200,6 +4190,44 @@ class MainScene extends Phaser.Scene {
       duration: 300,
       onComplete: () => mirror.sprite.destroy()
     });
+  }
+
+  // 创建"浮在实体上方的黄色提示标签"
+  // hint_text 可以是字符串 或 字符串数组(数组时轮流显示,每条 2 秒)
+  // 返回 { label, cancelFn }; cancelFn 可以被 _clearLoopTimers 调用以停止轮播
+  _makeHintLabel(gx, gy, hint_text) {
+    const items = Array.isArray(hint_text) ? hint_text.slice() : [String(hint_text)];
+    const first = items[0] || '';
+    const lx = G.mapOriginX + gx * G.tileSize + G.tileSize / 2;
+    const ly = G.mapOriginY + gy * G.tileSize - 2;
+    const label = this.add.text(lx, ly, first, {
+      fontSize: '28px',           // 手机端更紧凑(原来 48 太大会相互遮挡)
+      color: '#6B4423',
+      backgroundColor: '#FFFACD',
+      padding: { x: 10, y: 5 },
+      wordWrap: { width: 260, useAdvancedWrap: true },
+      align: 'center',
+      fontStyle: 'bold'
+    }).setOrigin(0.5, 1).setDepth(18);
+
+    // 数组多于 1 条时,启动轮播:每条停 2 秒
+    let cancelled = false;
+    let timer = null;
+    if (items.length > 1) {
+      let idx = 0;
+      const rotate = () => {
+        if (cancelled || !label || !label.scene) return;
+        idx = (idx + 1) % items.length;
+        label.setText(items[idx]);
+        timer = setTimeout(rotate, 2000);
+      };
+      timer = setTimeout(rotate, 2000);
+    }
+    const cancelFn = () => {
+      cancelled = true;
+      if (timer) { clearTimeout(timer); timer = null; }
+    };
+    return { label, cancelFn };
   }
 
   showBubble(target, text, holdMs) {
