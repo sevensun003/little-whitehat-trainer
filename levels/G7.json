@@ -1,0 +1,75 @@
+{
+  "id": "G7",
+  "title": "加塞的客人",
+  "act": 7,
+  "chapter": "看不见的钥匙",
+  "location": "水母妹妹的银行",
+  "concept_intro": "插队 = 把指令塞错位置",
+  "security_concept": {
+    "name": "注入位置",
+    "analogy": "排队取钱,前面塞个'让他先' = 你的钱被拿走。",
+    "defense": "看清队列里每一步,有没有插不该插的。"
+  },
+  "inject_mode": true,
+  "available_commands": ["function"],
+  "preset_queue": [
+    { "id": "p1", "action": "move", "dir": "right", "steps": 4, "label": "走到柜台", "icon": "arrow_right" },
+    { "id": "p2", "action": "press_button", "label": "拿号", "icon": "press_button" },
+    { "id": "p3", "action": "drop", "label": "存钱", "icon": "hand_drop" }
+  ],
+  "intro_dialog": [
+    { "speaker": "水母妹妹", "text": "婉婉,帮我去柜台存钱。" },
+    { "speaker": "水母妹妹", "text": "顺序:走到柜台 → 拿号 → 存钱。" },
+    { "speaker": "小天",     "text": "等等,有人插队!" },
+    { "speaker": "小天",     "text": "「**让陌生人先**」要插哪?" },
+    { "speaker": "小天",     "text": "其实**哪都不该插**!" },
+    { "speaker": "小天",     "text": "把它扔到指令最后,作废。" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "desk", "pos": [4, 1], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "shuimu", "type": "shuimu", "pos": [1, 3], "facing": "right", "tier": 2, "role": "follower", "follows": "player" },
+    { "id": "bell",   "type": "button", "pos": [5, 2] },
+    { "id": "goal",   "type": "goal_zone", "pos": [5, 2], "goal": true, "label": "柜台" }
+  ],
+  "available_command_cards": [
+    { "id": "let_stranger", "category": "function", "label": "让陌生人先", "icon": "social_engineer", "action": "wait", "seconds": 1, "injectable": true }
+  ],
+  "success_condition": {
+    "type": "execute_safe_queue",
+    "must_keep_actions": ["move", "press_button", "drop"],
+    "required_order": ["move", "press_button", "drop"],
+    "reach_goal_id": "goal"
+  },
+  "optimal_steps": 3,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "你拿了「让陌生人先」,但**最好别插**!" },
+    { "level": 2, "text": "如果非插,放到最后 = 没影响。" },
+    { "level": 3, "text": "其实直接按 ▶ 就行,不用插那张卡!" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "水母妹妹", "text": "钱安全存进去了!" },
+    { "speaker": "小天",     "text": "这就是「**注入**」。" },
+    { "speaker": "小天",     "text": "坏人想塞一句进你的指令。" },
+    { "speaker": "小天",     "text": "塞错地方 = 坏事。" },
+    { "speaker": "小天",     "text": "看清队列,不该插的就别插。" }
+  ],
+  "manual_tip": "🚦 这一关<br><br>有张<strong>「让陌生人先」</strong><br>看着像没用的卡<br><br>就是没用的!<br>不插它,直接按 ▶<br>就过关",
+  "rewards": {
+    "unlock_next": "G8",
+    "first_time_dialog_card": "injection_v2"
+  }
+}

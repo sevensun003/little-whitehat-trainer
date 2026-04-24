@@ -1,0 +1,71 @@
+{
+  "id": "G5",
+  "title": "装病的快递员",
+  "act": 7,
+  "chapter": "看不见的钥匙",
+  "location": "星野站门口",
+  "concept_intro": "陌生人套近乎要警惕",
+  "security_concept": {
+    "name": "社工辨识",
+    "analogy": "陌生人说自己是熟人,要先确认。",
+    "defense": "给个理由就放他进来 = 上当。"
+  },
+  "available_commands": [],
+  "preset_queue": [
+    {
+      "action": "chat_ai_check",
+      "question": "门外有人按门铃,他说了 4 句话。哪些**听起来怪怪的**?",
+      "ai_msgs": [
+        { "text": "🕴️ 我是吉文,送快递的。",                  "wrong": false },
+        { "text": "🕴️ 我牙疼,你能开门让我进来歇歇吗?",      "wrong": true },
+        { "text": "🕴️ 你帮我抱一下这个包裹,我手酸了。",      "wrong": true },
+        { "text": "🕴️ 包裹放门口签收即可,谢谢。",            "wrong": false }
+      ]
+    },
+    { "action": "move", "dir": "right", "steps": 4, "label": "回家", "icon": "arrow_right" }
+  ],
+  "intro_dialog": [
+    { "speaker": "小天", "text": "门外有个'快递员'。" },
+    { "speaker": "小天", "text": "他说了 4 句话。" },
+    { "speaker": "小天", "text": "哪些**听起来不对**?" },
+    { "speaker": "小天", "text": "想进门 / 让你帮拿东西 = 危险。" },
+    { "speaker": "小天", "text": "把怪怪的全点出来!" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "plant", "pos": [1, 1], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "goal",   "type": "goal_zone", "pos": [5, 2], "goal": true, "label": "回家" }
+  ],
+  "available_command_cards": [],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 1,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "正常快递员不会要进门。" },
+    { "level": 2, "text": "中间两句都在'求帮忙',很可疑。" },
+    { "level": 3, "text": "第 2、3 句怪怪的,全点出来。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "小天", "text": "你识破了!" },
+    { "speaker": "小天", "text": "正常快递员**不会想进门**。" },
+    { "speaker": "小天", "text": "也不会让你**帮拿东西**。" },
+    { "speaker": "小天", "text": "陌生人来,只签收,不开门。" },
+    { "speaker": "婉婉", "text": "门外签字就好!" }
+  ],
+  "rewards": {
+    "unlock_next": "G6",
+    "first_time_dialog_card": "social_engineering_v2"
+  }
+}

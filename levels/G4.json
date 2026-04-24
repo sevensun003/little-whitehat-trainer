@@ -1,0 +1,72 @@
+{
+  "id": "G4",
+  "title": "信被换了",
+  "act": 7,
+  "chapter": "看不见的钥匙",
+  "location": "邮局",
+  "concept_intro": "印对 + 封好,才能信",
+  "security_concept": {
+    "name": "签名 + 封条 综合",
+    "analogy": "印章对 + 封条没破,两个都齐才是真信。",
+    "defense": "查印章,查封条,缺一不可。"
+  },
+  "available_commands": [],
+  "preset_queue": [
+    {
+      "action": "pick_seal_box",
+      "question": "📨 4 封信,哪些**有问题**?(印不对 或 封破了)",
+      "ai_msgs": [
+        { "text": "信 A · 🦋 印对 · 封好 ━━━",      "wrong": false },
+        { "text": "信 B · 🦊 印是仿的 · 封好 ━━━",  "wrong": true },
+        { "text": "信 C · 🦋 印对 · 封 撕过 ✂",     "wrong": true },
+        { "text": "信 D · 🦊 印仿的 · 封 撕过 ✂",   "wrong": true }
+      ]
+    },
+    { "action": "move", "dir": "right", "steps": 5, "label": "送真信", "icon": "arrow_right" }
+  ],
+  "intro_dialog": [
+    { "speaker": "小天", "text": "婉婉,今天有 4 封信。" },
+    { "speaker": "小天", "text": "上次学的:看**印章**。" },
+    { "speaker": "小天", "text": "上次学的:看**封条**。" },
+    { "speaker": "小天", "text": "**两个都对**才能送!" },
+    { "speaker": "小天", "text": "印不对 或 封破了 = 有问题。" },
+    { "speaker": "小天", "text": "把有问题的全点出来。" }
+  ],
+  "map": {
+    "size": [10, 5],
+    "tileset": "street",
+    "walls": [
+      { "x": 0, "y": 0, "w": 10, "h": 1 },
+      { "x": 0, "y": 4, "w": 10, "h": 1 },
+      { "x": 0, "y": 0, "w": 1, "h": 5 },
+      { "x": 9, "y": 0, "w": 1, "h": 5 }
+    ],
+    "objects": [
+      { "type": "desk", "pos": [3, 1], "size": [1, 1] }
+    ]
+  },
+  "entities": [
+    { "id": "player", "type": "wanwan", "start_pos": [1, 2], "facing": "right", "tier": 2 },
+    { "id": "goal",   "type": "goal_zone", "pos": [6, 2], "goal": true, "label": "送出去" }
+  ],
+  "available_command_cards": [],
+  "success_condition": { "type": "reach_goal", "goal_id": "goal" },
+  "optimal_steps": 1,
+  "max_hint_level": 3,
+  "hints": [
+    { "level": 1, "text": "🦋 是真印,🦊 是仿的。" },
+    { "level": 2, "text": "封条 ━━━ 是好的,✂ 是坏的。" },
+    { "level": 3, "text": "B (仿)、C (破封)、D (都坏) 都有问题。" }
+  ],
+  "on_clear_dialog": [
+    { "speaker": "小天", "text": "只有 A 是真信!" },
+    { "speaker": "小天", "text": "**印对 + 封好** 才能信。" },
+    { "speaker": "小天", "text": "缺一个都不行。" },
+    { "speaker": "小天", "text": "电脑里也是这样。" },
+    { "speaker": "婉婉", "text": "查两遍才放心!" }
+  ],
+  "rewards": {
+    "unlock_next": "G5",
+    "first_time_dialog_card": "sign_plus_integrity"
+  }
+}
